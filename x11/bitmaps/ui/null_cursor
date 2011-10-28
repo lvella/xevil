@@ -1,0 +1,6 @@
+#define null_cursor_width 1
+#define null_cursor_height 1
+#define null_cursor_x_hot 0
+#define null_cursor_y_hot 0
+static unsigned char null_cursor_bits[] = {
+   0x00};

@@ -1,0 +1,135 @@
+/* 
+ * XEvil(TM) Copyright (C) 1994,2000 Steve Hardt and Michael Judge
+ * http://www.xevil.com
+ * satan@xevil.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program, the file "gpl.txt"; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA, or visit http://www.gnu.org.
+ */
+
+
+#if X11
+#include "gen_xpm/demon_summoner/demon_summoner_4.xpm"
+#endif
+
+
+
+#define DEMON_SUMMONER_SUICIDE_TIME (15 * 25) // 15 sec
+
+
+
+Size DemonSummoner::get_size_max() {
+  return context.weaponContext.itemContext.fallingContext.
+    movingContext.sizes[CO_air];
+}
+
+
+
+PhysicalP DemonSummoner::create(void *,WorldP w,LocatorP l,const Pos &pos) {
+  PhysicalP ret = new DemonSummoner(w,l,pos);
+  assert(ret);
+  return ret;
+}
+
+
+
+static void demon_summoner_get_item_info(Boolean &isItem,Boolean &isWeapon,
+                                         CMN_BITS_ID &iconId) {
+  isItem = True;
+  isWeapon = True;
+#if WIN32
+  iconId = IDB_DEMONSUMMONER;
+#endif
+#if X11
+  iconId = 0;
+#endif
+}
+
+
+
+WeaponXdata DemonSummoner::xdata;
+
+
+
+const WhistleContext DemonSummoner::context = 
+{ /** WhistleContext **/
+  -25, /* coolnessNoAmmo */
+  1, /* ammo */
+  0, /* alternateChance */
+  { /** WeaponContext **/
+    0,
+    { /** ItemContext **/
+      True, /* persists */
+      10100, /* coolness */
+      0, /*item use sound */
+      { /** FallingContext **/
+        {/** MovingContext **/
+#if X11
+          "black",False,
+          "red",False,
+#endif
+#if WIN32
+          RGB(0,0,0)/*"black"*/,FALSE,
+          Xvars_BACKGROUND,TRUE,
+#endif	      
+          {0,0,0,0,1},
+          
+          /* sizes */
+          {{0,0},{0,0},{0,0},{0,0},{5,13},},
+          
+          /* offsets */
+          {{0}},
+	        
+          /* pixmapBits */
+          {{0},{0},{0},{0},{CMN_ID(demon_summoner_4,IDB_DEMONSUMMONER)},},
+          
+          /* maskBits */
+          {{0}},
+
+          { /** PhysicalContext **/
+            500, /* health */
+            10, /* mass */
+            A_DemonSummoner, /* classId */
+            "demon-summoner", /* className */
+            
+            False, /* transmogifyTarget */
+            False, /* doppelUser */
+            False, /* potentialHuman */
+            False, /* potentialEnemy */
+            0, /* enemyWeight */
+            False, /* potentialWeapon */
+            False, /* potentialOtherItem */
+            0.0f, /* objectWorldPercent */
+            0, /* levelMaxTimes */
+            {5,13}, /* sizeMax */
+            DemonSummoner::create, /* create */
+            False, /* statsCreations */
+            False, /* statsUses */
+            False, /* statsDeaths */
+            NULL, /* get_stats */
+            NULL, /* arg */
+            DemonSummoner::init_x, /* init_x */
+            DemonSummoner::create_from_stream, /* create_from_stream */
+            demon_summoner_get_item_info, /* get_item_info */
+          },
+          True, /* hiRes */
+          0, /* offsetGenerator */
+          0, /* transformOverride */
+          True, /* useXPM */
+        },
+      },
+    },
+  },
+};

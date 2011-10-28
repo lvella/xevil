@@ -1,0 +1,221 @@
+/* 
+ * XEvil(TM) Copyright (C) 1994,2000 Steve Hardt and Michael Judge
+ * http://www.xevil.com
+ * satan@xevil.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program, the file "gpl.txt"; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA, or visit http://www.gnu.org.
+ */
+
+
+#if X11
+#include "gen_xpm/fire_demon/fire_demon_0.xpm"
+#include "gen_xpm/fire_demon/fire_demon_0b.xpm"
+#include "gen_xpm/fire_demon/fire_demon_2.xpm"
+#include "gen_xpm/fire_demon/fire_demon_22.xpm"
+#include "gen_xpm/fire_demon/fire_demon_25.xpm"
+#include "gen_xpm/fire_demon/fire_demon_4.xpm"
+#include "gen_xpm/fire_demon/fire_demon_5.xpm"
+#include "gen_xpm/fire_demon/fire_demon_5b.xpm"
+#endif
+
+
+
+#define FIRE_DEMON_FIREBALL_HEAT 6
+#define FIRE_DEMON_FIREBALL_TIME 20
+
+
+
+Size FireDemon::get_size_max() {
+  return creatureContext.movingContext.physicalContext.sizeMax;
+}
+
+
+
+PhysicalP FireDemon::create(void *,WorldP w,LocatorP l,const Pos &pos) {
+  PhysicalP ret = new FireDemon(w,l,pos);
+  assert(ret);
+  return ret;
+}
+
+
+
+CreatureXdata FireDemon::creatureXdata;
+FlyingXdata FireDemon::flyingXdata;
+BuiltInXdata FireDemon::builtInXdata;
+OnFireXdata FireDemon::onFireXdata;
+SwapProtectXdata FireDemon::swapProtectXdata;
+
+
+
+const CreatureContext FireDemon::creatureContext =
+{ /** CreatureContext **/
+  0, /* crawlSpeed */
+  7, /* centerSpeed */
+  7, /* airSpeed */
+  0, /* climbSpeed */
+  7,  /* jump */
+  6,  /* acceleration */ 
+  600, /* corpseHealth */
+  
+  False, /* biological */
+  DROPLET_NONE, /* dropletType */
+  0, /*firedemon death*/
+  
+  {/** MovingContext **/
+#if X11
+    "red4",False,
+    "orangered",True,
+#endif
+#if WIN32
+    RGB(255,0,0)/*"red4"*/,FALSE,
+    RGB(255,128,0)/*"orangered"*/,TRUE,
+#endif    
+    /* animMax */
+    {2,2,1,1,1,2,
+     0,
+     0,0,
+     0,
+     0,0,
+     0,
+     0,0,
+     0,
+     0,0,
+     0,
+     0,0,
+     1,1,
+     0,0,
+     1, /* deadAnimMax */
+	},
+    
+    /* sizes */
+    {{52,44},{52,44},{46,44},{46,44},{48,48},{47,48},
+     {0,0},
+     {0,0},{0,0},
+     {0,0},
+     {0,0},{0,0},
+     {0,0},
+     {0,0},{0,0},
+     {0,0},
+     {0,0},{0,0},
+     {0,0},           /* Must be    */
+     {0,0},{0,0},     /* same size. */
+     {48,48},{60,48},
+     {0,0},{0,0},
+     {49,22}, /* deadSize */
+	},
+    
+    /* offsets */
+    {{0}},
+    
+    /* pixmapBits */
+    {{CMN_ID(fire_demon_0,IDB_HIFIREDEMON0),
+      CMN_ID(fire_demon_0b,IDB_HIFIREDEMON0B)},
+     {PH_AUTO_GEN},
+     {CMN_ID(fire_demon_2,IDB_HIFIREDEMON2)},
+     {PH_AUTO_GEN},
+     {CMN_ID(fire_demon_4,IDB_HIFIREDEMON4)},
+     {CMN_ID(fire_demon_5,IDB_HIFIREDEMON5),
+      CMN_ID(fire_demon_5b,IDB_HIFIREDEMON5B)},
+     {0},
+     {0},{0},
+     {0},
+     {0},{0},
+     {0},
+     {0},{0},
+     {0},
+     {0},{0},
+     {0},
+     {0},{0},
+     {CMN_ID(fire_demon_4,IDB_HIFIREDEMON4)},
+     {CMN_ID(fire_demon_22,IDB_HIFIREDEMON22)},
+     {0},{0},
+     {CMN_ID(fire_demon_25,IDB_HIFIREDEMON_DEAD)}, /* deadPixmapBits */
+    },
+      
+    /* maskBits */
+    {{0}},
+
+    {/** PhysicalContext **/
+      1500, /* health */
+      2000, /* mass */
+      A_FireDemon, /* classId */
+      "fire-demon", /* clas */
+
+      False, /* transmogifyTarget */
+      False, /* doppelUser */
+      False, /* potentialHuman */
+      False, /* potentialEnemy */
+      0, /* enemyWeight */
+      False, /* potentialWeapon */
+      False, /* potentialOtherItem */
+      0.0f, /* objectWorldPercent */
+      0, /* levelMaxTimes */
+      {60,48}, /* sizeMax */
+      FireDemon::create, /* create */
+      False, /* statsCreations */
+      False, /* statsUses */
+      False, /* statsDeaths */
+      NULL, /* get_stats */
+      NULL, /* arg */
+      FireDemon::init_x, /* init_x */
+      FireDemon::create_from_stream, /* create_from_stream */
+    },
+    True, /* hires */
+    0, /* offsetGenerator */
+    0, /* transformOverride */
+    True, /* useXPM */
+	False, /* invisibility */
+  },
+};
+
+
+
+const FlyingContext FireDemon::flyingContext =
+{ /** FlyingContext **/
+  2, /* gravTime */
+};
+
+
+
+// copied into AltarOfSin
+const BuiltInContext FireDemon::builtInContext =
+{ /** BuiltInContext **/
+  12, /* shotTime */
+  A_Fireballs, /* weaponClassId */
+  "fireballs", /* weaponStr */
+  90000, /* coolness */
+  0, /* attackSound */
+  FireDemon::get_shot_size, /* get_shot_size */
+  FireDemon::create_shot,   /* create_shot */
+  NULL,                     /* compute_weapon_dir */
+};
+
+
+
+// copied into AltarOfSin
+const OnFireContext FireDemon::onFireContext =
+{ /** OnFireContext **/
+  1, /* fires */
+  6, /* heat */
+  True, /* deadBurns */
+};
+
+
+
+const SwapProtectContext FireDemon::swapProtectContext =
+{ /** SwapProtectContext **/
+  9, /* swapResistance */
+};

@@ -1,0 +1,233 @@
+/* 
+ * XEvil(TM) Copyright (C) 1994,2000 Steve Hardt and Michael Judge
+ * http://www.xevil.com
+ * satan@xevil.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program, the file "gpl.txt"; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA, or visit http://www.gnu.org.
+ */
+
+
+#if X11
+#include "gen_xpm/chopper_boy/chopper_boy_0.xpm"
+#include "gen_xpm/chopper_boy/chopper_boy_0b.xpm"
+#include "gen_xpm/chopper_boy/chopper_boy_0c.xpm"
+#include "gen_xpm/chopper_boy/chopper_boy_0d.xpm"
+#include "gen_xpm/chopper_boy/chopper_boy_0e.xpm"
+#include "gen_xpm/chopper_boy/chopper_boy_0f.xpm"
+#include "gen_xpm/chopper_boy/chopper_boy_2.xpm"
+#include "gen_xpm/chopper_boy/chopper_boy_2b.xpm"
+#include "gen_xpm/chopper_boy/chopper_boy_2c.xpm"
+#include "gen_xpm/chopper_boy/chopper_boy_2d.xpm"
+#include "gen_xpm/chopper_boy/chopper_boy_4.xpm"
+#include "gen_xpm/chopper_boy/chopper_boy_4b.xpm"
+#include "gen_xpm/chopper_boy/chopper_boy_4c.xpm"
+#include "gen_xpm/chopper_boy/chopper_boy_4d.xpm"
+#include "gen_xpm/chopper_boy/chopper_boy_5.xpm"
+#include "gen_xpm/chopper_boy/chopper_boy_21.xpm"
+#include "gen_xpm/chopper_boy/chopper_boy_21b.xpm"
+#include "gen_xpm/chopper_boy/chopper_boy_21c.xpm"
+#include "gen_xpm/chopper_boy/chopper_boy_21d.xpm"
+#include "gen_xpm/chopper_boy/chopper_boy_22.xpm"
+#include "gen_xpm/chopper_boy/chopper_boy_22b.xpm"
+#include "gen_xpm/chopper_boy/chopper_boy_22c.xpm"
+#include "gen_xpm/chopper_boy/chopper_boy_22d.xpm"
+#include "gen_xpm/chopper_boy/chopper_boy_25.xpm"
+#endif
+
+
+
+Size ChopperBoy::get_size_max() {
+  return creatureContext.movingContext.physicalContext.sizeMax;
+}
+
+
+
+PhysicalP ChopperBoy::create(void *,WorldP w,LocatorP l,const Pos &pos) {
+  PhysicalP ret = new ChopperBoy(w,l,pos);
+  assert(ret);
+  return ret;
+}
+
+
+
+CreatureXdata ChopperBoy::creatureXdata;
+UserXdata ChopperBoy::userXdata;
+FlyingXdata ChopperBoy::flyingXdata;
+LifterXdata ChopperBoy::lifterXdata;
+
+
+
+const CreatureContext ChopperBoy::creatureContext =
+{ /** CreatureContext **/
+  0, /* crawlSpeed */
+  7, /* centerSpeed */
+  9, /* airSpeed */
+  0, /* climbSpeed */
+  7,  /* jump */
+  2,  /* acceleration */ 
+  160, /* corpseHealth */
+  
+  True, /* biological */
+  DROPLET_BLOOD, /* dropletType */
+  SoundNames::CHOP_DEATH,
+  
+  {/** MovingContext **/
+#if X11
+    "Green4",False,
+    "black",False,
+#endif
+
+#if WIN32
+    RGB(0,192,0),FALSE,
+    RGB(0,0,0),FALSE,
+#endif    
+
+    /* animMax */
+    {6,6,4,4,4,1,
+       0,
+       0,0,
+       0,
+       0,0,
+       0,
+       0,0,
+       0,
+       0,0,
+       0,
+       0,0,
+       4,4,
+       0,0,
+	   1, /* deadAnimMax */
+	},
+    
+    /* sizes */
+    {{14,20},{14,20},{12,20},{12,20},{13,20},{13,20},
+       {0,0},
+       {0,0},{0,0},
+       {0,0},
+       {0,0},{0,0},
+       {0,0},
+       {0,0},{0,0},
+       {0,0},
+       {0,0},{0,0},
+       {0,0},           /* Must be    */
+       {0,0},{0,0},     /* same size. */
+       {13,20},{13,20},
+       {0,0},{0,0},
+	   {19,9}, /* deadSize */
+	},
+
+    /* offsets */
+    {{0}},
+
+    {/* pixmapBits */
+      {CMN_ID(chopper_boy_0,IDB_HICHOPPERBOY0),
+       CMN_ID(chopper_boy_0b,IDB_HICHOPPERBOY0B),
+       CMN_ID(chopper_boy_0c,IDB_HICHOPPERBOY0C),
+       CMN_ID(chopper_boy_0d,IDB_HICHOPPERBOY0D),
+       CMN_ID(chopper_boy_0e,IDB_HICHOPPERBOY0E),
+       CMN_ID(chopper_boy_0f,IDB_HICHOPPERBOY0F)},
+      {PH_AUTO_GEN},
+      {CMN_ID(chopper_boy_2,IDB_HICHOPPERBOY2),
+       CMN_ID(chopper_boy_2b,IDB_HICHOPPERBOY2B),
+       CMN_ID(chopper_boy_2c,IDB_HICHOPPERBOY2C),
+       CMN_ID(chopper_boy_2d,IDB_HICHOPPERBOY2D)},
+      {PH_AUTO_GEN},
+      {CMN_ID(chopper_boy_4,IDB_HICHOPPERBOY4),
+       CMN_ID(chopper_boy_4b,IDB_HICHOPPERBOY4B),
+       CMN_ID(chopper_boy_4c,IDB_HICHOPPERBOY4C),
+       CMN_ID(chopper_boy_4d,IDB_HICHOPPERBOY4D)},
+      {CMN_ID(chopper_boy_5,IDB_HICHOPPERBOY5)},
+      {0},
+      {0},{0},
+      {0},
+      {0},{0},
+      {0},
+      {0},{0},
+      {0},
+      {0},{0},
+      {0},
+      {0},{0},
+      {CMN_ID(chopper_boy_21,IDB_HICHOPPERBOY21),
+       CMN_ID(chopper_boy_21b,IDB_HICHOPPERBOY21B),
+       CMN_ID(chopper_boy_21c,IDB_HICHOPPERBOY21C),
+       CMN_ID(chopper_boy_21d,IDB_HICHOPPERBOY21D)},
+      {CMN_ID(chopper_boy_22,IDB_HICHOPPERBOY22),
+       CMN_ID(chopper_boy_22b,IDB_HICHOPPERBOY22B),
+       CMN_ID(chopper_boy_22c,IDB_HICHOPPERBOY22C),
+       CMN_ID(chopper_boy_22d,IDB_HICHOPPERBOY22D)},
+      {0},{0},
+      {CMN_ID(chopper_boy_25,IDB_HICHOPPERBOY25)},
+    },
+
+    /* maskBits */
+	{{0}},
+
+    {/** PhysicalContext **/
+      100, /* health */
+      160, /* mass */
+      A_ChopperBoy, /* classId */
+      "chopper-boy", /* clas */
+
+      True, /* transmogifyTarget */
+      True, /* doppelUser */
+      True, /* potentialHuman */
+      True, /* potentialEnemy */
+      20, /* enemyWeight */
+      False, /* potentialWeapon */
+      False, /* potentialOtherItem */
+      0.0f, /* objectWorldPercent */
+      0, /* levelMaxTimes */
+      {19,20}, /* sizeMax */
+      ChopperBoy::create, /* create */
+      False, /* statsCreations */
+      False, /* statsUses */
+      True, /* statsDeaths */
+      ChopperBoy::get_stats, /* get_stats */
+      NULL, /* arg */
+      ChopperBoy::init_x, /* init_x */
+      ChopperBoy::create_from_stream, /* create_from_stream */
+    },
+
+    True, /* hiRes */    
+    0, /* offsetGenerator */
+    0, /* transformOverride */
+    True, /* useXPM */
+	True, /* invisibility */
+  }, /* MovingContext */
+}; /* CreatureContext */
+
+
+
+const UserContext ChopperBoy::userContext =
+{ /** UserContext **/
+  True, /* usesWeapons */
+  True, /* usesItems */
+};
+
+
+
+// Used by altarofsin
+const FlyingContext ChopperBoy::flyingContext =
+{ /** FlyingContext **/
+  4, /* gravTime */
+};
+
+
+
+const LifterContext ChopperBoy::lifterContext =
+{ /** LifterContext **/
+  0, /* throwSpeed, ChopperBoy can't throw */
+};

@@ -1,0 +1,281 @@
+/* 
+ * XEvil(TM) Copyright (C) 1994,2000 Steve Hardt and Michael Judge
+ * http://www.xevil.com
+ * satan@xevil.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program, the file "gpl.txt"; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA, or visit http://www.gnu.org.
+ */
+
+
+#if X11  
+#include "gen_xpm/zombie/zombie_0.xpm"
+#include "gen_xpm/zombie/zombie_0b.xpm"
+#include "gen_xpm/zombie/zombie_0c.xpm"
+#include "gen_xpm/zombie/zombie_0d.xpm"
+#include "gen_xpm/zombie/zombie_0e.xpm"
+#include "gen_xpm/zombie/zombie_0f.xpm"
+#include "gen_xpm/zombie/zombie_10.xpm"
+#include "gen_xpm/zombie/zombie_18.xpm"
+#include "gen_xpm/zombie/zombie_2.xpm"
+#include "gen_xpm/zombie/zombie_20.xpm"
+#include "gen_xpm/zombie/zombie_20c.xpm"
+#include "gen_xpm/zombie/zombie_20d.xpm"
+#include "gen_xpm/zombie/zombie_20e.xpm"
+#include "gen_xpm/zombie/zombie_20f.xpm"
+#include "gen_xpm/zombie/zombie_25.xpm"
+#include "gen_xpm/zombie/zombie_26.xpm"
+#include "gen_xpm/zombie/zombie_28.xpm"
+#include "gen_xpm/zombie/zombie_32.xpm"
+#include "gen_xpm/zombie/zombie_38.xpm"
+#include "gen_xpm/zombie/zombie_39.xpm"
+#include "gen_xpm/zombie/zombie_4.xpm"
+#include "gen_xpm/zombie/zombie_5.xpm"
+#include "gen_xpm/zombie/zombie_9.xpm"
+#endif
+
+
+
+Size Zombie::get_size_max() {
+  return creatureContext.movingContext.physicalContext.sizeMax;
+}
+
+
+
+PhysicalP Zombie::create(void *,WorldP w,LocatorP l,const Pos &pos) {
+  PhysicalP ret = new Zombie(w,l,pos);
+  assert(ret);
+  return ret;
+}
+
+
+
+CreatureXdata Zombie::creatureXdata;
+WalkingXdata Zombie::walkingXdata;
+FighterXdata Zombie::fighterXdata;
+AnimTimeXdata Zombie::animTimeXdata;
+
+  
+
+const CreatureContext Zombie::creatureContext =
+{ /** CreatureContext **/
+  3, /* crawlSpeed */
+  4, /* centerSpeed */
+  7, /* airSpeed */
+  2, /* climbSpeed */
+  7,  /* jump */
+  1,  /* acceleration */ 
+  0, /* corpseHealth */
+  
+  False, /* biological */
+  DROPLET_GREEN_BLOOD, /* dropletType */
+  SoundNames::DEATH,
+  
+  {/** MovingContext **/
+#if X11
+    "black",False,
+    "tan",True,
+#endif
+#if WIN32
+    RGB(0,0,0)/*"black"*/,FALSE,
+    RGB(128,0,0)/*"tan"*/,TRUE,
+#endif
+
+    /* animMax */
+    {6,6,1,1,1,1,
+     0,
+     0,0, 
+     1,
+     2,2,
+     0,
+     0,0, 
+     0,
+     0,0, 
+     1,
+     6,6,
+     1,1,
+     6,6,
+     1, /* deadAnimMax */
+     
+     /* Fighter attack animMax */
+     1,1,1,1,0,0,1,1,0,0,0,0,1,1,
+    },
+    
+    /* sizes */
+    {{20,28},{20,28},{15,25},{15,25},{13,32},{14,28},    
+     {0,0},
+     {0,0},{0,0},
+     {14,21},
+     {14,21},{14,21},
+     {0,0},
+     {0,0},{0,0},
+     {0,0},
+     {0,0},{0,0},
+     {15,33},          /* Must be    */
+     {15,33},{15,33},  /* same size. */
+     {13,32},{13,32},	
+     {15,33},{15,33},
+     {28,6}, /* deadSize */
+     
+     /* Fighter attack sizes */
+     {16,28}, /* center_R */
+     {16,28},	/* center_L */
+     {31,7},  /* air_R */
+     {31,7},  /* air_L */
+     {0,0}, /* r_DN */
+     {0,0}, /* r_UP */
+     {17,23}, /* dn_R */
+     {17,23}, /* dn_L */
+     {0,0}, /* l_DN */      
+     {0,0}, /* l_UP */
+     {0,0}, /* up_R */
+     {0,0}, /* up_L */
+     {11,36},  /* air_UP */
+     {7,31},  /* air_DN */
+    },
+    
+    {{0}}, /* offsets */
+    
+    /* pixmapBits */
+    {{CMN_ID(zombie_0,IDB_ZOMBIE0),CMN_ID(zombie_0b,IDB_ZOMBIE0B),
+      CMN_ID(zombie_0c,IDB_ZOMBIE0C),CMN_ID(zombie_0d,IDB_ZOMBIE0D),
+      CMN_ID(zombie_0e,IDB_ZOMBIE0E),CMN_ID(zombie_0f,IDB_ZOMBIE0F)},
+     {PH_AUTO_GEN},
+     {CMN_ID(zombie_2,IDB_ZOMBIE2)},{PH_AUTO_GEN},
+     {CMN_ID(zombie_4,IDB_ZOMBIE4)},{CMN_ID(zombie_5,IDB_ZOMBIE5)},
+     {0},
+     {0},{0},
+     {CMN_ID(zombie_9,IDB_ZOMBIE10B)},
+     {CMN_ID(zombie_10,IDB_ZOMBIE10),CMN_ID(zombie_9,IDB_ZOMBIE10B)},{PH_AUTO_GEN},
+     {0},
+     {0},{0},
+     {0},
+     {0},{0},
+     {CMN_ID(zombie_18,IDB_ZOMBIE18B)},
+     {PH_AUTO_GEN},
+     {CMN_ID(zombie_20,IDB_ZOMBIE18),CMN_ID(zombie_18,IDB_ZOMBIE18B),
+      CMN_ID(zombie_20c,IDB_ZOMBIE18C),CMN_ID(zombie_20d,IDB_ZOMBIE18D),
+      CMN_ID(zombie_20e,IDB_ZOMBIE18E),CMN_ID(zombie_20f,IDB_ZOMBIE18F)},
+     {PH_AUTO_GEN},{PH_AUTO_GEN},
+     {CMN_ID(zombie_20,IDB_ZOMBIE18),CMN_ID(zombie_18,IDB_ZOMBIE18B),
+      CMN_ID(zombie_20c,IDB_ZOMBIE18C),CMN_ID(zombie_20d,IDB_ZOMBIE18D),
+      CMN_ID(zombie_20e,IDB_ZOMBIE18E),CMN_ID(zombie_20f,IDB_ZOMBIE18F)},
+     {PH_AUTO_GEN},
+     {CMN_ID(zombie_25,IDB_ZOMBIE_DEAD)}, /* deadPixmapBits */
+
+     /* Fighter attack bitmaps */
+     {CMN_ID(zombie_26,IDB_ZOMBIE0_ATTACK)},  /* center_R */
+     {PH_AUTO_GEN},                         /* center_L */
+     {CMN_ID(zombie_28,IDB_ZOMBIE2_ATTACK)},   /* air_R */
+     {PH_AUTO_GEN},                         /* air_L */
+     {0},                                  /* r_DN */
+     {0},                                   /* r_UP */
+     {CMN_ID(zombie_32,IDB_ZOMBIE10_ATTACK)}, /* dn_R */
+     {PH_AUTO_GEN},                         /* dn_L */
+     {0},                         /* l_DN */
+     {0},                         /* l_UP */
+     {0},                         /* up_R */
+     {0},                         /* up_L */
+     {CMN_ID(zombie_38,IDB_ZOMBIE21_ATTACK)},  /* air_UP */
+     {CMN_ID(zombie_39,IDB_ZOMBIE22_ATTACK)},  /* air_DN */
+    },
+    
+    /* maskBits */
+    {{0}},
+
+    {/** PhysicalContext **/
+      400, /* health */
+      310, /* mass */
+      A_Zombie, /* classId */
+      "zombie", /* clas */
+
+      True, /* transmogifyTarget */
+      True, /* doppelUser */
+      False, /* potentialHuman */
+      True, /* potentialEnemy */
+      25, /* enemyWeight */
+      False, /* potentialWeapon */
+      False, /* potentialOtherItem */
+      0.0f, /* objectWorldPercent */
+      0, /* levelMaxTimes */
+      {31,36}, /* sizeMax */
+      Zombie::create, /* create */
+      False, /* statsCreations */
+      False, /* statsUses */
+      True, /* statsDeaths */
+      Zombie::get_stats, /* get_stats */
+      NULL, /* arg */
+      Zombie::init_x, /* init_x */
+      Zombie::create_from_stream, /* create_from_stream */
+    },
+    True, /* hiRes */
+    Fighter::offset_generator, /* offsetGenerator */
+    &Fighter::transformOverride, /* transformOverride */
+    True, /* useXPM */
+    False, /* invisibility */
+  },
+};
+
+
+
+const WalkingContext Zombie::walkingContext =
+{
+  0, /* dummy */
+};
+
+
+
+const FighterContext Zombie::fighterContext = 
+{ /** FighterContext **/
+#if X11
+  "black", /* foreground */
+  "tan", /* background */
+#endif
+#if WIN32
+  RGB(0,0,0), /* foreground */
+  RGB(128,0,0), /* background */
+#endif
+  2, /* slide */
+  6, /* jumpHorizontal */
+  6, /* jumpVertical */ 
+  35, /* damageStuck */
+  75, /* damageFree */
+
+  /* hotSpots */
+  {
+   // Moved body slam down one, so doesn't go above people.
+   {15,10},{0,0},{30,4},{0,0},{0},{0}, 
+   {0},
+   {0},{0},
+   {0},
+   {16,9},{0,0},
+   {0},
+   {0},{0},
+   {0},
+   {0},{0},
+   {0},
+   {0},{0},
+   {6,0},{3,30},
+  },
+  
+  SoundNames::HERO_ATTACK,
+};
+
+
+
+const AnimTimeContext Zombie::animTimeContext = 
+{ /** AnimTimeContext **/
+  2, /* animTime */
+};

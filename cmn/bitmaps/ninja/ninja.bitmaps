@@ -1,0 +1,302 @@
+/* 
+ * XEvil(TM) Copyright (C) 1994,2000 Steve Hardt and Michael Judge
+ * http://www.xevil.com
+ * satan@xevil.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program, the file "gpl.txt"; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA, or visit http://www.gnu.org.
+ */
+
+
+#if X11
+#include "gen_xpm/ninja/ninja_0.xpm"
+#include "gen_xpm/ninja/ninja_0b.xpm"
+#include "gen_xpm/ninja/ninja_0c.xpm"
+#include "gen_xpm/ninja/ninja_0d.xpm"
+#include "gen_xpm/ninja/ninja_0e.xpm"
+#include "gen_xpm/ninja/ninja_0f.xpm"
+#include "gen_xpm/ninja/ninja_2.xpm"
+#include "gen_xpm/ninja/ninja_2b.xpm"
+#include "gen_xpm/ninja/ninja_2c.xpm"
+#include "gen_xpm/ninja/ninja_2d.xpm"
+#include "gen_xpm/ninja/ninja_4.xpm"
+#include "gen_xpm/ninja/ninja_5.xpm"
+
+#include "gen_xpm/ninja/ninja_9.xpm"
+#include "gen_xpm/ninja/ninja_10b.xpm"
+#include "gen_xpm/ninja/ninja_10c.xpm"
+#include "gen_xpm/ninja/ninja_10d.xpm"
+#include "gen_xpm/ninja/ninja_10e.xpm"
+#include "gen_xpm/ninja/ninja_10f.xpm"
+#include "gen_xpm/ninja/ninja_18.xpm"
+#include "gen_xpm/ninja/ninja_20.xpm"
+#include "gen_xpm/ninja/ninja_20c.xpm"
+#include "gen_xpm/ninja/ninja_20d.xpm"
+#include "gen_xpm/ninja/ninja_20e.xpm"
+#include "gen_xpm/ninja/ninja_20f.xpm"
+#include "gen_xpm/ninja/ninja_22.xpm"
+#include "gen_xpm/ninja/ninja_22b.xpm"
+
+#include "gen_xpm/ninja/ninja_25.xpm"
+
+#include "gen_xpm/ninja/ninja_26.xpm"
+#include "gen_xpm/ninja/ninja_28.xpm"
+#include "gen_xpm/ninja/ninja_32.xpm"
+#include "gen_xpm/ninja/ninja_38.xpm"
+#include "gen_xpm/ninja/ninja_39.xpm"
+#endif
+
+
+
+Size Ninja::get_size_max() {
+  return creatureContext.movingContext.physicalContext.sizeMax;
+}
+
+
+
+PhysicalP Ninja::create(void *,WorldP w,LocatorP l,const Pos &pos) {
+  PhysicalP ret = new Ninja(w,l,pos);
+  assert(ret);
+  return ret;
+}
+
+
+
+CreatureXdata Ninja::creatureXdata;
+StickyXdata Ninja::stickyXdata;
+FighterXdata Ninja::fighterXdata;
+UserXdata Ninja::userXdata;
+
+
+
+const CreatureContext Ninja::creatureContext =
+{ /** CreatureContext **/
+  3, /* crawlSpeed */
+  7, /* centerSpeed */
+  14, /* airSpeed */
+  5, /* climbSpeed */
+  12,  /* jump */
+  2,  /* acceleration */ 
+  150, /* corpseHealth */
+  
+  True, /* biological */
+  DROPLET_BLOOD, /* dropletType */
+  SoundNames::NINJA_DEATH,
+  
+  {/** MovingContext **/
+#if X11
+    "black",False,
+    "orange",True,
+#endif    
+#if WIN32
+    RGB(0,0,0)/*"black"*/,FALSE,
+    RGB(255,128,0)/*"orange"*/,TRUE,
+#endif
+    
+    /* animMax */
+    {6,6,4,4,1,1,  
+     1,
+     6,6,
+     1,
+     6,6,
+     1,
+     6,6,
+     1,
+     6,6,
+     1,
+     6,6,
+     1,2,
+     6,6,
+     1, /* deadAnimMax */
+
+     /* Fighter attack animMax */
+     1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+	},
+    		   
+    /* sizes */
+    {{16,28},{16,28},{18,18},{18,18},{14,30},{14,28},
+     {11,31},
+     {11,31},{11,31},
+     {31,11},
+     {31,11},{31,11},
+     {11,31},
+     {11,31},{11,31},
+     {31,11},
+     {31,11},{31,11},
+     {14,32},          /* Must be    */
+     {14,32},{14,32},  /* same size. */
+     {14,30},{14,30},
+     {14,32},{14,32},  
+     {22,6}, /* deadSize */
+
+     /* Fighter attack sizes */
+     {24,24}, /* center_R */
+     {24,24}, /* center_L */
+     {24,19}, /* air_R */
+     {24,19}, /* air_L */
+     {11,31}, /* r_DN */
+     {11,31}, /* r_UP */
+     {31,11}, /* dn_R */
+     {31,11}, /* dn_L */
+     {11,31}, /* l_DN */
+     {11,31}, /* l_UP */
+     {31,11}, /* up_R */
+     {31,11}, /* up_L */
+     {12,36}, /* air_UP */
+     {14,30}, /* air_DN */
+    },
+
+    {{0}}, /* offsets */
+
+    /* pixmapBits */
+    {{CMN_ID(ninja_0,IDB_HININJA0),CMN_ID(ninja_0b,IDB_HININJA0B),
+      CMN_ID(ninja_0c,IDB_HININJA0C),CMN_ID(ninja_0d,IDB_HININJA0D),
+      CMN_ID(ninja_0e,IDB_HININJA0E),CMN_ID(ninja_0f,IDB_HININJA0F)},
+     {PH_AUTO_GEN},
+     {CMN_ID(ninja_2,IDB_HININJA2),CMN_ID(ninja_2b,IDB_HININJA2B),
+      CMN_ID(ninja_2c,IDB_HININJA2C),CMN_ID(ninja_2d,IDB_HININJA2D)},
+     {PH_AUTO_GEN},
+     {CMN_ID(ninja_4,IDB_HININJA21)},{CMN_ID(ninja_5,IDB_HININJA5)},       
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},{PH_AUTO_GEN},
+     {CMN_ID(ninja_9,IDB_HININJA10)},
+     {CMN_ID(ninja_9,IDB_HININJA10),CMN_ID(ninja_10b,IDB_HININJA10B),
+      CMN_ID(ninja_10c,IDB_HININJA10C),CMN_ID(ninja_10d,IDB_HININJA10D),
+      CMN_ID(ninja_10e,IDB_HININJA10E),CMN_ID(ninja_10f,IDB_HININJA10F)},
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},{PH_AUTO_GEN},
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},{PH_AUTO_GEN},
+
+     {CMN_ID(ninja_18,IDB_HININJA_18B)}, // CO_climb
+     {PH_AUTO_GEN},
+     {CMN_ID(ninja_20,IDB_HININJA_18),CMN_ID(ninja_18,IDB_HININJA_18B),
+      CMN_ID(ninja_20c,IDB_HININJA_18C),CMN_ID(ninja_20d,IDB_HININJA_18D),
+      CMN_ID(ninja_20e,IDB_HININJA_18E),CMN_ID(ninja_20f,IDB_HININJA_18F)},
+     {PH_AUTO_GEN}, 
+     // CO_air_DN is not the same as CO_air, so not PH_AUTO_GEN
+     {CMN_ID(ninja_22,IDB_HININJA22),CMN_ID(ninja_22b,IDB_HININJA22B)}, 
+     {CMN_ID(ninja_20,IDB_HININJA_18),CMN_ID(ninja_18,IDB_HININJA_18B),
+      CMN_ID(ninja_20c,IDB_HININJA_18C),CMN_ID(ninja_20d,IDB_HININJA_18D),
+      CMN_ID(ninja_20e,IDB_HININJA_18E),CMN_ID(ninja_20f,IDB_HININJA_18F)},
+     {PH_AUTO_GEN},
+
+     {CMN_ID(ninja_25,IDB_HININJA_DEAD)}, /* deadPixmapBits */
+
+     /* Fighter attack bitmaps */
+     {CMN_ID(ninja_26,IDB_HININJA0_ATTACK)},  /* center_R */
+     {PH_AUTO_GEN},                           /* center_L */
+     {CMN_ID(ninja_28,IDB_HININJA2_ATTACK)},  /* air_R */
+     {PH_AUTO_GEN},                           /* air_L */
+     {PH_AUTO_GEN},                           /* r_DN */
+     {PH_AUTO_GEN},                           /* r_UP */
+     {CMN_ID(ninja_32,IDB_HININJA10_ATTACK)}, /* dn_R */
+     {PH_AUTO_GEN},                           /* dn_L */
+     {PH_AUTO_GEN},                           /* l_DN */
+     {PH_AUTO_GEN},                           /* l_UP */
+     {PH_AUTO_GEN},                           /* up_R */
+     {PH_AUTO_GEN},                           /* up_L */
+     {CMN_ID(ninja_38,IDB_HININJA21_ATTACK2)}, /* air_UP */
+     {CMN_ID(ninja_39,IDB_HININJA22_ATTACK)}, /* air_DN */
+    },
+    
+    /* maskBits */
+    {{0}},
+
+    {/** PhysicalContext **/
+      135, /* health */
+      120, /* mass */
+      A_Ninja, /* classId */
+      "ninja", /* clas */
+
+      True, /* transmogifyTarget */
+      True, /* doppelUser */
+      True, /* potentialHuman */
+      True, /* potentialEnemy */
+      50, /* enemyWeight */
+      False, /* potentialWeapon */
+      False, /* potentialOtherItem */
+      0.0f, /* objectWorldPercent */
+      0, /* levelMaxTimes */
+      {31,36}, /* sizeMax */
+      Ninja::create, /* create */
+      False, /* statsCreations */
+      False, /* statsUses */
+      True, /* statsDeaths */
+      Ninja::get_stats, /* get_stats */
+      NULL, /* arg */
+      Ninja::init_x, /* init_x */
+      Ninja::create_from_stream, /* create_from_stream */
+    },
+    True, /* hiRes */
+    Fighter::offset_generator, /* offsetGenerator */
+    &Fighter::transformOverride, /* transformOverride */
+    True, /* useXPM */
+    True, /* invisibility */
+  },
+};
+
+
+
+// Also used by AltarOfSin
+const StickyContext Ninja::stickyContext =
+{ /** StickyContext **/
+  3, /* wallCrawlSpeed */
+};
+
+
+
+const FighterContext Ninja::fighterContext =
+{ /** FighterContext **/
+#if X11
+  "black", /* foreground */
+  "orange", /* background */
+#endif
+#if WIN32
+  RGB(0,0,0)/*"black"*/, /* foreground */
+  RGB(255,128,0)/*"orange"*/, /* background */
+#endif
+  3, /* slide */
+  11, /* jumpHorizontal */
+  12, /* jumpVertical */ 
+  25, /* damageStuck */
+  50, /* damageFree */
+
+  /* hotSpots */
+  {// jump kick,13 is actually below the foot. 
+   {23,11},{0,0},{23,13},{0,0},{0},{0}, 
+   {0},
+   {0,0},{0,0},
+   {0},
+   {30,3},{0,0},
+   {0},
+   {0,0},{0,0},
+   {0},
+   {0,0},{0,0},
+   {0},
+   {0},{0},
+   {8,0},{7,29},
+  },
+  SoundNames::NINJA_ATTACK,
+};
+
+
+
+const UserContext Ninja::userContext =
+{ /** UserContext **/
+  True, /* usesWeapons */
+  True, /* usesItems */
+};

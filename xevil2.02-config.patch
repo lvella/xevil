@@ -1,0 +1,12 @@
+diff -uNr orig/config.mk fixed/config.mk
+--- orig/config.mk	Tue Mar  2 16:33:04 1999
++++ fixed/config.mk	Fri Mar  5 11:35:14 1999
+@@ -23,7 +23,7 @@
+ # You can add -DNDEBUG to speed up a release build by removing the assert() 
+ # calls.  But, on a really obscure Linux machine, this caused Xlib to blow up 
+ # internally, so you do so at your own risk.
+-DEBUG_OPT   =   -O #-DNDEBUG
++DEBUG_OPT   =   $(RPM_OPT_FLAGS) #-DNDEBUG
+ 
+ LINK_OPT    =	
+ 

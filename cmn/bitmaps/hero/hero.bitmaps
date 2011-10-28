@@ -1,0 +1,301 @@
+/* 
+ * XEvil(TM) Copyright (C) 1994,2000 Steve Hardt and Michael Judge
+ * http://www.xevil.com
+ * satan@xevil.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program, the file "gpl.txt"; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA, or visit http://www.gnu.org.
+ */
+
+
+#if X11  
+#include "gen_xpm/hero/hero_0.xpm"
+#include "gen_xpm/hero/hero_0b.xpm"
+#include "gen_xpm/hero/hero_0c.xpm"
+#include "gen_xpm/hero/hero_0d.xpm"
+#include "gen_xpm/hero/hero_0e.xpm"
+#include "gen_xpm/hero/hero_0f.xpm"
+#include "gen_xpm/hero/hero_10.xpm"
+#include "gen_xpm/hero/hero_18.xpm"
+#include "gen_xpm/hero/hero_2.xpm"
+#include "gen_xpm/hero/hero_20.xpm"
+#include "gen_xpm/hero/hero_20c.xpm"
+#include "gen_xpm/hero/hero_20d.xpm"
+#include "gen_xpm/hero/hero_20e.xpm"
+#include "gen_xpm/hero/hero_20f.xpm"
+#include "gen_xpm/hero/hero_25.xpm"
+#include "gen_xpm/hero/hero_26.xpm"
+#include "gen_xpm/hero/hero_28.xpm"
+#include "gen_xpm/hero/hero_32.xpm"
+#include "gen_xpm/hero/hero_38.xpm"
+#include "gen_xpm/hero/hero_39.xpm"
+#include "gen_xpm/hero/hero_4.xpm"
+#include "gen_xpm/hero/hero_5.xpm"
+#include "gen_xpm/hero/hero_9.xpm"
+#endif
+
+
+
+Size Hero::get_size_max() {
+  return creatureContext.movingContext.physicalContext.sizeMax;
+}
+
+
+
+PhysicalP Hero::create(void *,WorldP w,LocatorP l,const Pos &pos) {
+  PhysicalP ret = new Hero(w,l,pos);
+  assert(ret);
+  return ret;
+}
+
+
+
+CreatureXdata Hero::creatureXdata;
+WalkingXdata Hero::walkingXdata;
+FighterXdata Hero::fighterXdata;
+UserXdata Hero::userXdata;
+HealingXdata Hero::healingXdata;
+LifterXdata Hero::lifterXdata;
+
+  
+
+const CreatureContext Hero::creatureContext =
+{ /** CreatureContext **/
+  3, /* crawlSpeed */
+  6, /* centerSpeed */
+  13, /* airSpeed */
+  4, /* climbSpeed */
+  10,  /* jump */
+  2,  /* acceleration */ 
+  200, /* corpseHealth */
+  
+  True, /* biological */
+  DROPLET_BLOOD, /* dropletType */
+  SoundNames::DEATH,
+  
+  {/** MovingContext **/
+#if X11
+    "black",False,
+    "tan",True,
+#endif
+#if WIN32
+    RGB(0,0,0)/*"black"*/,FALSE,
+    RGB(128,0,0)/*"tan"*/,TRUE,
+#endif
+
+    /* animMax */
+    {6,6,1,1,1,1,
+     1,
+     6,6,
+     1,
+     2,2,
+     1,
+     6,6,
+     1,
+     6,6,
+     1,
+     6,6,
+     1,1,
+     6,6,
+     1, /* deadAnimMax */
+     
+     /* Fighter attack animMax */
+     1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    },
+    
+    /* sizes */
+    {{16,28},{16,28},{15,25},{15,25},{13,32},{14,28},    
+     {28,14},
+     {28,16},{28,16},
+     {14,21}, 
+     {14,21},{14,21},
+     {28,14},
+     {28,16},{28,16},
+     {14,28},
+     {16,28},{16,28},
+     {15,33},          /* Must be    */
+     {15,33},{15,33},  /* same size. */
+     {13,32},{13,32},	
+     {15,33},{15,33},
+     {28,6}, /* deadSize */
+     
+     /* Fighter attack sizes */
+     {17,28}, /* center_R */
+     {17,28},	/* center_L */
+     {31,7},  /* air_R */
+     {31,7},  /* air_L */
+     {28,17}, /* r_DN */
+     {28,17}, /* r_UP */
+     {18,23}, /* dn_R */
+     {18,23}, /* dn_L */
+     {28,17}, /* l_DN */
+     {28,17}, /* l_UP */
+     {17,28}, /* up_R */
+     {17,28}, /* up_L */
+     {11,36},  /* air_UP */
+     {7,31},  /* air_DN */
+    },
+    
+    {{0}}, /* offsets */
+    
+    /* pixmapBits */
+    {{CMN_ID(hero_0,IDB_HHERO0),CMN_ID(hero_0b,IDB_HHERO0B),
+      CMN_ID(hero_0c,IDB_HHERO0C),CMN_ID(hero_0d,IDB_HHERO0D),
+      CMN_ID(hero_0e,IDB_HHERO0E),CMN_ID(hero_0f,IDB_HHERO0F)},
+     {PH_AUTO_GEN},
+     {CMN_ID(hero_2,IDB_HHERO2)},{PH_AUTO_GEN},
+     {CMN_ID(hero_4,IDB_HHERO4)},{CMN_ID(hero_5,IDB_HHERO5)},
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},{PH_AUTO_GEN},
+     {CMN_ID(hero_9,IDB_HERO10B)},
+     {CMN_ID(hero_10,IDB_HERO10),CMN_ID(hero_9,IDB_HERO10B)},{PH_AUTO_GEN},
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},{PH_AUTO_GEN},
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},{PH_AUTO_GEN},
+     {CMN_ID(hero_18,IDB_HHERO18B)},
+     {PH_AUTO_GEN},
+     {CMN_ID(hero_20,IDB_HHERO18),CMN_ID(hero_18,IDB_HHERO18B),
+      CMN_ID(hero_20c,IDB_HHERO18C),CMN_ID(hero_20d,IDB_HHERO18D),
+      CMN_ID(hero_20e,IDB_HHERO18E),CMN_ID(hero_20f,IDB_HHERO18F)},
+     {PH_AUTO_GEN},{PH_AUTO_GEN},
+     {CMN_ID(hero_20,IDB_HHERO18),CMN_ID(hero_18,IDB_HHERO18B),
+      CMN_ID(hero_20c,IDB_HHERO18C),CMN_ID(hero_20d,IDB_HHERO18D),
+      CMN_ID(hero_20e,IDB_HHERO18E),CMN_ID(hero_20f,IDB_HHERO18F)},
+     {PH_AUTO_GEN},
+     {CMN_ID(hero_25,IDB_HHERO_DEAD)}, /* deadPixmapBits */
+
+     /* Fighter attack bitmaps */
+     {CMN_ID(hero_26,IDB_HHERO0B_ATTACK)},  /* center_R */
+     {PH_AUTO_GEN},                         /* center_L */
+     {CMN_ID(hero_28,IDB_HHERO2_ATTACK)},   /* air_R */
+     {PH_AUTO_GEN},                         /* air_L */
+     {PH_AUTO_GEN},                         /* r_DN */
+     {PH_AUTO_GEN},                         /* r_UP */
+     {CMN_ID(hero_32,IDB_HHERO10B_ATTACK)}, /* dn_R */
+     {PH_AUTO_GEN},                         /* dn_L */
+     {PH_AUTO_GEN},                         /* l_DN */
+     {PH_AUTO_GEN},                         /* l_UP */
+     {PH_AUTO_GEN},                         /* up_R */
+     {PH_AUTO_GEN},                         /* up_L */
+     {CMN_ID(hero_38,IDB_HHERO21_ATTACK2)},  /* air_UP */
+     {CMN_ID(hero_39,IDB_HHERO22_ATTACK)},  /* air_DN */
+    },
+    
+    /* maskBits */
+    {{0}},
+
+    {/** PhysicalContext **/
+      200, /* health */
+      210, /* mass */
+      A_Hero, /* classId */
+      "hero", /* clas */
+
+      True, /* transmogifyTarget */
+      True, /* doppelUser */
+      True, /* potentialHuman */
+      True, /* potentialEnemy */
+      50, /* enemyWeight */
+      False, /* potentialWeapon */
+      False, /* potentialOtherItem */
+      0.0f, /* objectWorldPercent */
+      0, /* levelMaxTimes */
+      {31,36}, /* sizeMax */
+      Hero::create, /* create */
+      False, /* statsCreations */
+      False, /* statsUses */
+      True, /* statsDeaths */
+      Hero::get_stats, /* get_stats */
+      NULL, /* arg */
+      Hero::init_x, /* init_x */
+      Hero::create_from_stream, /* create_from_stream */
+    },
+    True, /* hiRes */
+    Fighter::offset_generator, /* offsetGenerator */
+    &Fighter::uprightTransformOverride, /* transformOverride */
+    True, /* useXPM */
+    True, /* invisibility */
+  },
+};
+
+
+
+const WalkingContext Hero::walkingContext =
+{
+  0, /* dummy */
+};
+
+
+
+const FighterContext Hero::fighterContext = 
+{ /** FighterContext **/
+#if X11
+  "black", /* foreground */
+  "tan", /* background */
+#endif
+#if WIN32
+  RGB(0,0,0), /* foreground */
+  RGB(128,0,0), /* background */
+#endif
+  3, /* slide */
+  9, /* jumpHorizontal */
+  9, /* jumpVertical */ 
+  25, /* damageStuck */
+  50, /* damageFree */
+
+  /* hotSpots */
+  {// Moved standing punch down one so can hit chopperboy
+   // Moved body slam down one, so doesn't go above people.
+   {16,8},{0,0},{30,4},{0,0},{0},{0}, 
+   {0},
+   {0},{0},
+   {0},
+   {17,7},{0,0},
+   {0},
+   {0},{0},
+   {0},
+   {0},{0},
+   {0},
+   {0},{0},
+   {6,0},{3,30},
+  },
+  
+  SoundNames::HERO_ATTACK,
+};
+
+
+
+const UserContext Hero::userContext =
+{ /** UserContext **/
+  True, /* usesWeapons */
+  True, /* usesItems */
+};
+
+
+
+// AltarOfSin uses same values.
+const HealingContext Hero::healingContext =
+{ /** HealingContext **/
+	2.0f,/* multiplier */
+	1,/* unit */
+	4,/* time */
+};
+
+
+
+const LifterContext Hero::lifterContext =
+{ /** LifterContext **/
+  8, /* throwSpeed */
+};

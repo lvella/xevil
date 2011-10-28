@@ -1,0 +1,129 @@
+/* 
+ * XEvil(TM) Copyright (C) 1994,2000 Steve Hardt and Michael Judge
+ * http://www.xevil.com
+ * satan@xevil.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program, the file "gpl.txt"; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA, or visit http://www.gnu.org.
+ */
+
+#if X11
+#include "gen_xpm/doppelganger/doppelganger_4.xpm"
+#include "gen_xpm/doppelganger/doppelganger_4b.xpm"
+#endif
+
+
+
+Size Doppel::get_size_max() {
+  return context.itemContext.fallingContext.movingContext.sizes[CO_air];
+}  
+
+
+
+PhysicalP Doppel::create(void *,WorldP w,LocatorP l,const Pos &pos) {
+  PhysicalP ret = new Doppel(w,l,pos);
+  assert(ret);
+  return ret;
+}
+
+
+
+static void doppel_get_item_info(Boolean &isItem,Boolean &isWeapon,
+                                 CMN_BITS_ID &iconId) {
+  isItem = True;
+  isWeapon = False;
+#if WIN32
+  iconId = IDB_DOPPEL;
+#endif
+#if X11
+  iconId = 0;
+#endif
+}
+
+
+
+AutoUseXdata Doppel::xdata;
+
+
+
+const AutoUseContext Doppel::context = 
+{ /** AutoUseContext **/
+  True, /* humansOnly */
+  
+  {/** ItemContext **/
+    True, /* persists */
+    900, /* coolness */
+    SoundNames::DOPPEL_USE,/*use sound*/
+    { /** FallingContext **/
+      {/** MovingContext **/
+#if X11
+        "purple",False,
+        "cyan",True,
+#endif	
+#if WIN32
+        RGB(128,0,128)/*"purple"*/,FALSE,
+        RGB(0,255,255)/*"cyan"*/,TRUE,
+#endif
+        /* animMax */
+        {0,0,0,0,2},
+        
+        /* sizes */
+        {{0,0},{0,0},{0,0},{0,0},{11,12},},
+        
+        /* offsets */
+        {{0}},
+      
+        /* pixmapBits */
+        {{0},{0},{0},{0},{CMN_ID(doppelganger_4,IDB_DOPPEL),
+                          CMN_ID(doppelganger_4b,IDB_DOPPEL2)},},
+      
+        /* maskBits */
+        {{0}},
+        
+        { /** PhysicalContext **/
+          10, /* health */
+          10, /* mass */
+          A_Doppel, /* classId */
+          "doppelganger", /* clas */
+          
+          False, /* transmogifyTarget */
+          False, /* doppelUser */
+          False, /* potentialHuman */
+          False, /* potentialEnemy */
+          0, /* enemyWeight */
+          False, /* potentialWeapon */
+          True, /* potentialOtherItem */
+          .00002f, /* objectWorldPercent */
+          4, /* levelMaxTimes */
+          {11,12}, /* sizeMax */
+          Doppel::create, /* create */
+          False, /* statsCreations */
+          True, /* statsUses */
+          False, /* statsDeaths */
+          Doppel::get_stats, /* get_stats */
+          NULL, /* arg */
+          Doppel::init_x, /* init_x */
+          Doppel::create_from_stream, /* create_from_stream */
+          doppel_get_item_info, /* get_item_info */
+        },
+        True, /* hiRes */
+        0, /* offsetGenerator */
+        0, /* transformOverride */
+        True, /* useXPM */
+      },
+    },
+  },
+};
+  

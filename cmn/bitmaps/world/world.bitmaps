@@ -1,0 +1,416 @@
+/* 
+ * XEvil(TM) Copyright (C) 1994,2000 Steve Hardt and Michael Judge
+ * http://www.xevil.com
+ * satan@xevil.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program, the file "gpl.txt"; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA, or visit http://www.gnu.org.
+ */
+
+// "world.bitmaps"
+// NOTE:  WSQUARE_WIDTH and WSQUARE_HEIGHT in utils.h.
+
+#include "utils.h"
+#include "world.h"
+
+#if X11
+#include "gen_xpm/world/block_0.xpm"
+#include "gen_xpm/world/block_1.xpm"
+#include "gen_xpm/world/block_2.xpm"
+#include "gen_xpm/world/block_3.xpm"
+#include "gen_xpm/world/block_4.xpm"
+#include "gen_xpm/world/block_5.xpm"
+#include "gen_xpm/world/block_6.xpm"
+#include "gen_xpm/world/block_7.xpm"
+#include "gen_xpm/world/block_8.xpm"
+#include "gen_xpm/world/block_9.xpm"
+#include "gen_xpm/world/block_10.xpm"
+#include "gen_xpm/world/block_11.xpm"
+#include "gen_xpm/world/block_12.xpm"
+#include "gen_xpm/world/block_13.xpm"
+#include "gen_xpm/world/block_14.xpm"
+#include "gen_xpm/world/block_15.xpm"
+#include "gen_xpm/world/block_16.xpm"
+#include "gen_xpm/world/block_17.xpm"
+#include "gen_xpm/world/block_18.xpm"
+#include "gen_xpm/world/block_19.xpm"
+#include "gen_xpm/world/block_20.xpm"
+#include "gen_xpm/world/block_21.xpm"
+#include "gen_xpm/world/block_22.xpm"
+#include "gen_xpm/world/block_23.xpm"
+#include "gen_xpm/world/block_24.xpm"
+
+#include "gen_xpm/world/background_0.xpm"
+#include "gen_xpm/world/background_1.xpm"
+#include "gen_xpm/world/background_2.xpm"
+#include "gen_xpm/world/background_3.xpm"
+#include "gen_xpm/world/background_4.xpm"
+#include "gen_xpm/world/background_5.xpm"
+#include "gen_xpm/world/background_6.xpm"
+#include "gen_xpm/world/background_7.xpm"
+#include "gen_xpm/world/background_8.xpm"
+#include "gen_xpm/world/background_9.xpm"
+#include "gen_xpm/world/background_10.xpm"
+#include "gen_xpm/world/background_11.xpm"
+#include "gen_xpm/world/background_12.xpm"
+#include "gen_xpm/world/background_13.xpm"
+#include "gen_xpm/world/background_14.xpm"
+
+#include "gen_xpm/world/outside_0.xpm"
+#include "gen_xpm/world/outside_1.xpm"
+#include "gen_xpm/world/outside_2.xpm"
+#include "gen_xpm/world/outside_3.xpm"
+#include "gen_xpm/world/outside_4.xpm"
+#include "gen_xpm/world/outside_5.xpm"
+#include "gen_xpm/world/outside_6.xpm"
+
+#include "gen_xpm/world/door_0.xpm"
+#include "gen_xpm/world/door_1.xpm"
+#include "gen_xpm/world/door_2.xpm"
+#include "gen_xpm/world/door_3.xpm"
+#include "gen_xpm/world/door_4.xpm"
+#include "gen_xpm/world/door_5.xpm"
+#include "gen_xpm/world/door_6.xpm"
+#include "gen_xpm/world/door_7.xpm"
+#include "gen_xpm/world/door_8.xpm"
+#include "gen_xpm/world/door_9.xpm"
+#include "gen_xpm/world/door_10.xpm"
+#include "gen_xpm/world/door_11.xpm"
+
+#include "gen_xpm/world/mover_square_0.xpm"
+#include "gen_xpm/world/mover_square_1.xpm"
+#include "gen_xpm/world/mover_square_2.xpm"
+#include "gen_xpm/world/mover_square_3.xpm"
+#include "gen_xpm/world/mover_square_4.xpm"
+#include "gen_xpm/world/mover_square_5.xpm"
+#include "gen_xpm/world/mover_square_6.xpm"
+#include "gen_xpm/world/mover_square_7.xpm"
+#include "gen_xpm/world/mover_square_8.xpm"
+#include "gen_xpm/world/mover_square_9.xpm"
+
+#include "gen_xpm/world/mover_0.xpm"
+#include "gen_xpm/world/mover_1.xpm"
+#include "gen_xpm/world/mover_2.xpm"
+#include "gen_xpm/world/mover_3.xpm"
+#include "gen_xpm/world/mover_4.xpm"
+
+#include "gen_xpm/world/poster_0.xpm"
+#include "gen_xpm/world/poster_1.xpm"
+#include "gen_xpm/world/poster_2.xpm"
+#include "gen_xpm/world/poster_3.xpm"
+#include "gen_xpm/world/poster_4.xpm"
+#include "gen_xpm/world/poster_5.xpm"
+#include "gen_xpm/world/poster_6.xpm"
+#include "gen_xpm/world/poster_7.xpm"
+#include "gen_xpm/world/poster_8.xpm"
+#include "gen_xpm/world/poster_9.xpm"
+#include "gen_xpm/world/poster_10.xpm"
+#include "gen_xpm/world/poster_11.xpm"
+#include "gen_xpm/world/poster_12.xpm"
+#include "gen_xpm/world/poster_13.xpm"
+#endif
+
+
+
+// background color defined in utils.h Xvars_BACKGROUND
+
+
+
+// Wempty and Woutside aren't directly used on Windows.  But they still 
+// need to be in the Windows build so they can generate XPM files for UNIX.
+static CMN_BITS_ID World_blocksBits[W_ALL_BLOCKS_NUM] = {
+  CMN_ID(block_0,IDB_EMPTY),
+  CMN_ID(block_1,IDB_HIWALL2),
+  CMN_ID(block_2,IDB_HILADDER2),
+  CMN_ID(block_3,IDB_OUTSIDE), 
+  CMN_ID(block_4,IDB_HISQUANCH),
+  CMN_ID(block_5,IDB_HIUPDOWN),
+  CMN_ID(block_6,IDB_HITEXTSQUARE), 
+  CMN_ID(block_7,IDB_HIERBLOK2),
+  CMN_ID(block_8,IDB_HILADDER),
+  CMN_ID(block_9,IDB_HIERUPDOWN),
+  CMN_ID(block_10,IDB_MD1WALL),
+  CMN_ID(block_11,IDB_MD1LADDER),
+  CMN_ID(block_12,IDB_MD1UPDOWN),
+  CMN_ID(block_13,IDB_MD2WALL),
+  CMN_ID(block_14,IDB_MD2LADDER),
+  CMN_ID(block_15,IDB_MD2UPDOWN),
+  CMN_ID(block_16,IDB_MD3WALL),
+  CMN_ID(block_17,IDB_MD3LADDER),
+  CMN_ID(block_18,IDB_MD3UPDOWN),
+  CMN_ID(block_19,IDB_MD4WALL),
+  CMN_ID(block_20,IDB_MD4LADDER),
+  CMN_ID(block_21,IDB_MD4UPDOWN),
+  CMN_ID(block_22,IDB_MD5WALL),
+  CMN_ID(block_23,IDB_MD5LADDER),
+  CMN_ID(block_24,IDB_MD5UPDOWN),
+
+};
+CMN_BITS_ID *World::blocksBits = World_blocksBits;
+
+
+
+static BitmapSpec World_backgrounds[W_ALL_BACKGROUNDS_NUM] = {
+  {CMN_ID(background_0,IDB_BGHELL1),{100,100}},
+  {CMN_ID(background_1,IDB_BGHELL2),{100,100}},
+  {CMN_ID(background_2,IDB_BGINDUSTRIAL),{100,100}},
+  {CMN_ID(background_3,IDB_BGIND1),{100,100}},
+  {CMN_ID(background_4,IDB_BGALIENNU),{100,100}},
+  {CMN_ID(background_5,IDB_HIER1),{100,100}},
+  {CMN_ID(background_6,IDB_MD1BACKGROUND),{64,64}},
+  {CMN_ID(background_7,IDB_MD2BACKGROUND),{94,94}},
+  {CMN_ID(background_8,IDB_MD3BACKGROUND),{128,128}},
+  {CMN_ID(background_9,IDB_MD4BACKGROUND),{128,128}},
+  {CMN_ID(background_10,IDB_FWBACKGROUND1),{128,128}},
+  {CMN_ID(background_11,IDB_FWBACKGROUND2),{128,128}},
+  {CMN_ID(background_12,IDB_FWBACKGROUND3),{128,128}},
+  {CMN_ID(background_13,IDB_FWBACKGROUND4),{128,128}},
+  {CMN_ID(background_14,IDB_MD5BACKGROUND),{96,96}},
+};
+BitmapSpec *World::backgrounds = World_backgrounds;
+
+
+
+static BitmapSpec World_outsides[W_ALL_OUTSIDES_NUM] = {
+  {CMN_ID(outside_0,IDB_HIOUTSIDE),{100,100}},
+  {CMN_ID(outside_1,IDB_HIOUTSIDE1),{100,100}},
+  {CMN_ID(outside_2,IDB_HIOUTSIDE2),{100,100}},
+  {CMN_ID(outside_3,IDB_MD1OUTSIDE),{128,128}},
+  {CMN_ID(outside_4,IDB_MD3OUTSIDE),{128,128}},
+  {CMN_ID(outside_5,IDB_MD4OUTSIDE),{96,96}},
+  {CMN_ID(outside_6,IDB_MD5OUTSIDE),{64,64}},
+};
+BitmapSpec *World::outsides = World_outsides;
+
+
+
+static CMN_BITS_ID World_doorPixmapBits[W_ALL_DOORS_NUM] = {
+  CMN_ID(door_0,IDB_HIDOOR1),
+  CMN_ID(door_1,IDB_HIDOOR2),
+  CMN_ID(door_2,IDB_MD1DOOR1),
+  CMN_ID(door_3,IDB_MD1DOOR2),
+  CMN_ID(door_4,IDB_MD2DOOR1),
+  CMN_ID(door_5,IDB_MD2DOOR2),
+  CMN_ID(door_6,IDB_MD3DOOR1),
+  CMN_ID(door_7,IDB_MD3DOOR2),
+  CMN_ID(door_8,IDB_MD4DOOR1),
+  CMN_ID(door_9,IDB_MD4DOOR2),
+  CMN_ID(door_10,IDB_MD5DOOR1),
+  CMN_ID(door_11,IDB_MD5DOOR2),
+};
+CMN_BITS_ID *World::doorPixmapBits = World_doorPixmapBits;
+
+
+
+static CMN_BITS_ID World_moverSquarePixmapBits[W_ALL_MOVER_SQUARES_NUM] = {
+  CMN_ID(mover_square_0,IDB_HORIZMOVERSQUARE),
+  CMN_ID(mover_square_1,IDB_VERTMOVERSQUARE),
+  CMN_ID(mover_square_2,IDB_MD1HORIZMOVERSQUARE),
+  CMN_ID(mover_square_3,IDB_MD1VERTMOVERSQUARE),
+  CMN_ID(mover_square_4,IDB_MD2HORIZMOVERSQUARE),
+  CMN_ID(mover_square_5,IDB_MD2VERTMOVERSQUARE),
+  CMN_ID(mover_square_6,IDB_MD3HORIZMOVERSQUARE),
+  CMN_ID(mover_square_7,IDB_MD3VERTMOVERSQUARE),
+  CMN_ID(mover_square_8,IDB_MD4HORIZMOVERSQUARE),
+  CMN_ID(mover_square_9,IDB_MD4VERTMOVERSQUARE),
+};
+CMN_BITS_ID *World::moverSquarePixmapBits = World_moverSquarePixmapBits;
+
+
+
+static CMN_BITS_ID World_moverPixmapBits[W_ALL_MOVERS_NUM] = {
+  CMN_ID(mover_0,IDB_MOVER),
+  CMN_ID(mover_1,IDB_MD1MOVER),
+  CMN_ID(mover_2,IDB_MD2MOVER),
+  CMN_ID(mover_3,IDB_MD3MOVER),
+  CMN_ID(mover_4,IDB_MD4MOVER),
+};
+CMN_BITS_ID *World::moverPixmapBits = World_moverPixmapBits;
+
+
+
+// Must be multiples of 32, for absolutely no good reason.  hardts
+static BitmapSpec World_posterPixmapBits[W_ALL_POSTERS_NUM] = {
+  {CMN_ID(poster_0,IDB_SQUANCH_BIG),{160,96}},
+  {CMN_ID(poster_1,IDB_KILL_PARENTS),{64,64}},
+  {CMN_ID(poster_2,IDB_PENT),{32,32}},
+  {CMN_ID(poster_3,IDB_DROP_SCHOOL),{96,96}},
+  {CMN_ID(poster_4,IDB_WINNERS_DRUGS),{64,32}},
+  {CMN_ID(poster_5,IDB_SKULL),{64,64}},
+  {CMN_ID(poster_6,IDB_PYRAMID),{64,64}},
+  {CMN_ID(poster_7,IDB_VEGETABLES),{64,64}},
+  {CMN_ID(poster_8,IDB_NICE_DAY),{32,32}},
+  {CMN_ID(poster_9,IDB_BEAT_DOG),{128,32}},
+  {CMN_ID(poster_10,IDB_STRANGLE_CAT),{96,96}},
+  {CMN_ID(poster_11,IDB_TAKE_CANDY),{128,64}},
+  {CMN_ID(poster_12,IDB_BCEAGLE),{32,32}},
+  // The XEvil title screen, must be last.
+  {CMN_ID(poster_13,IDB_TITLE),{352,160}},  
+};
+BitmapSpec *World::posters = World_posterPixmapBits;
+
+
+
+// Although these values are not used directly by X11, we still need them
+// for acting as a server.
+static int default_backgroundIndices[] = {0,1,2,3,4,10,11,12,13};
+static int default_outsideIndices[] = {0,1,2};
+static int default_posterIndices[] = {0,1,2,3,4,5,6,7,8,9,10,11,12};
+
+static int mayan_backgroundIndices[] = {5};
+// use default outsideIndices
+
+static int md1_backgroundIndices[] = {6};
+static int md1_outsideIndices[] = {3};
+
+static int md2_backgroundIndices[] = {7};
+static int md2_outsideIndices[] = {4};  // reuse md3's outside
+
+static int md3_backgroundIndices[] = {8};
+static int md3_outsideIndices[] = {4};
+
+static int md4_backgroundIndices[] = {9};
+static int md4_outsideIndices[] = {5};
+
+static int md5_backgroundIndices[] = {14};
+static int md5_outsideIndices[] = {6};
+
+
+static Theme World_themes[W_THEME_NUM] = {
+  /** default theme */
+  {
+    // Indices 0-6 MUST be here, in order, for the default theme.
+    // Necessary to generate XPM files for UNIX correctly.
+    {0,1,2,3,4,5,6}, /* blockIndices */
+    default_backgroundIndices, 
+    9, /* backgroundsNum */
+    default_outsideIndices, 
+    3, /* outsidesNum */
+    // doorBase MUST be 0 for default theme.
+    0, /* doorBase */
+    // moverSquareBase MUST be 0 for default theme.
+    0, /* moverSquareBase */
+    // moverIndex MUST be 0 for default theme.
+    0, /* moverIndex */
+    default_posterIndices, /* posterIndices */
+    14, /* postersNum */
+  },
+
+  /** Mayan **/
+  {
+    {0,7,8,3,4,9,6}, /* blockIndices */
+    mayan_backgroundIndices,
+    1, /* backgroundsNum */
+    default_outsideIndices,
+    3, /* outsidesNum */
+    0, /* doorBase */
+    0, /* moverSquareBase */
+    0, /* moverIndex */
+    default_posterIndices, /* posterIndices */
+    14, /* postersNum */
+  },
+
+  /** MD 1 **/
+  {
+    {0,10,11,3,4,12,6}, /* blockIndices */
+    md1_backgroundIndices, 
+    1, /* backgroundsNum */
+    md1_outsideIndices, 
+    1, /* outsidesNum */
+    2, /* doorBase */
+    2, /* moverSquareBase */
+    1, /* moverIndex */
+    default_posterIndices, /* posterIndices */
+    14, /* postersNum */
+  },
+
+  /** MD 2 **/
+  {
+    {0,13,14,3,4,15,6}, /* blockIndices */
+    md2_backgroundIndices, 
+    1, /* backgroundsNum */
+    md2_outsideIndices, 
+    1, /* outsidesNum */
+    4, /* doorBase */
+    4, /* moverSquareBase */
+    2, /* moverIndex */
+    default_posterIndices, /* posterIndices */
+    14, /* postersNum */
+  },
+
+  /** MD 3 **/
+  {
+    {0,16,17,3,4,18,6}, /* blockIndices */
+    md3_backgroundIndices, 
+    1, /* backgroundsNum */
+    md3_outsideIndices, 
+    1, /* outsidesNum */
+    6, /* doorBase */
+    6, /* moverSquareBase */
+    3, /* moverIndex */
+    default_posterIndices, /* posterIndices */
+    14, /* postersNum */
+  },
+
+  /** MD 4 **/
+  {
+    {0,19,20,3,4,21,6}, /* blockIndices */
+    md4_backgroundIndices, 
+    1, /* backgroundsNum */
+    md4_outsideIndices, 
+    1, /* outsidesNum */
+    8, /* doorBase */
+    8, /* moverSquareBase */
+    4, /* moverIndex */
+    default_posterIndices, /* posterIndices */
+    14, /* postersNum */
+  },
+
+  /** MD 5 **/
+  {
+    {0,22,23,3,4,24,6}, /* blockIndices */
+    md5_backgroundIndices, 
+    1, /* backgroundsNum */
+    md5_outsideIndices, 
+    1, /* outsidesNum */
+    10, /* doorBase */
+    8, /* moverSquareBase */   // Uses MD4
+    4, /* moverIndex */
+    default_posterIndices, /* posterIndices */
+    14, /* postersNum */
+  },
+};
+
+
+
+// Also in phys_mover.bitmaps, PhysMover::context.sizeMax
+#define W_MOVER_SPEED 5
+#define W_MOVER_PAUSE_TIME 30
+
+
+// Doesn't change, always two wsquares.
+const Size World::moverSize = {(2 * WSQUARE_WIDTH),WSQUARE_HEIGHT}; 
+
+
+
+Boolean World::blockUseTransparent[W_BLOCKS_NUM] = {
+  False,  // Wempty
+  False,  // Wwall
+  True,   // Wladder
+  False,  // Woutside
+  False,  // Wsquanch
+  False,  // WupDown
+  False,  // WtextSquare
+};

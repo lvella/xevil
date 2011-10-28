@@ -1,0 +1,30 @@
+XEvil.right_center:                     F31
+
+XEvil.right_right:                      Right
+
+XEvil.right_down_right:                 F35
+
+XEvil.right_down:                       Down
+
+XEvil.right_down_left:                  F33
+
+XEvil.right_left:                       Left
+
+XEvil.right_up_left:                    F27
+
+XEvil.right_up:                         Up
+
+XEvil.right_up_right:                   F29
+
+XEvil.right_weapon_use:                 F21
+
+XEvil.right_weapon_change:                F22
+
+XEvil.right_weapon_drop:              F23
+
+XEvil.right_item_use:                   F24
+
+XEvil.right_item_change:                  F25
+
+XEvil.right_item_drop:                F26
+

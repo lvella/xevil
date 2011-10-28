@@ -1,0 +1,185 @@
+/* 
+ * XEvil(TM) Copyright (C) 1994,2000 Steve Hardt and Michael Judge
+ * http://www.xevil.com
+ * satan@xevil.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program, the file "gpl.txt"; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA, or visit http://www.gnu.org.
+ */
+
+
+// transform.bitmaps
+// Specific transformations used to auto-generate bitmaps.
+// E.g. the bitmaps for a Creature walking to the left are
+// the same as those walking right, just reflected around
+// the X axis.
+
+
+// TODO: For Ninja, CO_r_DN should be like for CO_r_UP and
+// CO_l_DN should be CO_l_UP.
+
+
+// Map from base directions to all other directions.
+// {0} means the direction is a base direction.
+// {TR_NONE} means the identity transform.
+OneTransform Transform2D::transforms[CO_DIR_MAX] = {
+  {0},                              // CO_center_R
+  {1,CO_center_R,{TR_RF_X}},        // CO_center_L
+  {0},                              // CO_air_R
+  {1,CO_air_R,{TR_RF_X}},           // CO_air_L
+  {0},                              // CO_air
+  {0},                              // CO_center
+  {1,CO_dn,{TR_RT_3}},              // CO_r
+  {2,CO_dn_R,{TR_RF_X,TR_RT_3}},    // CO_r_DN  
+  {1,CO_dn_R,{TR_RT_3}},            // CO_r_UP
+  {0},                              // CO_dn
+  {0},                              // CO_dn_R 
+  {1,CO_dn_R,{TR_RF_X}},            // CO_dn_L 
+  {1,CO_dn,{TR_RT_1}},              // CO_l 
+  {1,CO_dn_R,{TR_RT_1}},            // CO_l_DN 
+  {2,CO_dn_R,{TR_RF_X,TR_RT_1}},    // CO_l_UP 
+  {2,CO_dn,{TR_RF_X,TR_RT_2}},      // CO_up 
+  {2,CO_dn_R,{TR_RF_X,TR_RT_2}},    // CO_up_R 
+  {1,CO_dn_R,{TR_RT_2}},            // CO_up_L 
+  {0},                              // CO_climb 
+  {1,CO_climb_UP,{TR_NONE}},        // CO_climb_DN 
+  {0},                              // CO_climb_UP 
+  {1,CO_air,{TR_NONE}},             // CO_air_UP 
+  {1,CO_air,{TR_NONE}},             // CO_air_DN 
+  {0},                              // CO_climb_R 
+  {1,CO_climb_R,{TR_RF_X}},         // CO_climb_L 
+  {0},                              // CO_R 
+  {2,CO_UP_R_R,{TR_RF_X,TR_RT_2}},  // CO_DN_R_R 
+  {1,CO_UP_R,{TR_RT_1}},            // CO_DN_R 
+  {1,CO_UP_R_R,{TR_RT_1}},          // CO_DN_DN_R 
+  {1,CO_R,{TR_RT_1}},               // CO_DN 
+  {2,CO_UP_R_R,{TR_RF_X,TR_RT_3}},  // CO_DN_DN_L 
+  {2,CO_UP_R,{TR_RF_X,TR_RT_3}},    // CO_DN_L 
+  {1,CO_UP_R_R,{TR_RT_2}},          // CO_DN_L_L 
+  {1,CO_R,{TR_RF_X}},               // CO_L 
+  {1,CO_UP_R_R,{TR_RF_X}},          // CO_UP_L_L 
+  {1,CO_UP_R,{TR_RF_X}},            // CO_UP_L 
+  {1,CO_UP_R_R,{TR_RT_3}},          // CO_UP_UP_L 
+  {2,CO_R,{TR_RF_X,TR_RT_1}},       // CO_UP 
+  {2,CO_UP_R_R,{TR_RF_X,TR_RT_1}},  // CO_UP_UP_R 
+  {0},                              // CO_UP_R 
+  {0},                              // CO_UP_R_R 
+};
+
+
+
+OneTransform Creature::uprightTransformOverride[CO_DIR_MAX] = {
+  {TR_USE_DEFAULT},{TR_USE_DEFAULT},{TR_USE_DEFAULT},{TR_USE_DEFAULT},{TR_USE_DEFAULT},
+  {TR_USE_DEFAULT},
+  {1,CO_center,{TR_RT_3}},           // CO_r
+  {2,CO_center_R,{TR_RF_X,TR_RT_3}}, // CO_r_DN  
+  {1,CO_center_R,{TR_RT_3}},         // CO_r_UP
+  {TR_USE_DEFAULT},                  // CO_dn
+  {TR_USE_DEFAULT},                  // CO_dn_R 
+  {TR_USE_DEFAULT},                  // CO_dn_L 
+  {1,CO_center,{TR_RT_1}},           // CO_l 
+  {1,CO_center_R,{TR_RT_1}},         // CO_l_DN 
+  {2,CO_center_R,{TR_RF_X,TR_RT_1}}, // CO_l_UP 
+  {2,CO_center,{TR_RF_X,TR_RT_2}},   // CO_up 
+  {2,CO_center_R,{TR_RF_X,TR_RT_2}}, // CO_up_R 
+  {1,CO_center_R,{TR_RT_2}},         // CO_up_L 
+  {TR_USE_DEFAULT},{TR_USE_DEFAULT},{TR_USE_DEFAULT},{TR_USE_DEFAULT},{TR_USE_DEFAULT},
+  {TR_USE_DEFAULT},{TR_USE_DEFAULT},{TR_USE_DEFAULT},{TR_USE_DEFAULT},{TR_USE_DEFAULT},
+  {TR_USE_DEFAULT},{TR_USE_DEFAULT},{TR_USE_DEFAULT},{TR_USE_DEFAULT},{TR_USE_DEFAULT},
+  {TR_USE_DEFAULT},{TR_USE_DEFAULT},{TR_USE_DEFAULT},{TR_USE_DEFAULT},{TR_USE_DEFAULT},
+  {TR_USE_DEFAULT},{TR_USE_DEFAULT},{TR_USE_DEFAULT},
+};
+
+
+
+// CAREFUL!!!
+// If you change any of the values between CO_DN_R_R and CO_UP_R in either of 
+// Fighter::transformOverride or Fighter::uprightTransformOverride, you may have to change
+// it in the other as well.  Would be better to have some way of composing transformOverrides,
+// so they could share the common functionality.
+//
+// This is the transformOverride that Fighter provides to adjust for
+// the way that it uses the CO_DN_R_R...CO_UP_R slots in MovingContext.
+//
+// Maybe this should be some sort of .bitmaps file like transform.bitmaps.
+OneTransform Fighter::transformOverride[CO_DIR_MAX] = {
+  {TR_USE_DEFAULT},{TR_USE_DEFAULT},{TR_USE_DEFAULT},{TR_USE_DEFAULT},{TR_USE_DEFAULT},
+  {TR_USE_DEFAULT},{TR_USE_DEFAULT},{TR_USE_DEFAULT},{TR_USE_DEFAULT},{TR_USE_DEFAULT},
+  {TR_USE_DEFAULT},{TR_USE_DEFAULT},{TR_USE_DEFAULT},{TR_USE_DEFAULT},{TR_USE_DEFAULT},
+  {TR_USE_DEFAULT},{TR_USE_DEFAULT},{TR_USE_DEFAULT},{TR_USE_DEFAULT},{TR_USE_DEFAULT},
+  {TR_USE_DEFAULT},{TR_USE_DEFAULT},{TR_USE_DEFAULT},{TR_USE_DEFAULT},{TR_USE_DEFAULT},
+  {TR_USE_DEFAULT},
+  {0},                              // CO_DN_R_R  -> center_R
+  {1,CO_DN_R_R,{TR_RF_X}},          // CO_DN_R 	  -> center_L
+  {0},                              // CO_DN_DN_R -> air_R
+  {1,CO_DN_DN_R,{TR_RF_X}},         // CO_DN      -> air_L
+  {2,CO_DN_L_L,{TR_RF_X,TR_RT_3}},  // CO_DN_DN_L -> r_DN
+  {1,CO_DN_L_L,{TR_RT_3}},          // CO_DN_L    -> r_UP
+  {0},                              // CO_DN_L_L  -> dn_R
+  {1,CO_DN_L_L,{TR_RF_X}},          // CO_L       -> dn_L
+  {1,CO_DN_L_L,{TR_RT_1}},          // CO_UP_L_L  -> l_DN
+  {2,CO_DN_L_L,{TR_RF_X,TR_RT_1}},  // CO_UP_L 	  -> l_UP
+  {2,CO_DN_L_L,{TR_RF_X,TR_RT_2}},  // CO_UP_UP_L -> up_R
+  {1,CO_DN_L_L,{TR_RT_2}},          // CO_UP 	    -> up_L
+  {0},                              // CO_UP_UP_R -> air_UP
+  {0},                              // CO_UP_R 	  -> air_DN
+  {TR_USE_DEFAULT},                              
+};
+
+
+
+// This does everything in Fighter::transformOverride plus it adjust so that 
+// when the Fighter is walking on the walls/ceiling it uses the upright 
+// bitmaps instead of the crawling bitmaps.  E.g. Ninja uses 
+// Fighter::transformOverride while Hero uses 
+// Fighter::uprightTransformOverride.
+OneTransform Fighter::uprightTransformOverride[CO_DIR_MAX] = {
+  {TR_USE_DEFAULT},{TR_USE_DEFAULT},{TR_USE_DEFAULT},{TR_USE_DEFAULT},
+  {TR_USE_DEFAULT},{TR_USE_DEFAULT},
+
+  {1,CO_center,{TR_RT_3}},           // CO_r
+  {2,CO_center_R,{TR_RF_X,TR_RT_3}}, // CO_r_DN  
+  {1,CO_center_R,{TR_RT_3}},         // CO_r_UP
+  {TR_USE_DEFAULT},                  // CO_dn
+  {TR_USE_DEFAULT},                  // CO_dn_R 
+  {TR_USE_DEFAULT},                  // CO_dn_L 
+  {1,CO_center,{TR_RT_1}},           // CO_l 
+  {1,CO_center_R,{TR_RT_1}},         // CO_l_DN 
+  {2,CO_center_R,{TR_RF_X,TR_RT_1}}, // CO_l_UP 
+  {2,CO_center,{TR_RF_X,TR_RT_2}},   // CO_up 
+  {2,CO_center_R,{TR_RF_X,TR_RT_2}}, // CO_up_R 
+  {1,CO_center_R,{TR_RT_2}},         // CO_up_L 
+
+  {TR_USE_DEFAULT},{TR_USE_DEFAULT},{TR_USE_DEFAULT},{TR_USE_DEFAULT},{TR_USE_DEFAULT},
+  {TR_USE_DEFAULT},{TR_USE_DEFAULT},{TR_USE_DEFAULT},
+
+  {0},                              // CO_DN_R_R  -> center_R
+  {1,CO_DN_R_R,{TR_RF_X}},          // CO_DN_R 	  -> center_L
+  {0},                              // CO_DN_DN_R -> air_R
+  {1,CO_DN_DN_R,{TR_RF_X}},         // CO_DN      -> air_L
+  {2,CO_DN_R_R,{TR_RF_X,TR_RT_3}},  // CO_DN_DN_L -> r_DN
+  {1,CO_DN_R_R,{TR_RT_3}},          // CO_DN_L    -> r_UP
+  {0},                              // CO_DN_L_L  -> dn_R
+  {1,CO_DN_L_L,{TR_RF_X}},          // CO_L       -> dn_L
+  {1,CO_DN_R_R,{TR_RT_1}},          // CO_UP_L_L  -> l_DN
+  {2,CO_DN_R_R,{TR_RF_X,TR_RT_1}},  // CO_UP_L 	  -> l_UP
+  {2,CO_DN_R_R,{TR_RF_X,TR_RT_2}},  // CO_UP_UP_L -> up_R
+  {1,CO_DN_R_R,{TR_RT_2}},          // CO_UP      -> up_L
+  {0},                              // CO_UP_UP_R -> air_UP
+  {0},                              // CO_UP_R 	  -> air_DN
+  {TR_USE_DEFAULT},                              
+};
+
+

@@ -1,0 +1,355 @@
+<HTML>
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META NAME="Author" CONTENT="Steve Hardt">
+   <META NAME="GENERATOR" CONTENT="Mozilla/4.09 [en] (WinNT; I) [Netscape]">
+   <TITLE>Compiling XEvil 2.X</TITLE>
+</HEAD>
+<BODY>
+
+<H1>
+Compiling XEvil 2.X</H1>
+Steve Hardt
+<BR>last modified 01/17/2000
+<H2>
+
+<HR WIDTH="100%">Windows (NT,95,98)</H2>
+Requires Microsoft Visual C++ to compile.&nbsp; If you have version 5.0,
+you can use the workspace file already in the distribution. I've successfully
+built XEvil with Visual C++ 4.2.&nbsp; You'll have to make your own project,
+though.&nbsp; Other compilers should work, but I haven't tried them.
+<OL>
+<LI>
+Download xevilsrc.zip and unzip it somewhere.</LI>
+
+<LI>
+At a command prompt, type:</LI>
+
+<OL>subst x: &lt;directory where you put the source></OL>
+If the directory name has spaces in it, put quote marks around the directory
+name, e.g,
+<OL>subst x: "e:\my files\xevil2.0b7"</OL>
+
+<LI>
+If you have VC++ 5.0,</LI>
+
+<OL>
+<LI>
+Run VC++ 5.0</LI>
+
+<LI>
+Open the project, "x:\win32\xevil.dsw".</LI>
+</OL>
+
+<LI>
+If you have VC++ 4.2, or the .dsw file doesn't work for some reason.</LI>
+
+<OL>
+<LI>
+Make a new project called xevil in the directory "x:\win32".</LI>
+
+<LI>
+Add all the cpp files in x:\win32 and x:\cmn.&nbsp; (Don't add the ones
+in x:\x11, they are for UNIX.)</LI>
+
+<LI>
+Add the libraries "x:\win32\ddraw.lib", "x:\win32\dsound.lib"</LI>
+
+<LI>
+Go to the "Projects | Settings" dialog.&nbsp; Switch to the "Link" tab.&nbsp;
+Look at the "Object/libraries modules" text field.&nbsp; Add "winmm.lib
+ole32.lib" if they aren't already there.</LI>
+</OL>
+
+<LI>
+Select the "Tools | Options" menu.</LI>
+
+<OL>
+<LI>
+Go to the "Directories" tab and look at directories for "Include Files".&nbsp;
+Add "x:\cmn" and "x:\win32" to the list of include directories.</LI>
+
+<LI>
+Go to the "Tabs" tab.&nbsp; Set the toggle to "Insert spaces" and set "Tab
+size" and "Indent size" to 2.&nbsp; This is not strictly necessary, but
+helps make the formatting look right.&nbsp; This also helps if you want
+to contribute code back to xevil.com.&nbsp; We disallow tab characters
+in your code, use spaces instead.&nbsp; See the coding standards documentation
+on www.xevil.com for more details.</LI>
+</OL>
+
+<LI>
+Compile and run.</LI>
+</OL>
+
+<H2>
+
+<HR WIDTH="100%">UNIX/X</H2>
+Requires:
+<UL>
+<LI>
+C++ compiler.&nbsp; I've used a variety of compilers, g++, CC, cfront,
+etc.</LI>
+
+<UL>
+<LI>
+Must have the C++ iostream libraries, i.e. iostream.h, strstream.h, etc.&nbsp;
+These will generally be installed along with your C++ compiler.</LI>
+</UL>
+
+<LI>
+Xlib libraries and include files.&nbsp; Does not require Motif or any widget
+set.</LI>
+
+<UL>
+<LI>
+Include files are often somewhere like /usr/X11R6/include or /usr/openwin/include.</LI>
+
+<LI>
+libX11.a or libX11.so are often somewhere like /usr/lib or /usr/X11/lib</LI>
+</UL>
+
+<LI>
+The X Pixmap libraries (XPM).&nbsp; You should be able to get these on
+the net.&nbsp; You may have to compile XPM source to generate libraries
+for your machine.</LI>
+
+<UL>
+<LI>
+xpm.h and libXpm.a (or libXpm.so)</LI>
+</UL>
+</UL>
+I have built and run XEvil on the following UNIX platforms:
+<UL>
+<LI>
+Red Hat Linux</LI>
+
+<LI>
+SGI IRIX</LI>
+
+<LI>
+Sun, Solaris and SunOS</LI>
+
+<LI>
+HPUX</LI>
+
+<LI>
+AIX</LI>
+
+<LI>
+FreeBSD</LI>
+
+<LI>
+Open Caldera Linux</LI>
+
+<LI>
+Alpha OSF</LI>
+
+<LI>
+Solaris x86</LI>
+</UL>
+XEvil should build without much trouble on other UNIX system that meet
+the above requirements.&nbsp; I only have certain UNIX machines at my disposal.&nbsp;
+So, one benefit of distributing XEvil source is that other people can build
+XEvil on platforms not available to me.
+<H3>
+Building XEvil on UNIX</H3>
+
+<OL>
+<LI>
+Unzip xevilsrc.zip to some directory</LI>
+
+<OL>
+<LI>
+There's a trick here. All the text files are Windows-style, with CRLF for
+line breaks (as opposed to just LF which is standard UNIX).&nbsp; In emacs,
+you'll see a bunch of '^M' in the code.&nbsp; You can use "unzip -a" to
+auto-convert text files.&nbsp; But, this corrupts several of the binary
+files.&nbsp; The binary files are just needed for the Windows build, so
+you might not care about them at all.&nbsp; You can use the csh script
+<a href="ftp://ftp.xevil.com/helpers/unzipxevil">unzipxevil</a>
+to convert the text files without corrupting the binary files.</LI>
+</OL>
+
+<LI>
+Look at the value of your HOSTTYPE environment variable and look for a
+corresponding entry in config.mk.&nbsp; Set the HOSTTYPE environment variable
+if necessary, make a new entry in config.mk if necessary.&nbsp; As described
+below, set the symbols in config.mk to correspond to your specific machine.</LI>
+
+<LI>
+Type "make".&nbsp; The new executable will be built in the directory given
+by OBJ_DIR.</LI>
+</OL>
+
+<H3>
+Meanings of symbols in config.mk</H3>
+
+<DL>
+<DT>
+CC</DT>
+
+<DD>
+C++ compiler to use.&nbsp; Probably g++ or CC.</DD>
+
+<DT>
+LIBS</DT>
+
+<DD>
+&nbsp;Libraries to use.&nbsp; Usually "-lXpm -lX11 -lm".&nbsp; For some
+odd reason&nbsp; I needed to add "-ldnet_stub" for the Alpha I was using
+and&nbsp; "-lsocket -lnsl" for Sun 4 machines on Project Athena.</DD>
+
+<DT>
+INCL_DIRS</DT>
+
+<DD>
+Where to look for the include files.</DD>
+
+<DT>
+LIBS_DIRS</DT>
+
+<DD>
+Where to look for libraries.</DD>
+
+<DT>
+LINK_FLAGS</DT>
+
+<DD>
+Command line options for the link phase of compiling.&nbsp; I generally
+try to build XEvil with static linking.</DD>
+
+<DT>
+CFLAGS</DT>
+
+<DD>
+Command line options for compiling.&nbsp; You can use any flags your compiler
+understands as well as the XEvil-specific ones given in the next section.</DD>
+
+<DT>
+OBJ_DIR</DT>
+
+<DD>
+Output directory for building the executable and object files.&nbsp; You
+can build XEvil for several UNIX platforms in the same directory tree by
+assigning different values to OBJ_DIR for different platforms.</DD>
+
+<DT>
+PCKG_NAME</DT>
+
+<DD>
+Used to tar up the executable for distribution.&nbsp; E.g. if PCKG_NAME="irix",
+then create xevil2.0.irix.tar.Z.</DD>
+</DL>
+
+<H3>
+Additional options for CFLAGS</H3>
+
+<DL>
+<DT>
+-DUSE_RANDOM</DT>
+
+<DD>
+Use the random() function instead of rand() to generate random numbers.&nbsp;
+random() is a better pseudo-number generator than rand().&nbsp; Use this
+unless random() is not available on your machine.</DD>
+
+<DT>
+-DRANDOM_NEEDS_PROTOTYPES</DT>
+
+<DD>
+If you are using random() and for some reason the prototypes for random()
+and srandom() do not appear in &lt;math.h>.</DD>
+
+<DT>
+-DUSE_SELECT_H</DT>
+
+<DD>
+Use if you need &lt;sys/select.h> for the prototypes for select().</DD>
+
+<DT>
+-DSELECT_NEEDS_PROTOTYPES</DT>
+
+<DD>
+Use if the prototypes for select() still do not show up after trying -DUSE_SELECT_H.</DD>
+
+<DT>
+-DXEVIL_KEYSET=&lt;keyset-name></DT>
+
+<DD>
+Different UNIX/X machines have different keyboard layouts.&nbsp; Use -DXEVIL_KEYSET
+to specify at compile-time one of the sets of keyboard controls for XEvil.&nbsp;&nbsp;
+This gives the default value that can be overridden with the -keys command
+line option or with the "Set Controls" button at run-time.&nbsp; Look in
+x11/ui.h at the UIkeyset enum for possible values.</DD>
+
+<DT>
+-DPROTECTED_IS_PUBLIC</DT>
+
+<DD>
+Some compilers have a broken idea of what "protected" means in an inherited
+class.&nbsp; Try this flag if you get an error like "method &lt;some method>
+is protected in this context".&nbsp; It makes (ick) all protected class
+members into public members.</DD>
+
+<DT>
+-DCLOCKS_PER_SEC=&lt;clocks-per-sec></DT>
+
+<DD>
+In some cases, the symbol CLOCKS_PER_SEC is not defined anywhere and you
+must manually define it.&nbsp; This is the conversion from the unit of
+time given by the clock() function to seconds.&nbsp; If you don't know
+what the value is for your system, try -DCLOCKS_PER_SEC=1000000L&nbsp;
+This is the most common value.</DD>
+
+<DT>
+-DMATH_H_IS_CC</DT>
+
+<DD>
+Use this if you get strange errors from the include file math.h.&nbsp;
+Usually math.h is written in C, so the XEvil source includes it as a C
+include file.&nbsp; Sometimes, however, math.h is in C++, so it should
+be included as a C++ include file.</DD>
+
+<DT>
+-DNO_PRAGMAS</DT>
+
+<DD>
+g++ uses "#pragma interface" and "#pragma implementation" compiler directives
+to do some code optimization.&nbsp; In theory, other C/C++ compilers should
+ignore unknown pragmas.&nbsp; But, some compilers whine about it, so use
+-DNO_PRAGMAS to avoid these warning messages.</DD>
+
+<DT>
+-DUSE_UINT_NET_LENGTH</DT>
+
+<DT>
+-DUSE_ULONG_NET_LENGTH</DT>
+
+<DD>
+Use "unsigned int" or "unsigned long" for the type of the last argument
+to accept() and recvfrom().&nbsp; Default is "int".</DD>
+
+<DT>
+-DNO_SETPRECISION</DT>
+
+<DD>
+Only for setting the number of significant digits in the statistics printed
+when XEvil exits.&nbsp; Would you believe that some HP systems actually
+<I>crash</I> if you set the number of significant digits in an output stream.</DD>
+
+<DT>
+-DIO_COOKIE_HACK</DT>
+
+<DD>
+Some really weird linux system needs a type defined for _IO_cookie_io_functions_t.&nbsp;
+Don't ask me, I just work here.</DD>
+</DL>
+
+<HR WIDTH="100%">
+
+<P>Steve Hardt
+<BR><A HREF="mailto:satan@xevil.com">satan@xevil.com</A>
+<BR><A HREF="http://www.xevil.com">http://www.xevil.com</A>
+</BODY>
+</HTML>

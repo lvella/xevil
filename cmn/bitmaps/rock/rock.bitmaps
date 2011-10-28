@@ -1,0 +1,109 @@
+/* 
+ * XEvil(TM) Copyright (C) 1994,2000 Steve Hardt and Michael Judge
+ * http://www.xevil.com
+ * satan@xevil.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program, the file "gpl.txt"; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA, or visit http://www.gnu.org.
+ */
+
+
+#if X11
+#include "gen_xpm/rock/rock_4.xpm"
+#endif
+
+
+
+Size Rock::get_size_max() {
+  return context.heavyContext.fallingContext.movingContext.sizes[CO_air];
+} 
+
+
+
+PhysicalP Rock::create(void *,WorldP w,LocatorP l,const Pos &pos) {
+  PhysicalP ret = new Rock(w,l,pos);
+  assert(ret);
+  return ret;
+}
+
+
+
+LiftableXdata Rock::xdata;
+
+
+
+const LiftableContext Rock::context = 
+{/** LiftableContext **/
+  {/** HeavyContext **/
+    155, /* damage */
+
+    {/** FallingContext **/
+      {/** MovingContext **/
+#if X11
+        "black",False,
+        "gray70",True,
+#endif      
+#if WIN32
+        RGB(0,0,0)/*"black"*/,False,
+        RGB(128,128,128)/*"gray70"*/,True,
+#endif
+        /* animMax */
+        {0,0,0,0,1},
+        
+        /* sizes */
+        {{0,0},{0,0},{0,0},{0,0},{13,13},},
+        
+        /* offsets */
+        {{0,0},{0,0},{0,0},{0,0},{0,0},},
+        
+        /* pixmapBits */
+        {{0},{0},{0},{0},{CMN_ID(rock_4,IDB_ROCKHI)},},
+      
+        /* maskBits */
+        {{0}},
+        { /** PhysicalContext **/
+          200, /* health */
+          300, /* mass */
+          A_Rock, /* classId */
+          "rock", /* clas */
+          
+          False, /* transmogifyTarget */
+          False, /* doppelUser */
+          False, /* potentialHuman */
+          False, /* potentialEnemy */
+          0, /* enemyWeight */
+          False, /* potentialWeapon */
+          True, /* potentialOtherItem */
+          0.0002f, /* objectWorldPercent */
+          15, /* levelMaxTimes */
+          {13,13}, /* sizeMax */
+          Rock::create, /* create */
+          False, /* statsCreations */
+          False, /* statsUses */
+          False, /* statsDeaths */
+          NULL, /* get_stats */
+          NULL, /* arg */
+          Rock::init_x, /* init_x */
+          Rock::create_from_stream, /* create_from_stream */
+        },
+        
+        True, /* hiRes */
+        0, /* offsetGenerator */
+        0, /* transformOverride */
+        True, /* useXPM */
+      },
+    },
+  },
+};

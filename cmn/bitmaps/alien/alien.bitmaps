@@ -1,0 +1,217 @@
+/* 
+ * XEvil(TM) Copyright (C) 1994,2000 Steve Hardt and Michael Judge
+ * http://www.xevil.com
+ * satan@xevil.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program, the file "gpl.txt"; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA, or visit http://www.gnu.org.
+ */
+
+#if X11
+#include "gen_xpm/alien/alien_0.xpm"
+#include "gen_xpm/alien/alien_0b.xpm"
+#include "gen_xpm/alien/alien_0c.xpm"
+#include "gen_xpm/alien/alien_0d.xpm"
+#include "gen_xpm/alien/alien_0e.xpm"
+#include "gen_xpm/alien/alien_0f.xpm"
+#include "gen_xpm/alien/alien_10b.xpm"
+#include "gen_xpm/alien/alien_10c.xpm"
+#include "gen_xpm/alien/alien_10d.xpm"
+#include "gen_xpm/alien/alien_18.xpm"
+#include "gen_xpm/alien/alien_2.xpm"
+#include "gen_xpm/alien/alien_20b.xpm"
+#include "gen_xpm/alien/alien_20c.xpm"
+#include "gen_xpm/alien/alien_25.xpm"
+#include "gen_xpm/alien/alien_4.xpm"
+#include "gen_xpm/alien/alien_5.xpm"
+#include "gen_xpm/alien/alien_9.xpm"
+#endif
+
+
+
+Size Alien::get_size_max() {
+  return creatureContext.movingContext.physicalContext.sizeMax;
+} 
+
+
+
+PhysicalP Alien::create(void *,WorldP w,LocatorP l,const Pos &pos) {
+  PhysicalP ret = new Alien(w,l,pos);
+  assert(ret);
+  return ret;
+}
+
+
+
+CreatureXdata Alien::creatureXdata;
+StickyXdata Alien::stickyXdata;
+PricklyXdata Alien::pricklyXdata;
+HealingXdata Alien::healingXdata;
+
+
+
+const CreatureContext Alien::creatureContext =
+{ /** CreatureContext **/
+  5, /* crawlSpeed */
+  8, /* centerSpeed */
+  14, /* airSpeed */
+  6, /* climbSpeed */
+  13,  /* jump */
+  2,  /* acceleration */ 
+  180, /* corpseHealth */
+  
+  True, /* biological */
+  DROPLET_GREEN_BLOOD, /* dropletType */
+  0, /*alien death sound*/
+
+  {/** MovingContext **/
+#if X11  
+    "black",False,
+    "black",False,
+#endif
+#if WIN32
+    RGB(0,0,0)/*"black"*/,FALSE,
+    RGB(0,0,0)/*"black"*/,FALSE,
+#endif
+    
+    /* animMax */
+    {6,6,1,1,1,1,
+       1,
+       4,4,
+       1,
+       4,4,
+       1,
+       4,4,
+       1,
+       4,4,
+       1,
+       4,4,
+       1,1,
+       4,4,
+       1, /* deadAnimMax */
+    },
+    
+    /* sizes */
+    {{24,29},{24,29},{26,28},{26,28},{13,29},{10,27},
+
+       {16,31},
+       {16,31},{16,31},
+       {31,16},
+       {31,16},{31,16},
+       {16,31},
+       {16,31},{16,31},
+       {31,16},
+       {31,16},{31,16},
+
+       {9,29},          /* Must be    */
+       {9,29},{9,29},  /* same size. */
+       {13,29},{13,29},
+       {9,29},{9,29},  
+       {30,11}, /* deadSize */
+    },
+    
+    /* offsets */
+    {{0}},
+    
+    /* pixmapBits */
+    {{CMN_ID(alien_0,IDB_HIALIEN0),CMN_ID(alien_0b,IDB_HIALIEN0B),
+      CMN_ID(alien_0c,IDB_HIALIEN0C),CMN_ID(alien_0d,IDB_HIALIEN0D),
+      CMN_ID(alien_0e,IDB_HIALIEN0E),
+      CMN_ID(alien_0f,IDB_HIALIEN0F),},
+     {PH_AUTO_GEN},
+     {CMN_ID(alien_2,IDB_HIALIEN2)},
+     {PH_AUTO_GEN},
+     {CMN_ID(alien_4,IDB_HIALIEN4)},
+     {CMN_ID(alien_5,IDB_HIALIEN5)},
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},{PH_AUTO_GEN},
+     {CMN_ID(alien_9,IDB_HIALIEN10)},
+     {CMN_ID(alien_9,IDB_HIALIEN10),CMN_ID(alien_10b,IDB_HIALIEN10B),
+      CMN_ID(alien_10c,IDB_HIALIEN10C),CMN_ID(alien_10d,IDB_HIALIEN10D)},{PH_AUTO_GEN},
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},{PH_AUTO_GEN},
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},{PH_AUTO_GEN},
+
+     {CMN_ID(alien_18,IDB_HIALIEN18)},
+     {PH_AUTO_GEN},
+     // Fourth climbing frame same as the second.
+     {CMN_ID(alien_18,IDB_HIALIEN18),CMN_ID(alien_20b,IDB_HIALIEN18B),
+      CMN_ID(alien_20c,IDB_HIALIEN18C),CMN_ID(alien_20b,IDB_HIALIEN18B)},  
+     {PH_AUTO_GEN},{PH_AUTO_GEN},
+     {CMN_ID(alien_18,IDB_HIALIEN18),CMN_ID(alien_20b,IDB_HIALIEN18B),
+      CMN_ID(alien_20c,IDB_HIALIEN18C),CMN_ID(alien_20b,IDB_HIALIEN18B)},
+     {PH_AUTO_GEN},
+     {CMN_ID(alien_25,IDB_HIALIEN25)}, /* deadPixmapBits */
+    },
+    
+    /* maskBits */
+    {{0}},
+
+    {/** PhysicalContext **/
+      300, /* health */
+      300, /* mass */
+      A_Alien, /* classId */
+      "alien", /* clas */
+
+      True, /* transmogifyTarget */
+      True, /* doppelUser */  // Changed, why not let em use it.
+      False, /* potentialHuman */
+      True, /* potentialEnemy */
+      10, /* enemyWeight */
+      False, /* potentialWeapon */
+      False, /* potentialOtherItem */
+      0.0f, /* objectWorldPercent */
+      0, /* levelMaxTimes */
+      {31,31}, /* sizeMax */
+      Alien::create, /* create */
+      False, /* statsCreations */
+      False, /* statsUses */
+      True, /* statsDeaths */
+      Alien::get_stats, /* get_stats */
+      NULL, /* arg */
+      Alien::init_x, /* init_x */
+      Alien::create_from_stream, /* create_from_stream */
+    },
+    True, /* hiRes */
+    0, /* offsetGenerator */
+    0, /* transformOverride */
+    True, /* useXPM */
+    False, /* invisibility */
+  },
+};
+
+
+
+const StickyContext Alien::stickyContext =
+{ /** StickyContext **/
+  5, /* wallCrawlSpeed */
+};
+
+
+
+const PricklyContext Alien::pricklyContext =
+{ /** PricklyContext **/
+  23, /* damage */
+};
+
+
+
+const HealingContext Alien::healingContext =
+{ /** HealingContext **/
+	2.0f,/* multiplier */
+	1,/* unit */
+	20,/* time */
+};

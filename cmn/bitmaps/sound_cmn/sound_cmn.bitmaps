@@ -1,0 +1,73 @@
+/* 
+ * XEvil(TM) Copyright (C) 1994,2000 Steve Hardt and Michael Judge
+ * http://www.xevil.com
+ * satan@xevil.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program, the file "gpl.txt"; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA, or visit http://www.gnu.org.
+ */
+
+
+// "sound_cmn.bitmaps"
+
+#if WIN32
+unsigned int SoundNames::names[SoundNames::SOUND_MAX] = {
+    0,  // dummy value
+//
+//  Resource Name               SoundName
+//
+    0, //IDW_SOUNDTRACK,          // SOUNDTRACK
+    0, //IDW_SOUNDTRACK_LEVELS,   // SOUNDTRACK_LEVELS
+    0, //IDW_SOUNDTRACK_SEAL,     // SOUNDTRACK_SEAL
+    IDW_CHAINSAW_SOUND,      // CHAINSAW_SOUND
+    IDW_FLAMETHROWER,        // FLAMETHROWER
+    IDW_DEATH,               // DEATH
+    IDW_SEAL_DEATH,          // SEAL_DEATH
+    IDW_HUGGER_DEATH,        // HUGGER_DEATH
+    IDW_FROG_DEATH,          // FROG_DEATH
+    IDW_BREAKDOWN,           // BREAKDOWN
+    IDW_BANG,                // BANG
+    IDW_PISTOL,              // PISTOL
+    IDW_MGUN,                // MGUN
+    IDW_LAUNCHER,            // LAUNCHER
+    IDW_EXPLOSION,           // EXPLOSION
+    IDW_DOG_DEATH,           // DOG_DEATH
+    IDW_LASER,               // LASER
+    IDW_HERO_ATTACK,         // HERO_ATTACK
+    IDW_NINJA_ATTACK,        // NINJA_ATTACK
+    IDW_DOG_ATTACK,          // DOG_ATTACK
+    IDW_CHOP_DEATH,          // CHOP_DEATH
+    IDW_DOPPEL_USE,          // DOPPEL_USE
+    IDW_CLOAK_USE,           // CLOAK_USE
+    IDW_TRANS_USE,           // TRANS_USE
+    IDW_SHIELD_USE,          // SHIELD_USE
+    IDW_NINJA_DEATH,         // NINJA_DEATH
+    IDW_FROGGUN,             // FROGGUN
+    IDW_LANCER,              // LANCER
+    IDW_SWAPPER,             // SWAPPER, 
+    IDM_FIRESOUNDTRACK,      // FIRE
+    IDM_HIVESOUNDTRACK,      // HIVE
+    IDM_KILLSOUNDTRACK,      // KILLKILLKILL
+    IDM_SEALSOUNDTRACK,      // SEAL
+    IDM_ZEEPEEGSOUNDTRACK,
+    IDM_NIGHTSKYSOUNDTRACK,
+    IDM_SWEETDARKSOUNDTRACK,
+#if 0
+    // Nice piece but sounds really painful on cheap sound cards.
+    IDM_TERRAEXMSOUNDTRACK,   
+#endif
+    IDM_NEWSONGSOUNDTRACK,    
+};
+#endif

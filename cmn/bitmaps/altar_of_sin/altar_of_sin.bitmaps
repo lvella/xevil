@@ -1,0 +1,152 @@
+/* 
+ * XEvil(TM) Copyright (C) 1994,2000 Steve Hardt and Michael Judge
+ * http://www.xevil.com
+ * satan@xevil.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program, the file "gpl.txt"; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA, or visit http://www.gnu.org.
+ */
+
+#if X11
+#include "gen_xpm/altar_of_sin/altar_of_sin_4.xpm"
+#include "gen_xpm/altar_of_sin/altar_of_sin_4b.xpm"
+#include "gen_xpm/altar_of_sin/altar_of_sin_4c.xpm"
+#endif
+
+
+
+#define ALTAR_OF_SIN_KILLS 5
+#define ALTAR_OF_SIN_TRIES 100
+
+
+
+Size AltarOfSin::get_size_max() {
+  return context.fallingContext.movingContext.sizes[CO_air];
+} 
+
+
+
+PhysicalP AltarOfSin::create(void *,WorldP w,LocatorP l,const Pos &pos) {
+  PhysicalP ret = new AltarOfSin(w,l,pos);
+  assert(ret);
+  return ret;
+}
+
+
+
+HeavyXdata AltarOfSin::xdata;
+
+
+
+const HeavyContext AltarOfSin::context = 
+{/** HeavyContext **/
+  100, /* damage */
+  
+  {/** FallingContext **/
+    {/** MovingContext **/
+#if X11
+      "black",False,
+      "red1",True,
+#endif      
+#if WIN32
+      RGB(0,0,0)/*"black"*/,FALSE,
+      RGB(255,0,0)/*"red1"*/,TRUE,
+#endif
+
+      /* animMax */
+      {0,0,0,0,3},
+      
+      /* sizes */
+      {{0,0},{0,0},{0,0},{0,0},{24,32},},
+      
+      /* offsets */
+      {{0,0},{0,0},{0,0},{0,0},{0,0},},
+      
+      /* pixmapBits */
+      {{0},{0},{0},{0},
+	   {CMN_ID(altar_of_sin_4,IDB_HIALTAR),
+        CMN_ID(altar_of_sin_4b,IDB_HIALTARB),
+        CMN_ID(altar_of_sin_4c,IDB_HIALTARC)},},
+      
+      /* maskBits */
+      {{0}},
+
+      {/** PhysicalContext **/
+		2000, /* health */
+		10000, /* mass */
+		A_AltarOfSin, /* classId */
+		"altar-of-sin", /* clas */
+        
+		False, /* transmogifyTarget */
+		False, /* doppelUser */
+		False, /* potentialHuman */
+		False, /* potentialEnemy */
+		0, /* enemyWeight */
+		False, /* potentialWeapon */
+		False, /* potentialOtherItem */  /* Handled specially in GameObjects. */
+		0.0f, /* objectWorldPercent */
+		1, /* levelMaxTimes */
+		{24,32}, /* sizeMax */
+		AltarOfSin::create, /* create */
+		False, /* statsCreations */
+		False, /* statsUses */
+		False, /* statsDeaths */
+		NULL, /* get_stats */
+        NULL, /* arg */
+        AltarOfSin::init_x, /* init_x */
+        AltarOfSin::create_from_stream, /* create_from_stream */
+      },
+      True, /* hiRes */
+      0, /* offsetGenerator */
+      0, /* transformOverride */
+      True, /* useXPM */
+    },
+  },
+};
+
+
+#if 0
+// copied from Hero
+const HealingContext AltarOfSin::healingContext =
+{ /** HealingContext **/
+	2.0f,/* multiplier */
+	1,/* unit */
+	4,/* time */
+};
+
+
+// copied from FireDemon
+const OnFireContext AltarOfSin::onFireContext =
+{ /** OnFireContext **/
+  1, /* fires */
+  6, /* heat */
+  True, /* deadBurns */
+};
+
+
+// mostly copied from FireDemon
+const BuiltInContext AltarOfSin::fireballsContext =
+{ /** BuiltInContext **/
+  10, /* shotTime */
+  A_Fireballs, /* weaponClassId */
+  "fireballs", /* weaponStr */
+  90000, /* coolness */
+  0, /* attackSound */
+  FireDemon::get_shot_size, /* get_shot_size */
+  FireDemon::create_shot,   /* create_shot */
+  NULL,                     /* compute_weapon_dir */
+};
+#endif
+

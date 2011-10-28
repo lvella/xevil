@@ -1,0 +1,142 @@
+/* 
+ * XEvil(TM) Copyright (C) 1994,2000 Steve Hardt and Michael Judge
+ * http://www.xevil.com
+ * satan@xevil.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program, the file "gpl.txt"; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA, or visit http://www.gnu.org.
+ */
+
+
+#if X11
+#include "gen_xpm/launcher/launcher_4.xpm"
+#endif
+
+
+
+Size Launcher::get_size_max() {
+  return context.weaponContext.itemContext.fallingContext.movingContext.sizes[CO_air];
+}
+
+
+
+PhysicalP Launcher::create(void *,WorldP w,LocatorP l,const Pos &pos) {
+  PhysicalP ret = new Launcher(w,l,pos);
+  assert(ret);
+  return ret;
+}
+
+
+
+static void launcher_get_item_info(Boolean &isItem,Boolean &isWeapon,
+                                   CMN_BITS_ID &iconId) {
+  isItem = True;
+  isWeapon = True;
+#if WIN32
+  iconId = IDB_HILAUNCHER;
+#endif
+#if X11
+  iconId = 0;
+#endif
+}
+
+
+
+GunXdata Launcher::xdata;
+
+
+
+const GunContext Launcher::context = 
+{ /** GunContext **/
+  5, /* shotTime */
+  10, /* ammoInitial */
+  20, /* ammoMax */
+
+  { /** WeaponContext **/
+	SoundNames::LAUNCHER,
+    { /** ItemContext **/
+      True, /* persists */
+      8000, /* coolness */
+	  0, /*item use sound */
+      { /** FallingContext **/
+        {/** MovingContext **/
+#if X11
+          "black",False,
+          "gray",True,
+#endif
+#if WIN32
+          RGB(0,0,0)/*"black"*/,False,
+          RGB(192,192,192)/*"gray"*/,True,
+#endif	  
+          /* animMax */
+          {0,0,0,0,1},
+          
+          /* sizes */
+          {{0,0},{0,0},{0,0},{0,0},{21,12},},
+          
+          /* offsets */
+          {{0,0},{0,0},{0,0},{0,0},{0,0},},
+          
+          /* pixmapBits */
+          {{0},{0},{0},{0},{CMN_ID(launcher_4,IDB_HILAUNCHER)},},
+          
+          /* maskBits */
+          {{0}},
+
+          { /** PhysicalContext **/
+            3, /* health */
+            20, /* mass */
+            A_Launcher, /* classId */
+            "launcher", /* clas */
+            
+            False, /* transmogifyTarget */
+            False, /* doppelUser */
+            False, /* potentialHuman */
+            False, /* potentialEnemy */
+            0, /* enemyWeight */
+            True, /* potentialWeapon */
+            False, /* potentialOtherItem */
+            .0002f, /* objectWorldPercent */
+            0, /* levelMaxTimes */
+            {21,12}, /* sizeMax */
+            Launcher::create, /* create */
+            False, /* statsCreations */
+            False, /* statsUses */
+            False, /* statsDeaths */
+            NULL, /* get_stats */
+            NULL, /* arg */
+            Launcher::init_x, /* init_x */
+            Launcher::create_from_stream, /* create_from_stream */
+            launcher_get_item_info, /* get_item_info */
+          },
+          True, /* hiRes */
+          0, /* offsetGenerator */
+          0, /* transformOverride */
+          True, /* useXPM */
+        },
+      },
+    },
+  },
+};
+
+
+
+/********* old launcher ********/
+#if 0
+	  /* pixmapBits */
+	  {{0},{0},{0},{0},{IDB_LAUNCHER1,IDB_LAUNCHER2,IDB_LAUNCHER3,IDB_LAUNCHER4,
+            IDB_LAUNCHER5,IDB_LAUNCHER6,IDB_LAUNCHER7,
+            IDB_LAUNCHER8,IDB_LAUNCHER9,IDB_LAUNCHER10,IDB_LAUNCHER11,IDB_LAUNCHER12},},
+#endif

@@ -1,0 +1,230 @@
+/* 
+ * XEvil(TM) Copyright (C) 1994,2000 Steve Hardt and Michael Judge
+ * http://www.xevil.com
+ * satan@xevil.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program, the file "gpl.txt"; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA, or visit http://www.gnu.org.
+ */
+
+
+#if X11
+#include "gen_xpm/walker/walker_0.xpm"
+#include "gen_xpm/walker/walker_0b.xpm"
+#include "gen_xpm/walker/walker_0c.xpm"
+#include "gen_xpm/walker/walker_0d.xpm"
+#include "gen_xpm/walker/walker_18.xpm"
+#include "gen_xpm/walker/walker_2.xpm"
+#include "gen_xpm/walker/walker_20b.xpm"
+#include "gen_xpm/walker/walker_25.xpm"
+#include "gen_xpm/walker/walker_2b.xpm"
+#include "gen_xpm/walker/walker_4.xpm"
+#include "gen_xpm/walker/walker_4b.xpm"
+#include "gen_xpm/walker/walker_4c.xpm"
+#include "gen_xpm/walker/walker_4d.xpm"
+#include "gen_xpm/walker/walker_5.xpm"
+#include "gen_xpm/walker/walker_5b.xpm"
+#include "gen_xpm/walker/walker_5c.xpm"
+#include "gen_xpm/walker/walker_5d.xpm"
+#endif
+
+
+
+Size Walker::get_size_max() {
+  return creatureContext.movingContext.physicalContext.sizeMax;
+}
+
+
+
+PhysicalP Walker::create(void *,WorldP w,LocatorP l,const Pos &pos) {
+  PhysicalP ret = new Walker(w,l,pos);
+  assert(ret);
+  return ret;
+}
+
+
+
+CreatureXdata Walker::creatureXdata;
+WalkingXdata Walker::walkingXdata;
+UserXdata Walker::userXdata;
+BuiltInXdata Walker::builtInXdata;
+AnimTimeXdata Walker::animTimeXdata;
+
+
+
+const CreatureContext Walker::creatureContext =
+{ /** CreatureContext **/
+  0, /* crawlSpeed */
+  6, /* centerSpeed */
+  14, /* airSpeed */
+  4, /* climbSpeed */
+  12,  /* jump */
+  2,  /* acceleration */ 
+  200, /* corpseHealth */
+  
+  False, /* biological */
+  // Walker is a cyborg, so both blood and oil, but twice the chance of oil.
+  DROPLET_OIL | DROPLET_MORE_OIL | DROPLET_BLOOD, /* dropletType */ 
+  SoundNames::BREAKDOWN, /*deadsound*/
+  
+  {/** MovingContext **/
+#if X11
+    "black",False,
+    "antiquewhite3",True,
+#endif
+#if WIN32
+    RGB(0,0,0)/*"black"*/,FALSE,
+    RGB(255,255,255)/*"antiquewhite3"*/,TRUE,
+#endif    
+    /* animMax */
+    {4,4,2,2,4,4,
+     4,
+     4,4,
+     4,
+     4,4,
+     4,
+     4,4,
+     4,
+     4,4,
+     1,
+     2,2,
+     4,4,
+     2,2,
+     1, /* deadAnimMax */
+    },
+    
+    /* sizes */
+    {{28,26},{28,26},{37,15},{37,15},{20,13},{20,26},
+     {26,20},
+     {26,28},{26,28},
+     {20,13},
+     {20,13},{20,13},
+     {26,20},
+     {26,28},{26,28},
+     {20,26},
+     {28,26},{28,26},
+     {16,26},          /* Must be    */
+     {16,26},{16,26},  /* same size. */
+     {20,13},{20,13},	
+     {16,26},{16,26},
+     {27,14}, /* deadSize */
+    },
+    
+    /* offsets */
+    {{0}},
+    
+    /* pixmapBits */
+    {{CMN_ID(walker_0,IDB_HIWALKER0),CMN_ID(walker_0b,IDB_HIWALKER0B),
+      CMN_ID(walker_0c,IDB_HIWALKER0C),CMN_ID(walker_0d,IDB_HIWALKER0D)},
+     {PH_AUTO_GEN},
+     {CMN_ID(walker_2,IDB_HIWALKER2),CMN_ID(walker_2b,IDB_HIWALKER2B)},
+     {PH_AUTO_GEN},
+     {CMN_ID(walker_4,IDB_HIWALKER4),CMN_ID(walker_4b,IDB_HIWALKER4B),
+      CMN_ID(walker_4c,IDB_HIWALKER4C),CMN_ID(walker_4d,IDB_HIWALKER4D)},
+     {CMN_ID(walker_5,IDB_HIWALKER5),CMN_ID(walker_5b,IDB_HIWALKER5B),
+      CMN_ID(walker_5c,IDB_HIWALKER5C),CMN_ID(walker_5d,IDB_HIWALKER5D)},
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},{PH_AUTO_GEN},
+     {CMN_ID(walker_4,IDB_HIWALKER4),CMN_ID(walker_4b,IDB_HIWALKER4B),
+      CMN_ID(walker_4c,IDB_HIWALKER4C),CMN_ID(walker_4d,IDB_HIWALKER4D)},
+     {CMN_ID(walker_4,IDB_HIWALKER4),CMN_ID(walker_4b,IDB_HIWALKER4B),
+      CMN_ID(walker_4c,IDB_HIWALKER4C),CMN_ID(walker_4d,IDB_HIWALKER4D)},
+     {PH_AUTO_GEN},     
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},{PH_AUTO_GEN},
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},{PH_AUTO_GEN},
+     {CMN_ID(walker_18,IDB_HIWALKER18)},
+     {PH_AUTO_GEN},
+     {CMN_ID(walker_18,IDB_HIWALKER18),CMN_ID(walker_20b,IDB_HIWALKER18B)},
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},
+     {CMN_ID(walker_18,IDB_HIWALKER18),CMN_ID(walker_20b,IDB_HIWALKER18B)},
+     {PH_AUTO_GEN},
+     {CMN_ID(walker_25,IDB_HIWALKER_DEAD)}, /* deadPixmapBits */
+    },
+    
+    /* maskBits */
+	{{0}},
+    
+    {/** PhysicalContext **/
+      200, /* health */
+      400, /* mass */
+      A_Walker, /* classId */
+      "walker", /* clas */
+
+      True, /* transmogifyTarget */
+      True, /* doppelUser */
+      True, /* potentialHuman */
+      True, /* potentialEnemy */
+      20, /* enemyWeight */
+      False, /* potentialWeapon */
+      False, /* potentialOtherItem */
+      0.0f, /* objectWorldPercent */
+      0, /* levelMaxTimes */
+      {37,28}, /* sizeMax */
+      Walker::create, /* create */
+      False, /* statsCreations */
+      False, /* statsUses */
+      True, /* statsDeaths */
+      Walker::get_stats, /* get_stats */
+      NULL, /* arg */
+      Walker::init_x, /* init_x */
+      Walker::create_from_stream, /* create_from_stream */
+    },
+    True, /* hiRes */
+    NULL, /* offsetGenerator */
+    &Creature::uprightTransformOverride, /* transformOverride */
+    True, /* useXPM */
+    True, /* invisibility */
+  },
+};
+
+
+
+const WalkingContext Walker::walkingContext =
+{ /** WalkingContext **/
+  0, /* dummy */
+};
+
+
+
+const UserContext Walker::userContext = 
+{ /** UserContext **/
+  True, /* usesWeapons */
+  True, /* usesItems */
+};
+
+
+
+// Also used by the AltarOfSin
+const BuiltInContext Walker::builtInContext =
+{ /** BuiltInContext **/
+  11, /* shotTime */
+  A_Lasers, /* weaponClassId */
+  "lasers", /* weaponStr */
+  5500, /* coolness */
+  SoundNames::LASER, /* attackSound */
+  Laser::get_size, /* get_shot_size */
+  Walker::create_shot, /* create_shot */
+  Laser::compute_weapon_dir, /* compute_weapon_dir */
+};
+
+
+
+const AnimTimeContext Walker::animTimeContext = 
+{ /** AnimTimeContext **/
+  3, /* animTime */
+};

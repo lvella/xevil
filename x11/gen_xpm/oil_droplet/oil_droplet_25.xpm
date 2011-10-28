@@ -1,0 +1,13 @@
+/* XPM */
+static char *oil_droplet_25[] = {
+  /* width height ncolors chars_per_pixel */
+  "14 4 2 1 0 0",
+  /* colors */
+  "! c #000000",
+  "# c None",
+  /* pixels */
+  "#######!!!!!!#",
+  "##!!!!!!!!!!!!",
+  "!!!!!!!!!!!!!#",
+  "########!!!###",
+};

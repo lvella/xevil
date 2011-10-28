@@ -1,0 +1,91 @@
+/* 
+ * XEvil(TM) Copyright (C) 1994,2000 Steve Hardt and Michael Judge
+ * http://www.xevil.com
+ * satan@xevil.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program, the file "gpl.txt"; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA, or visit http://www.gnu.org.
+ */
+
+
+#if X11
+#include "gen_xpm/fire/fire_4.xpm"
+#endif
+
+
+
+// Defines
+#define FIRE_HEAT 4
+#define FIRE_DAMAGE 3
+#define FIRE_DIAMETER_INIT  21
+#define FIRE_RADIUS_DELTA 2
+#define FIRE_VEL_Y -8
+
+
+
+Size Fire::get_size_max() {
+  // Starts out at max size then shrinks.
+  return context.sizeMax;
+}
+
+
+
+PhysicalP Fire::create(void *,WorldP w,LocatorP l,const Pos &pos) {
+  // Take this out if you need to.  
+  // Remember, here pos is the middle, not upper-left.
+  assert(0);
+
+  PhysicalP ret = new Fire(w,l,pos);
+  assert(ret);
+  return ret;
+}
+
+
+
+FireXdata Fire::xdata;
+
+
+
+// Should really be a FireContext.
+const CMN_BITS_ID Fire::fireBits = CMN_ID(fire_4,IDB_FIRE);
+
+
+
+const PhysicalContext Fire::context = 
+{/** PhysicalContext **/
+  0, /* health */
+  0, /* mass */
+  A_Fire, /* classId */
+  "fire", /* clas */
+
+  False, /* transmogifyTarget */
+  False, /* doppelUser */
+  False, /* potentialHuman */
+  False, /* potentialEnemy */
+  0, /* enemyWeight */
+  False, /* potentialWeapon */
+  False, /* potentialOtherItem */
+  0.0f, /* objectWorldPercent */
+  0, /* levelMaxTimes */
+  {FIRE_DIAMETER_INIT,FIRE_DIAMETER_INIT}, /* sizeMax */
+  Fire::create, /* create */
+  False, /* statsCreations */
+  False, /* statsUses */
+  False, /* statsDeaths */
+  NULL, /* get_stats */
+  NULL, /* arg */
+  Fire::init_x, /* init_x */
+  Fire::create_from_stream, /* create_from_stream */
+};

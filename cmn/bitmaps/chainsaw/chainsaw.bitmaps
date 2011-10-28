@@ -1,0 +1,267 @@
+/* 
+ * XEvil(TM) Copyright (C) 1994,2000 Steve Hardt and Michael Judge
+ * http://www.xevil.com
+ * satan@xevil.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program, the file "gpl.txt"; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA, or visit http://www.gnu.org.
+ */
+
+
+#if X11
+#include "gen_xpm/chainsaw/chainsaw_0.xpm"
+#include "gen_xpm/chainsaw/chainsaw_0b.xpm"
+#include "gen_xpm/chainsaw/chainsaw_0c.xpm"
+#include "gen_xpm/chainsaw/chainsaw_1.xpm"
+#include "gen_xpm/chainsaw/chainsaw_7.xpm"
+#include "gen_xpm/chainsaw/chainsaw_7b.xpm"
+#include "gen_xpm/chainsaw/chainsaw_1b.xpm"
+#include "gen_xpm/chainsaw/chainsaw_1c.xpm"
+#include "gen_xpm/chainsaw/chainsaw_4.xpm"
+#include "gen_xpm/chainsaw/chainsaw_4b.xpm"
+#include "gen_xpm/chainsaw/chainsaw_5.xpm"
+#include "gen_xpm/chainsaw/chainsaw_5b.xpm"
+#endif
+
+
+
+Size Chainsaw::get_size_max() {
+  return context.weaponContext.itemContext.fallingContext.movingContext.physicalContext.sizeMax;
+}
+
+
+
+PhysicalP Chainsaw::create(void *,WorldP w,LocatorP l,const Pos &pos) {
+  PhysicalP ret = new Chainsaw(w,l,pos);
+  assert(ret);
+  return ret;
+}
+
+
+
+static void chainsaw_get_item_info(Boolean &isItem,Boolean &isWeapon,
+                                   CMN_BITS_ID &iconId) {
+  isItem = True;
+  isWeapon = True;
+#if WIN32
+  iconId = IDB_CHAINSAW25;
+#endif
+#if X11
+  iconId = 0;
+#endif
+}
+
+
+
+CutterXdata Chainsaw::xdata;
+
+
+
+const CutterContext Chainsaw::context = 
+{ /** CutterContext **/
+  40, /* damage */
+
+  /* offsets */
+  {{8,-3},{-8,-3},{9,-1},{-9,-1},{-1,-15},{1,-3},
+     {0,-14},
+     {0,14},{0,-14},
+     {13,-2},
+     {13,-2},{-13,-2},
+     {0,14},
+     {0,14},{0,-14},
+     {14,-1},
+     {14,-1},{-14,-1},
+     {0,-15},
+     {0,16},{0,-15},
+     {0,-15},{0,15},
+     {8,-3},{-8,-3},
+   },
+  
+  SoundNames::CHAINSAW_SOUND,
+
+  { /** WeaponContext **/
+    0, /*weapon sound*/
+
+    { /** ItemContext **/
+      True, /* persists */
+      800, /* coolness */
+      0, /*item use sound */
+      
+      { /** FallingContext **/
+        {/** MovingContext **/
+#if WIN32
+          RGB(0,0,0)/*"black"*/,FALSE,
+          RGB(192,192,192)/*"gray70"*/,TRUE,
+#endif
+#if X11
+          "black",False,
+          "gray70",True,
+#endif
+          /* animMax */
+          {3,3,3,3,2,2,
+           2,
+           2,2,
+           3,
+           3,3,
+           2,
+           2,2,
+           3,
+           3,3,
+           2,
+           2,2,
+           2,2,
+           3,3,
+           1,  /* unheldAnimNum */
+          },
+
+          /* sizes */
+          {{19,9},{19,9},{19,9},{19,9},{9,19},{6,9},
+           {9,19},
+           {9,19},{9,19},
+           {19,9},
+           {19,9},{19,9},
+           {9,19},
+           {9,19},{9,19},
+           {19,9},
+           {19,9},{19,9},
+           {9,19},
+           {9,19},{9,19},
+           {9,19},{9,19},
+           {19,9},{19,9},
+           {19,9}, /* unheldSize */
+          },
+
+          /* offsets */
+          {{0}},
+          
+          /* pixmapBits */
+		  // Not worth the trouble to make the rotations/reflections
+		  // auto-generated, e.g. PH_AUTO_GEN
+          {{CMN_ID(chainsaw_0,IDB_CHAINSAW25),
+            CMN_ID(chainsaw_0b,IDB_CHAINSAW25B),
+            CMN_ID(chainsaw_0c,IDB_CHAINSAW25C)},
+           {CMN_ID(chainsaw_1,IDB_CHAINSAW33),
+            CMN_ID(chainsaw_1b,IDB_CHAINSAW33B),
+            CMN_ID(chainsaw_1c,IDB_CHAINSAW33C)},
+           {CMN_ID(chainsaw_0,IDB_CHAINSAW25),
+            CMN_ID(chainsaw_0b,IDB_CHAINSAW25B),
+            CMN_ID(chainsaw_0c,IDB_CHAINSAW25C)},
+           {CMN_ID(chainsaw_1,IDB_CHAINSAW33),
+            CMN_ID(chainsaw_1b,IDB_CHAINSAW33B),
+            CMN_ID(chainsaw_1c,IDB_CHAINSAW33C)},
+           {CMN_ID(chainsaw_4,IDB_CHAINSAW37),
+            CMN_ID(chainsaw_4b,IDB_CHAINSAW37B)},           
+           {CMN_ID(chainsaw_5,IDB_CHAINSAW5),
+            CMN_ID(chainsaw_5b,IDB_CHAINSAW5B)},
+           
+           /* _r */
+           {CMN_ID(chainsaw_4,IDB_CHAINSAW37),
+            CMN_ID(chainsaw_4b,IDB_CHAINSAW37B)},
+           {CMN_ID(chainsaw_4,IDB_CHAINSAW29),
+            CMN_ID(chainsaw_4b,IDB_CHAINSAW29B)},
+           {CMN_ID(chainsaw_4,IDB_CHAINSAW37),
+            CMN_ID(chainsaw_4b,IDB_CHAINSAW37B)},
+           
+           /* _dn */
+           {CMN_ID(chainsaw_0,IDB_CHAINSAW25),
+            CMN_ID(chainsaw_0b,IDB_CHAINSAW25B),
+            CMN_ID(chainsaw_0c,IDB_CHAINSAW25C)},
+           {CMN_ID(chainsaw_0,IDB_CHAINSAW25),
+            CMN_ID(chainsaw_0b,IDB_CHAINSAW25B),
+            CMN_ID(chainsaw_0c,IDB_CHAINSAW25C)},
+           {CMN_ID(chainsaw_1,IDB_CHAINSAW33),
+            CMN_ID(chainsaw_1b,IDB_CHAINSAW33B),
+            CMN_ID(chainsaw_1c,IDB_CHAINSAW33C)},
+           
+           /* _l */
+           {CMN_ID(chainsaw_4,IDB_CHAINSAW29),
+            CMN_ID(chainsaw_4b,IDB_CHAINSAW29B)},
+           {CMN_ID(chainsaw_4,IDB_CHAINSAW29),
+            CMN_ID(chainsaw_4b,IDB_CHAINSAW29B)},
+           {CMN_ID(chainsaw_4,IDB_CHAINSAW37),
+            CMN_ID(chainsaw_4b,IDB_CHAINSAW37B)},
+           
+           /* _up */
+           {CMN_ID(chainsaw_0,IDB_CHAINSAW25),
+            CMN_ID(chainsaw_0b,IDB_CHAINSAW25B),
+            CMN_ID(chainsaw_0c,IDB_CHAINSAW25C)},
+           {CMN_ID(chainsaw_0,IDB_CHAINSAW25),
+            CMN_ID(chainsaw_0b,IDB_CHAINSAW25B),
+            CMN_ID(chainsaw_0c,IDB_CHAINSAW25C)},
+           {CMN_ID(chainsaw_1,IDB_CHAINSAW33),
+            CMN_ID(chainsaw_1b,IDB_CHAINSAW33B),
+            CMN_ID(chainsaw_1c,IDB_CHAINSAW33C)},
+           
+           /* _climb and _air */
+           {CMN_ID(chainsaw_4,IDB_CHAINSAW37),
+            CMN_ID(chainsaw_4b,IDB_CHAINSAW37B)},
+           {CMN_ID(chainsaw_7,IDB_CHAINSAW29),
+            CMN_ID(chainsaw_7b,IDB_CHAINSAW29B)},
+           {CMN_ID(chainsaw_4,IDB_CHAINSAW37),
+            CMN_ID(chainsaw_4b,IDB_CHAINSAW37B)},
+           {CMN_ID(chainsaw_4,IDB_CHAINSAW37),
+            CMN_ID(chainsaw_4b,IDB_CHAINSAW37B)},
+           {CMN_ID(chainsaw_7,IDB_CHAINSAW29),
+            CMN_ID(chainsaw_7b,IDB_CHAINSAW29B)},
+           {CMN_ID(chainsaw_0,IDB_CHAINSAW25),
+            CMN_ID(chainsaw_0b,IDB_CHAINSAW25B),
+            CMN_ID(chainsaw_0c,IDB_CHAINSAW25C)},
+           {CMN_ID(chainsaw_1,IDB_CHAINSAW33),
+            CMN_ID(chainsaw_1b,IDB_CHAINSAW33B),
+            CMN_ID(chainsaw_1c,IDB_CHAINSAW33C)},
+           
+           /* unheldPixmapBits */
+           {CMN_ID(chainsaw_0,IDB_CHAINSAW25)}, 
+          },
+          
+          /* maskBits */
+          {{0}},
+          
+          { /** PhysicalContext **/
+            200, /* health */
+            1000, /* mass */
+            A_Chainsaw, /* classId */
+            "chainsaw", /* clas */
+            
+            False, /* transmogifyTarget */
+            False, /* doppelUser */
+            False, /* potentialHuman */
+            False, /* potentialEnemy */
+            0, /* enemyWeight */
+            True, /* potentialWeapon */
+            False, /* potentialOtherItem */
+            .0002f, /* objectWorldPercent */
+            0, /* levelMaxTimes */
+            {19,19}, /* sizeMax */
+            Chainsaw::create, /* create */
+            False, /* statsCreations */
+            False, /* statsUses */
+            False, /* statsDeaths */
+            NULL, /* get_stats */
+            NULL, /* arg */
+            Chainsaw::init_x, /* init_x */
+            Chainsaw::create_from_stream, /* create_from_stream */
+            chainsaw_get_item_info, /* get_item_info */
+          },
+          True, /* hiRes */
+          0, /* offsetGenerator */
+          0, /* transformOverride */
+          True, /* useXPM */
+        },
+      },
+    },
+  },
+};
+

@@ -1,0 +1,30 @@
+XEvil.right_center:                     KP_5
+
+XEvil.right_right:                      KP_6
+
+XEvil.right_down_right:                 KP_3
+
+XEvil.right_down:                       KP_2
+
+XEvil.right_down_left:                  KP_1
+
+XEvil.right_left:                       KP_4
+
+XEvil.right_up_left:                    KP_7
+
+XEvil.right_up:                         KP_8
+
+XEvil.right_up_right:                   KP_9
+
+XEvil.right_weapon_use:                 Help
+
+XEvil.right_weapon_change:              Home
+
+XEvil.right_weapon_drop:                Prior
+
+XEvil.right_item_use:                   Select
+
+XEvil.right_item_change:                End
+
+XEvil.right_item_drop:                  Next
+

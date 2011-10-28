@@ -1,0 +1,30 @@
+XEvil.right_center:                     R11
+
+XEvil.right_right:                      Right
+
+XEvil.right_down_right:                 R15
+
+XEvil.right_down:                       Down
+
+XEvil.right_down_left:                  R13
+
+XEvil.right_left:                       Left
+
+XEvil.right_up_left:                    R7
+
+XEvil.right_up:                         Up
+
+XEvil.right_up_right:                   R9
+
+XEvil.right_weapon_use:                 R1
+
+XEvil.right_weapon_change:              R2
+
+XEvil.right_weapon_drop:                R3
+
+XEvil.right_item_use:                   R4
+
+XEvil.right_item_change:                R5
+
+XEvil.right_item_drop:                  R6
+

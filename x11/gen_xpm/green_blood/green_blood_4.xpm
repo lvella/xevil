@@ -1,0 +1,17 @@
+/* XPM */
+static char *green_blood_4[] = {
+  /* width height ncolors chars_per_pixel */
+  "4 8 2 1 0 0",
+  /* colors */
+  "! c #00ff00",
+  "# c None",
+  /* pixels */
+  "#!!#",
+  "!!!!",
+  "!!!!",
+  "!!!!",
+  "!!!!",
+  "!!!!",
+  "!!!!",
+  "#!!#",
+};

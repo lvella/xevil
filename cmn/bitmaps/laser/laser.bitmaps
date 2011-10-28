@@ -1,0 +1,168 @@
+/* 
+ * XEvil(TM) Copyright (C) 1994,2000 Steve Hardt and Michael Judge
+ * http://www.xevil.com
+ * satan@xevil.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program, the file "gpl.txt"; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA, or visit http://www.gnu.org.
+ */
+
+
+#if X11
+#include "gen_xpm/laser/laser_25.xpm"
+#include "gen_xpm/laser/laser_28.xpm"
+#endif
+
+
+
+Size Laser::get_size(Dir dir) {
+  return context.movingContext.sizes[dir];
+}
+
+
+
+Size Laser::get_size_max() {
+  return context.movingContext.physicalContext.sizeMax;
+}
+
+
+
+PhysicalP Laser::create(void *,WorldP,LocatorP,const Pos &) {
+  assert(0);
+  return NULL;
+}
+
+
+
+ShotXdata Laser::xdata;
+
+const ShotContext Laser::context = 
+{/** ShotContext **/
+  35, /* damage */
+  40, /* speed */
+  0,/*soundid*/
+  False, /*repeatingsound*/
+
+  {/** MovingContext **/
+#if X11
+    "green4",False,
+    "black",False, 
+#endif    
+#if WIN32
+    RGB(0,255,0)/*"green4"*/,False,
+    RGB(0,0,0)/*"black"*/,False, 
+#endif
+    
+    /* animMax */
+    {0,0,0,0,0,0,
+     0,
+     0,0,
+     0,
+     0,0,
+     0,
+     0,0,
+     0,
+     0,0,
+     0,
+     0,0,
+     0,0,
+     0,0,  
+     1,1,1,1,
+     1,1,1,1,
+     1,1,1,1,
+     1,1,1,1,
+   },
+    
+    /* sizes */
+    {{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},
+     {0},
+     {0},{0},
+     {0},
+     {0},{0},
+     {0},
+     {0},{0},
+     {0},
+     {0},{0},
+     {0},
+     {0},{0},
+     {0},{0},
+     {0},{0},
+     {30,1},{30,1},{30,1},{1,30},
+     {1,30},{1,30},{30,1},{30,1},
+     {30,1},{30,1},{30,1},{1,30},
+     {1,30},{1,30},{30,1},{30,1},
+   },
+
+    /* offsets */
+    {{0},},
+    
+    /* pixmapBits */
+    {{0},{0},{0},{0},{0},{0},
+     {0},
+     {0},{0},
+     {0},
+     {0},{0},
+     {0},
+     {0},{0},
+     {0},
+     {0},{0},
+     {0},
+     {0},{0},
+     {0},{0},
+     {0},{0},
+     {CMN_ID(laser_25,IDB_LASER_HORIZ)},{CMN_ID(laser_25,IDB_LASER_HORIZ)},
+     {CMN_ID(laser_25,IDB_LASER_HORIZ)},{CMN_ID(laser_28,IDB_LASER_VERT)},
+     {CMN_ID(laser_28,IDB_LASER_VERT)},{CMN_ID(laser_28,IDB_LASER_VERT)},
+     {CMN_ID(laser_25,IDB_LASER_HORIZ)},{CMN_ID(laser_25,IDB_LASER_HORIZ)},
+     {CMN_ID(laser_25,IDB_LASER_HORIZ)},{CMN_ID(laser_25,IDB_LASER_HORIZ)},
+     {CMN_ID(laser_25,IDB_LASER_HORIZ)},{CMN_ID(laser_28,IDB_LASER_VERT)},
+     {CMN_ID(laser_28,IDB_LASER_VERT)},{CMN_ID(laser_28,IDB_LASER_VERT)},
+     {CMN_ID(laser_25,IDB_LASER_HORIZ)},{CMN_ID(laser_25,IDB_LASER_HORIZ)},
+    },
+    
+    /* maskBits */
+    {{0}},
+
+    {/** PhysicalContext **/
+      1, /* health */
+      0, /* mass */
+      A_Laser, /* classId */
+      "laser", /* clas */
+
+      False, /* transmogifyTarget */
+      False, /* doppelUser */
+      False, /* potentialHuman */
+      False, /* potentialEnemy */
+      0, /* enemyWeight */
+      False, /* potentialWeapon */
+      False, /* potentialOtherItem */
+      0.0f, /* objectWorldPercent */
+      0, /* levelMaxTimes */
+      {30,30}, /* sizeMax */
+      Laser::create, /* create */
+      True, /* statsCreations */
+      False, /* statsUses */
+      False, /* statsDeaths */
+      Laser::get_stats, /* get_stats */
+      NULL, /* arg */
+      Laser::init_x, /* init_x */
+      Laser::create_from_stream, /* create_from_stream */
+    },
+    True, /* hiRes */
+    Coord::zero_offset_generator, /* offsetGenerator */
+    0, /* transformOverride */
+    True, /* useXPM */
+  },
+};

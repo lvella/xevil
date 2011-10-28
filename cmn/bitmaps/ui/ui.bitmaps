@@ -1,0 +1,49 @@
+/* 
+ * XEvil(TM) Copyright (C) 1994,2000 Steve Hardt and Michael Judge
+ * http://www.xevil.com
+ * satan@xevil.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program, the file "gpl.txt"; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA, or visit http://www.gnu.org.
+ */
+
+#ifndef UI_BITMAPS
+#define UI_BITMAPS
+
+#include "utils.h"
+
+#include "ui/reaper.xbm"
+#include "ui/null_cursor"
+#include "ui/insensitive"
+#include "ui/xevil_icon.xpm"
+
+
+#define XPM_ICON_BITS xevil_icon
+
+#define ICON_BITS (char *)reaper_bits
+#define ICON_WIDTH reaper_width
+#define ICON_HEIGHT reaper_height
+
+#define CURSOR_BITS (char *)null_cursor_bits
+#define CURSOR_MASK_BITS (char *)null_cursor_bits
+#define CURSOR_WIDTH null_cursor_width
+#define CURSOR_HEIGHT null_cursor_height
+#define CURSOR_HOT_X null_cursor_x_hot
+#define CURSOR_HOT_Y null_cursor_y_hot
+
+#define INSENSITIVE_BITS (char *)insensitive_bits
+#define INSENSITIVE_WIDTH insensitive_width
+#define INSENSITIVE_HEIGHT insensitive_height
+#endif

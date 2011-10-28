@@ -1,0 +1,225 @@
+/* 
+ * XEvil(TM) Copyright (C) 1994,2000 Steve Hardt and Michael Judge
+ * http://www.xevil.com
+ * satan@xevil.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program, the file "gpl.txt"; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA, or visit http://www.gnu.org.
+ */
+
+
+#if X11
+#include "gen_xpm/dragon/dragon_0.xpm"
+#include "gen_xpm/dragon/dragon_25.xpm"
+#include "gen_xpm/dragon/dragon_26.xpm"
+#include "gen_xpm/dragon/dragon_26b.xpm"
+#include "gen_xpm/dragon/dragon_26c.xpm"
+#include "gen_xpm/dragon/dragon_26d.xpm"
+#endif
+
+
+
+#define DRAGON_FIREBALL_HEAT 4
+#define DRAGON_FIREBALL_TIME 20
+
+
+
+Size Dragon::get_size_max() {
+  return creatureContext.movingContext.physicalContext.sizeMax;
+}
+
+
+
+PhysicalP Dragon::create(void *,WorldP w,LocatorP l,const Pos &pos) {
+  PhysicalP ret = new Dragon(w,l,pos);
+  assert(ret);
+  return ret;
+}
+
+
+
+CreatureXdata Dragon::creatureXdata;
+FlyingXdata Dragon::flyingXdata;
+BuiltInXdata Dragon::builtInXdata;
+OnFireXdata Dragon::onFireXdata;
+SegmentedXdata Dragon::segmentedXdata;
+
+
+
+const CreatureContext Dragon::creatureContext =
+{ /** CreatureContext **/
+  0, /* crawlSpeed */
+  8, /* centerSpeed */
+  8, /* airSpeed */
+  0, /* climbSpeed */
+  8,  /* jump */
+  2,  /* acceleration */ 
+  200, /* corpseHealth */
+  
+  False, /* biological */
+  DROPLET_NONE, /* dropletType */
+  0, /* deadSoundId */
+
+  {/** MovingContext **/
+#if WIN32
+    RGB(255,0,0)/*"red4"*/,FALSE,
+    RGB(255,128,0)/*"orangered"*/,TRUE,
+#endif
+
+#if X11  
+    "red4",False,
+    "orangered",True,
+#endif    
+    
+    /* animMax */
+    {1,1,1,1,1,1,
+     0,
+     0,0,
+     0,
+     0,0,
+     0,
+     0,0,
+     0,
+     0,0,
+     0,
+     0,0,
+     1,1,
+     0,0,
+     1, /* deadAnimMax */
+     4, /* segmented head */
+    },
+    
+    /* sizes */
+    {{28,29},{28,29},{28,29},{28,29},{28,29},{28,29},
+     {0,0},
+     {0,0},{0,0},
+     {0,0},
+     {0,0},{0,0},
+     {0,0},
+     {0,0},{0,0},
+     {0,0},
+     {0,0},{0,0},
+     {0,0},           /* Must be    */
+     {0,0},{0,0},     /* same size. */
+     {28,29},{28,29},
+     {0,0},{0,0},
+     {28,14}, /* deadSize */
+     {28,29}, /* segmented head */
+    },
+    
+    /* offsets */
+    {{0}},
+    
+    /* pixmapBits */
+    {{CMN_ID(dragon_0,IDB_DRAGONBODY)},
+     {CMN_ID(dragon_0,IDB_DRAGONBODY)},
+     {CMN_ID(dragon_0,IDB_DRAGONBODY)},
+     {CMN_ID(dragon_0,IDB_DRAGONBODY)},
+     {CMN_ID(dragon_0,IDB_DRAGONBODY)},
+     {CMN_ID(dragon_0,IDB_DRAGONBODY)},
+     {0},
+     {0},{0},
+     {0},
+     {0},{0},
+     {0},
+     {0},{0},
+     {0},
+     {0},{0},
+     {0},
+     {0},{0},
+     {CMN_ID(dragon_0,IDB_DRAGONBODY)},
+     {CMN_ID(dragon_0,IDB_DRAGONBODY)},
+     {0},{0},
+     {CMN_ID(dragon_25,IDB_DRAGONDEAD)}, /* deadPixmapBits */
+     {CMN_ID(dragon_26,IDB_DRAGONHEAD),
+      CMN_ID(dragon_26b,IDB_DRAGONHEADB),
+      CMN_ID(dragon_26c,IDB_DRAGONHEADC),
+      CMN_ID(dragon_26d,IDB_DRAGONHEADD)}, /* segmented head */
+    },
+    
+    /* maskBits */
+    {{0}},
+
+    {/** PhysicalContext **/
+      68, /* health */
+      600, /* mass */
+      A_Dragon, /* classId */
+      "dragon", /* clas */
+
+      False, /* transmogifyTarget */
+      False, /* doppelUser */
+      False, /* potentialHuman */
+      False, /* potentialEnemy */
+      0, /* enemyWeight */
+      False, /* potentialWeapon */
+      False, /* potentialOtherItem */
+      0.0f, /* objectWorldPercent */
+      0, /* levelMaxTimes */
+      {28,29}, /* sizeMax */
+      Dragon::create, /* create */
+      False, /* statsCreations */
+      False, /* statsUses */
+      False, /* statsDeaths */
+      NULL, /* get_stats */
+      NULL, /* arg */
+      Dragon::init_x, /* init_x */
+      Dragon::create_from_stream, /* create_from_stream */
+    },
+    True, /* hires */
+    0, /* offsetGenerator */
+    0, /* transformOverride */
+    True, /* useXPM */
+    False, /* invisibility */
+  },
+};
+
+
+
+const FlyingContext Dragon::flyingContext =
+{ /** FlyingContext **/
+  4, /* gravTime */
+};
+
+
+
+// copied from FireDemon
+const BuiltInContext Dragon::builtInContext =
+{ /** BuiltInContext **/
+  10, /* shotTime */
+  A_Fireballs, /* weaponClassId */
+  "fireballs", /* weaponStr */
+  90000, /* coolness */
+  0, /* attackSound */
+  Dragon::get_shot_size, /* get_shot_size */
+  Dragon::create_shot,   /* create_shot */
+  NULL,                  /* compute_weapon_dir */
+};
+
+
+
+// copied from FireDemon
+const OnFireContext Dragon::onFireContext =
+{ /** OnFireContext **/
+  1, /* fires */
+  6, /* heat */
+  False, /* deadBurns */
+};
+
+
+
+const SegmentedContext Dragon::segmentedContext =
+{ /** SegmentedContext **/
+  14, /* followDistance */
+};

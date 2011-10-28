@@ -1,0 +1,163 @@
+/* 
+ * XEvil(TM) Copyright (C) 1994,2000 Steve Hardt and Michael Judge
+ * http://www.xevil.com
+ * satan@xevil.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program, the file "gpl.txt"; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA, or visit http://www.gnu.org.
+ */
+
+
+#if X11
+#include "gen_xpm/egg/egg_4.xpm"
+#include "gen_xpm/egg/egg_5.xpm"
+#endif
+
+
+
+// Any Human w/in this radius will trigger the Egg.
+#define EGG_RADIUS 170
+// Chance that the generated hugger will be a green hugger.
+#define EGG_GREEN_HUGGER_PERCENT 5
+
+#define EGG_HUGGER_EJECT_HEIGHT 20
+
+
+
+Size Egg::get_size_max() {
+  return context.movingContext.physicalContext.sizeMax;
+}
+
+
+
+PhysicalP Egg::create(void *,WorldP,LocatorP,const Pos &) {
+  assert(0);
+
+  // Be careful, constructor for Egg requires the IntelOptions for an Alien,
+  // and this is only really known by Game.  (Game::intel_options_for()).
+  return NULL;
+}
+
+
+
+FallingXdata Egg::xdata;
+
+
+
+const FallingContext Egg::context = 
+{/** FallingContext **/
+  {/** MovingContext **/
+#if X11
+    "green4",True,
+    "gray30",False,
+#endif
+#if WIN32
+    RGB(0,128,0)/*"green4"*/,TRUE,
+    RGB(96,96,96)/*"gray30"*/,FALSE,
+#endif
+    
+    /* animMax */
+    {0,0,0,0,1,1,  // Note: using CO_center for the open egg.
+     0,
+     0,0,
+     0,
+     0,0,
+     0,
+     0,0,
+     0,
+     0,0,
+     0,
+     0,0,
+     0,0,
+     0,0,  
+     0,0,0,0,
+     0,0,0,0,
+     0,0,0,0,
+     0,0,0,0,
+    },
+    
+    /* sizes */
+    {{0,0},{0,0},{0,0},{0,0},{10,15},{10,15},
+     {0},
+     {0},{0},
+     {0},
+     {0},{0},
+     {0},
+     {0},{0},
+     {0},
+     {0},{0},
+     {0},
+     {0},{0},
+     {0},{0},
+     {0},{0},
+     {0,0},{0,0},{0,0},{0,0},
+     {0,0},{0,0},{0,0},{0,0},
+     {0,0},{0,0},{0,0},{0,0},
+     {0,0},{0,0},{0,0},{0,0},
+    },
+
+    /* offsets */
+    {{0}},
+    
+    /* pixmapBits */
+    {{0},{0},{0},{0},{CMN_ID(egg_4,IDB_EGG)},{CMN_ID(egg_5,IDB_EGG_OPEN)},
+     {0},
+     {0},{0},
+     {0},
+     {0},{0},
+     {0},
+     {0},{0},
+     {0},
+     {0},{0},
+     {0},
+     {0},{0},
+     {0},{0},
+     {0},{0},
+    },
+
+    /* maskBits */
+    {{0}},
+
+    {/* PhysicalContext */
+      100, /* health */
+      50, /* mass */
+      A_Egg, /* classId */
+      "egg", /* clas */
+
+      False, /* transmogifyTarget */
+      False, /* doppelUser */
+      False, /* potentialHuman */
+      False, /* potentialEnemy */
+      0, /* enemyWeight */
+      False, /* potentialWeapon */
+      False, /* potentialOtherItem */
+      0.0f, /* objectWorldPercent */
+      0, /* levelMaxTimes */
+	  {10,15}, /* sizeMax */
+      Egg::create, /* create */
+      False, /* statsCreations */
+      False, /* statsUses */
+      False, /* statsDeaths */
+      NULL, /* get_stats */
+      NULL, /* arg */
+      Egg::init_x, /* init_x */
+      Egg::create_from_stream, /* create_from_stream */
+    },
+    True, /* hiRes */
+    0, /* offsetGenerator */
+    0, /* transformOverride */
+    True, /* useXPM */
+  },
+};

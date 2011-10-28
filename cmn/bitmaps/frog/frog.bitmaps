@@ -1,0 +1,183 @@
+/* 
+ * XEvil(TM) Copyright (C) 1994,2000 Steve Hardt and Michael Judge
+ * http://www.xevil.com
+ * satan@xevil.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program, the file "gpl.txt"; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA, or visit http://www.gnu.org.
+ */
+
+  
+#if X11
+#include "gen_xpm/frog/frog_0.xpm"
+#include "gen_xpm/frog/frog_2.xpm"
+#include "gen_xpm/frog/frog_24.xpm"
+#include "gen_xpm/frog/frog_25.xpm"
+#include "gen_xpm/frog/frog_4.xpm"
+#include "gen_xpm/frog/frog_5.xpm"
+#endif
+
+
+
+Size Frog::get_size_max() {
+  return creatureContext.movingContext.physicalContext.sizeMax;
+}
+
+
+
+PhysicalP Frog::create(void *,WorldP w,LocatorP l,const Pos &pos) {
+  PhysicalP ret = new Frog(w,l,pos);
+  assert(ret);
+  return ret;
+}
+
+
+
+CreatureXdata Frog::creatureXdata;
+HoppingXdata Frog::hoppingXdata;
+SuicideXdata Frog::suicideXdata;
+
+
+
+const CreatureContext Frog::creatureContext =
+{ /** CreatureContext **/
+  0, /* crawlSpeed */
+  0, /* centerSpeed */
+  15, /* airSpeed */
+  15, /* climbSpeed */
+  13,  /* jump */
+  0,  /* acceleration */ 
+  80, /* corpseHealth */
+  
+  True, /* biological */
+  DROPLET_BLOOD, /* dropletType */
+  SoundNames::FROG_DEATH,
+    
+  {/** MovingContext **/
+#if X11
+    "black", False,
+    "green4", False, 
+#endif
+#if WIN32
+    RGB(0,0,0)/*"black"*/, FALSE,
+    RGB(0,255,0)/*"green4"*/, FALSE, 
+#endif
+    
+    /* animMax */
+    {1,1,1,1,1,1,
+     0,
+     0,0,
+     0,
+     0,0,
+     0,
+     0,0,
+     0,
+     0,0,
+     1,
+     1,1,
+     1,1,
+     1,1,
+     1, /* deadAnimNum */
+    },
+    
+    /* sizes */
+    {{7,5},{7,5},{13,8},{13,8},{9,11},{9,5},
+     {0,0},
+     {0,0},{0,0},
+     {0,0},
+     {0,0},{0,0},
+     {0,0},
+     {0,0},{0,0},
+     {0,0},
+     {0,0},{0,0},
+     {9,5},          /* Must be   (trying same width) */
+     {9,11},{9,11},  /* same size. */
+     {9,11},{9,11},	
+     {13,8},{13,8},
+     {7,7}, /* deadSize */
+     },
+    
+    /* offsets */
+    {{0}},
+    
+    /* pixmapBits */
+    {{CMN_ID(frog_0,IDB_FROG0)},{PH_AUTO_GEN},
+     {CMN_ID(frog_2,IDB_FROG2)},{PH_AUTO_GEN},
+     {CMN_ID(frog_4,IDB_FROG4)},{CMN_ID(frog_5,IDB_FROG5)},
+     {0},
+     {0},{0},
+     {0},
+     {0},{0},
+     {0},
+     {0},{0},
+     {0},
+     {0},{0},
+     {CMN_ID(frog_5,IDB_FROG5)},
+     {PH_AUTO_GEN},{CMN_ID(frog_4,IDB_FROG4)},
+     {PH_AUTO_GEN},{PH_AUTO_GEN},
+     {CMN_ID(frog_2,IDB_FROG2)},{CMN_ID(frog_24,IDB_FROG3)},
+     {CMN_ID(frog_25,IDB_FROG_DEAD)}, /* deadPixmapBits */
+    },
+
+    /* maskBits */
+    {{0}},
+
+    {/** PhysicalContext **/
+      10, /* health */
+      15, /* mass */
+      A_Frog, /* classId */
+      "frog", /* clas */
+
+      True, /* transmogifyTarget */
+      True, /* doppelUser */
+      False, /* potentialHuman */
+      False, /* potentialEnemy */
+      0, /* enemyWeight */
+      False, /* potentialWeapon */
+      False, /* potentialOtherItem */
+      0.0f, /* objectWorldPercent */
+      0, /* levelMaxTimes */
+      {13,11}, /* sizeMax */
+      Frog::create, /* create */
+      False, /* statsCreations */
+      False, /* statsUses */
+      True, /* statsDeaths */
+      Frog::get_stats, /* get_stats */
+      NULL, /* arg */
+      Frog::init_x, /* init_x */
+      Frog::create_from_stream, /* create_from_stream */
+    },
+    True, /* hiRes */
+    0, /* offsetGenerator */
+    0, /* transformOverride */
+    True, /* useXPM */
+	False, /* invisibility */
+  },
+};
+
+
+
+const HoppingContext Frog::hoppingContext =
+{ /** HoppingContext **/
+  0, /* dummy */
+};
+
+
+
+const SuicideContext Frog::suicideContext =
+{ /** SuicideContext **/
+  0, /* dummy */
+};
+

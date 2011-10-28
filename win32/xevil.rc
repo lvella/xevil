@@ -1,0 +1,1008 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "#ifdef _WIN32\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#endif\r\n"
+    "#include ""res\\XEvil.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""afxres.rc""         // Standard components\r\n"
+    "#endif\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDR_MAINFRAME ACCELERATORS PRELOAD MOVEABLE PURE 
+BEGIN
+    "N",            ID_FILE_NEW,            VIRTKEY, CONTROL
+    "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL
+    "S",            ID_FILE_SAVE,           VIRTKEY, CONTROL
+    "Z",            ID_EDIT_UNDO,           VIRTKEY, CONTROL
+    "X",            ID_EDIT_CUT,            VIRTKEY, CONTROL
+    "C",            ID_EDIT_COPY,           VIRTKEY, CONTROL
+    "V",            ID_EDIT_PASTE,          VIRTKEY, CONTROL
+    VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT
+    VK_DELETE,      ID_EDIT_CUT,            VIRTKEY, SHIFT
+    VK_INSERT,      ID_EDIT_COPY,           VIRTKEY, CONTROL
+    VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY, SHIFT
+    VK_F6,          ID_NEXT_PANE,           VIRTKEY 
+    VK_F6,          ID_PREV_PANE,           VIRTKEY, SHIFT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOG DISCARDABLE  0, 0, 317, 223
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "XEvil License Agreement"
+FONT 8, "MS Sans Serif"
+BEGIN
+    PUSHBUTTON      "Accept",IDOK,116,202,34,14,WS_GROUP
+    DEFPUSHBUTTON   "Reject",IDCANCEL,166,202,34,14
+    CONTROL         "Full Screen",IDC_FULLSCREEN,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,144,9,51,10
+    CONTROL         "Draw Background",IDC_DRAWBACKGROUND,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,210,9,80,10
+    EDITTEXT        IDC_LICENSETEXT,7,27,303,170,ES_MULTILINE | ES_READONLY | 
+                    WS_VSCROLL
+    ICON            IDR_XEVIL,IDC_STATIC,101,4,20,20
+    CTEXT           "XEvil(TM)  2.0",IDC_VERSION,38,8,62,10
+    ICON            IDR_XEVIL,IDC_STATIC,13,4,20,20
+END
+
+IDD_TIMESTAMPFAILED DIALOG DISCARDABLE  0, 0, 186, 71
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Version Expired!"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "Quit",IDOK,27,50,50,14
+    PUSHBUTTON      "Ignore this Message",IDCANCEL,87,50,76,14
+    LTEXT           "This version of XEvil has expired. Download the most recent version from www.xevil.com.",
+                    IDC_STATIC,15,16,149,30
+END
+
+IDD_OPTIONS DIALOG DISCARDABLE  0, 0, 266, 182
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Options"
+FONT 8, "MS Sans Serif"
+BEGIN
+    CONTROL         "&Levels",IDC_STYLELEVELS,"Button",BS_AUTORADIOBUTTON | 
+                    WS_GROUP | WS_TABSTOP,20,24,37,10
+    CONTROL         "&Scenarios Only",IDC_STYLESCENARIOS,"Button",
+                    BS_AUTORADIOBUTTON,20,37,62,10
+    CONTROL         "&Kill Kill Kill",IDC_STYLEKILL,"Button",
+                    BS_AUTORADIOBUTTON,20,50,46,10
+    CONTROL         "&Duel",IDC_STYLEDUEL,"Button",BS_AUTORADIOBUTTON,20,63,
+                    46,10
+    CONTROL         "&Extended Duel",IDC_STYLEEXTENDED,"Button",
+                    BS_AUTORADIOBUTTON,20,76,62,10
+    CONTROL         "&Training",IDC_STYLETRAINING,"Button",
+                    BS_AUTORADIOBUTTON,20,89,41,10
+    CONTROL         "Cooperative",IDC_COOPERATIVE,"Button",BS_AUTOCHECKBOX | 
+                    WS_GROUP | WS_TABSTOP,20,104,54,10
+    EDITTEXT        IDC_NUMMACHINES,7,124,24,14,ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "Regenerate Enemies",IDC_REFILLMACHINES,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,7,157,82,10
+    CONTROL         "Slider1",IDC_SOUNDTRACKVOL,"msctls_trackbar32",
+                    TBS_AUTOTICKS | TBS_TOP | WS_TABSTOP,104,39,61,18
+    CONTROL         "Slider1",IDC_EFFECTVOL,"msctls_trackbar32",
+                    TBS_AUTOTICKS | TBS_TOP | WS_TABSTOP,104,74,61,18
+    CONTROL         "Sound",IDC_SOUNDONOFF,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,113,101,37,10
+    CONTROL         "Slider1",IDC_GAMESPEED,"msctls_trackbar32",
+                    TBS_AUTOTICKS | TBS_TOP | WS_TABSTOP,101,143,58,18
+    CONTROL         "None",IDC_SOUNDTYPE,"Button",BS_AUTORADIOBUTTON | 
+                    WS_GROUP | WS_TABSTOP,189,92,33,10
+    CONTROL         "CD tracks",IDC_RADIO8,"Button",BS_AUTORADIOBUTTON,189,
+                    79,47,10
+    CONTROL         "Wave Files",IDC_RADIO9,"Button",BS_AUTORADIOBUTTON | 
+                    NOT WS_VISIBLE,189,105,51,10
+    CONTROL         "MIDI Files",IDC_RADIO10,"Button",BS_AUTORADIOBUTTON,189,
+                    66,47,10
+    EDITTEXT        IDC_ROOMWIDTH,183,146,27,14,ES_AUTOHSCROLL | WS_GROUP
+    EDITTEXT        IDC_ROOMHEIGHT,220,146,27,14,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,209,7,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,209,24,50,14
+    GROUPBOX        "Game Style",IDC_STATIC,7,13,81,105
+    GROUPBOX        "Volume",IDC_STATIC,94,13,79,113
+    GROUPBOX        "Soundtrack",IDC_STATIC,180,49,79,60
+    LTEXT           "Enemy Player(s)",IDC_STATIC,33,127,56,8
+    LTEXT           "Game Speed:",IDC_STATIC,108,134,49,9,NOT WS_GROUP
+    CTEXT           "Soundtrack",IDC_STATIC,115,29,38,8
+    CTEXT           "Effects",IDC_STATIC,123,65,23,8
+    LTEXT           "Room Dimensions",IDC_STATIC,187,133,58,8
+    LTEXT           "x",IDC_STATIC,212,148,8,8
+    CONTROL         "Human Player",IDC_HUMAN,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,7,142,77,11
+END
+
+IDD_DIFFICULTY DIALOG DISCARDABLE  0, 0, 130, 79
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Difficulty"
+FONT 8, "MS Sans Serif"
+BEGIN
+    CONTROL         "Trivial",IDC_DIFFICULTY1,"Button",BS_AUTORADIOBUTTON | 
+                    WS_GROUP,7,7,35,10
+    CONTROL         "Normal",IDC_DIFFICULTY2,"Button",BS_AUTORADIOBUTTON,7,
+                    22,38,10
+    CONTROL         "Hard",IDC_RADIO3,"Button",BS_AUTORADIOBUTTON,7,37,31,10
+    CONTROL         "Bend Over",IDC_RADIO4,"Button",BS_AUTORADIOBUTTON,7,52,
+                    50,10
+    DEFPUSHBUTTON   "OK",IDOK,73,7,50,14,WS_GROUP
+    PUSHBUTTON      "Cancel",IDCANCEL,73,24,50,14
+END
+
+IDD_KEYSETS DIALOG DISCARDABLE  0, 0, 299, 181
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Keys"
+FONT 8, "MS Sans Serif"
+BEGIN
+    PUSHBUTTON      "PgDn",IDC_CENTER,187,68,42,26,WS_GROUP
+    PUSHBUTTON      "PgDn",IDC_R,238,68,42,26
+    PUSHBUTTON      "PgDn",IDC_LR,238,96,42,26
+    PUSHBUTTON      "PgDn",IDC_DOWN,187,96,42,26
+    PUSHBUTTON      "PgDn",IDC_LL,136,96,42,26
+    PUSHBUTTON      "PgDn",IDC_L,136,68,42,26
+    PUSHBUTTON      "PgDn",IDC_UL,136,40,42,26
+    PUSHBUTTON      "PgDn",IDC_UP,187,40,42,26
+    PUSHBUTTON      "PgDn",IDC_UR,238,40,42,26
+    PUSHBUTTON      "Up Arrow",IDC_WEAPONUSE,73,22,42,15
+    PUSHBUTTON      "PgDn",IDC_WEAPONCHANGE,73,39,42,15
+    PUSHBUTTON      "PgDn",IDC_WEAPONDROP,73,56,42,15
+    PUSHBUTTON      "PgDn",IDC_ITEMUSE,73,73,42,15
+    PUSHBUTTON      "PgDn",IDC_ITEMCHANGE,73,90,42,15
+    PUSHBUTTON      "PgDn",IDC_ITEMDROP,73,107,42,15
+    DEFPUSHBUTTON   "OK",IDOK,91,157,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,157,157,50,14
+    LTEXT           "Weapon use:",IDC_STATIC,7,25,44,8
+    LTEXT           "Weapon change:",IDC_STATIC,7,42,56,8
+    LTEXT           "Weapon drop:",IDC_STATIC,7,59,46,8
+    LTEXT           "Item use:",IDC_STATIC,7,76,30,8
+    LTEXT           "Item change:",IDC_STATIC,7,93,42,8
+    LTEXT           "Item drop:",IDC_STATIC,7,110,32,8
+    LTEXT           "Player 1 keys:",IDC_PLAYERSTATIC,7,7,45,8
+    GROUPBOX        "Movement",IDC_STATIC,126,24,166,109
+    LTEXT           "Chat:\n(network play only)",IDC_STATIC,7,127,61,17
+    PUSHBUTTON      "Space",IDC_CHAT,73,128,42,15
+END
+
+IDD_KEYHIT DIALOGEX 0, 0, 118, 47
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    CTEXT           "Hit a key.",IDC_MYSTATIC,31,17,31,8,0,WS_EX_TRANSPARENT
+END
+
+IDD_CONNECTSERVER DIALOG DISCARDABLE  0, 0, 186, 100
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Connect To Server"
+FONT 8, "MS Sans Serif"
+BEGIN
+    EDITTEXT        IDC_EDIT1,55,15,119,13,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT2,55,32,46,13,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT3,55,49,107,12,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,29,79,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,105,79,50,14
+    LTEXT           "Hostname",-1,22,18,33,8
+    LTEXT           "Port",-1,41,35,14,8
+    LTEXT           "Player Name (optional)",-1,14,49,41,18
+END
+
+IDD_RUNSERVER DIALOG DISCARDABLE  0, 0, 188, 114
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Run Server"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,32,94,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,105,94,50,14
+    EDITTEXT        IDC_EDIT1,83,7,81,12,ES_AUTOHSCROLL
+    CONTROL         "Player (This machine also plays in the game)",
+                    IDC_PLAYER,"Button",BS_AUTORADIOBUTTON | WS_GROUP,13,29,
+                    157,11
+    CONTROL         "Observer (The server just watches the game)",
+                    IDC_OBSERVER,"Button",BS_AUTORADIOBUTTON,13,47,157,10
+    LTEXT           "Run server on port",IDC_STATIC,17,8,64,9
+    GROUPBOX        "",IDC_STATIC,7,19,172,45
+    EDITTEXT        IDC_EDIT3,57,70,107,12,ES_AUTOHSCROLL
+    LTEXT           "Player Name (optional)",IDC_STATIC,14,68,43,18
+END
+
+IDD_STORY DIALOG DISCARDABLE  0, 0, 155, 90
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Story of XEvil"
+FONT 9, "Lucida Sans Unicode"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,61,71,32,12
+    CTEXT           "Sinners die.\nThey are judged and sent to Hell.\nA contest pits sinner against sinner,\nCompeting for rank in Hell.\nThis contest has a name,\nXEvil.",
+                    IDC_STATIC,7,7,141,56,SS_SUNKEN | WS_BORDER
+END
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 2,0,0,1
+ PRODUCTVERSION 2,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "Comments", "Chainsaws, Ninjas, SoulSwappers= XEvil\0"
+            VALUE "CompanyName", "XEvil Inc.\0"
+            VALUE "FileDescription", "XEvil2.0 Beta Demo\0"
+            VALUE "FileVersion", "2, 0, 0, 1\0"
+            VALUE "InternalName", "XEvil2.0 Beta\0"
+            VALUE "LegalCopyright", "Copyright © 1996,1997\0"
+            VALUE "LegalTrademarks", "XEvil\0"
+            VALUE "OriginalFilename", "XEvil.exe\0"
+            VALUE "ProductName", "XEvil2.0 Beta Demo\0"
+            VALUE "ProductVersion", "2, 0, 0, 1\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 310
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 216
+    END
+
+    IDD_TIMESTAMPFAILED, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 64
+    END
+
+    IDD_OPTIONS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 256
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 167
+    END
+
+    IDD_DIFFICULTY, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 123
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 72
+    END
+
+    IDD_KEYSETS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 292
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 174
+    END
+
+    IDD_KEYHIT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 111
+        TOPMARGIN, 6
+        BOTTOMMARGIN, 40
+    END
+
+    IDD_CONNECTSERVER, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 93
+    END
+
+    IDD_RUNSERVER, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 181
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 107
+    END
+
+    IDD_STORY, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 148
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 83
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_HISQUANCH           BITMAP  DISCARDABLE     "res\\bmp00003.bmp"
+IDB_LASER_VERT          BITMAP  DISCARDABLE     "res\\bmp00040.bmp"
+IDB_SHELL               BITMAP  DISCARDABLE     "res\\shell.bmp"
+IDB_LANCE_HORZ          BITMAP  DISCARDABLE     "res\\lance_ho.bmp"
+IDB_LANCE_VERT          BITMAP  DISCARDABLE     "res\\lance_ve.bmp"
+IDB_FROG_DEAD           BITMAP  DISCARDABLE     "res\\frog_dea.bmp"
+IDB_FROG5               BITMAP  DISCARDABLE     "res\\frog5.bmp"
+IDB_FROG4               BITMAP  DISCARDABLE     "res\\frog4.bmp"
+IDB_FROG2               BITMAP  DISCARDABLE     "res\\frog2.bmp"
+IDB_FROG0               BITMAP  DISCARDABLE     "res\\frog0.bmp"
+IDB_MISSLE40            BITMAP  DISCARDABLE     "res\\missle40.bmp"
+IDB_MISSLE39            BITMAP  DISCARDABLE     "res\\missle39.bmp"
+IDB_MISSLE25            BITMAP  DISCARDABLE     "res\\missle25.bmp"
+IDB_EMPTY               BITMAP  DISCARDABLE     "res\\empty.bmp"
+IDB_HERO10              BITMAP  DISCARDABLE     "res\\hero10.bmp"
+IDB_HHERO0_ATTACK       BITMAP  DISCARDABLE     "res\\hero0_at.bmp"
+IDB_BCEAGLE             BITMAP  DISCARDABLE     "res\\bceagle.bmp"
+IDB_SQUANCH_BIG         BITMAP  DISCARDABLE     "res\\squanch_.bmp"
+IDB_PENT                BITMAP  DISCARDABLE     "res\\pent.bmp"
+IDB_SKULL               BITMAP  DISCARDABLE     "res\\skull.bmp"
+IDB_PYRAMID             BITMAP  DISCARDABLE     "res\\pyramid.bmp"
+IDB_NICE_DAY            BITMAP  DISCARDABLE     "res\\happy.bmp"
+IDB_MOVER               BITMAP  DISCARDABLE     "res\\mover.bmp"
+IDB_VERTMOVERSQUARE     BITMAP  DISCARDABLE     "res\\moversqu.bmp"
+IDB_BGIND1              BITMAP  DISCARDABLE     "res\\ind1.bmp"
+IDB_RARROW_UP_R         BITMAP  DISCARDABLE     "res\\bmp00027.bmp"
+IDB_BGHELL1             BITMAP  DISCARDABLE     "res\\hell_1.bmp"
+IDB_PILLS               BITMAP  DISCARDABLE     "res\\pills.bmp"
+IDB_HICHOPPERBOY0       BITMAP  DISCARDABLE     "res\\Choppr0.bmp"
+IDB_HICHOPPERBOY0B      BITMAP  DISCARDABLE     "res\\Choppr0b.bmp"
+IDB_HICHOPPERBOY0C      BITMAP  DISCARDABLE     "res\\Choppr0c.bmp"
+IDB_HICHOPPERBOY0D      BITMAP  DISCARDABLE     "res\\Choppr0d.bmp"
+IDB_HICHOPPERBOY0E      BITMAP  DISCARDABLE     "res\\Choppr0e.bmp"
+IDB_HICHOPPERBOY0F      BITMAP  DISCARDABLE     "res\\Choppr0f.bmp"
+IDB_HICHOPPERBOY2       BITMAP  DISCARDABLE     "res\\Choppr2.bmp"
+IDB_HICHOPPERBOY2B      BITMAP  DISCARDABLE     "res\\Choppr2b.bmp"
+IDB_HICHOPPERBOY2C      BITMAP  DISCARDABLE     "res\\Choppr2c.bmp"
+IDB_HICHOPPERBOY2D      BITMAP  DISCARDABLE     "res\\Choppr2d.bmp"
+IDB_HICHOPPERBOY25      BITMAP  DISCARDABLE     "res\\Choppr25.bmp"
+IDB_HICHOPPERBOY4       BITMAP  DISCARDABLE     "res\\Choppr4.bmp"
+IDB_HICHOPPERBOY4B      BITMAP  DISCARDABLE     "res\\Choppr4b.bmp"
+IDB_HICHOPPERBOY4C      BITMAP  DISCARDABLE     "res\\Choppr4c.bmp"
+IDB_HICHOPPERBOY4D      BITMAP  DISCARDABLE     "res\\Choppr4d.bmp"
+IDB_HICHOPPERBOY5       BITMAP  DISCARDABLE     "res\\Choppr5.bmp"
+IDB_CAFFINE             BITMAP  DISCARDABLE     "res\\pepper1.bmp"
+IDB_HORIZMOVERSQUARE    BITMAP  DISCARDABLE     "res\\vertmove.bmp"
+IDB_HIWALL2             BITMAP  DISCARDABLE     "res\\Blok2.bmp"
+IDB_HILADDER2           BITMAP  DISCARDABLE     "res\\Ladder2.bmp"
+IDB_HIUPDOWN            BITMAP  DISCARDABLE     "res\\Endblok.bmp"
+IDB_HIDOOR1             BITMAP  DISCARDABLE     "res\\Door1.bmp"
+IDB_HIDOOR2             BITMAP  DISCARDABLE     "res\\hidoor2.bmp"
+IDB_HIOUTSIDE           BITMAP  DISCARDABLE     "res\\Outside.bmp"
+IDB_BGALIENNU           BITMAP  DISCARDABLE     "res\\Aliennu.bmp"
+IDB_BGHELL2             BITMAP  DISCARDABLE     "res\\Hell5.bmp"
+IDB_HICHOPPERBOY22      BITMAP  DISCARDABLE     "res\\Chopprd.bmp"
+IDB_HICHOPPERBOY22B     BITMAP  DISCARDABLE     "res\\Chopprdb.bmp"
+IDB_HICHOPPERBOY22C     BITMAP  DISCARDABLE     "res\\Chopprdc.bmp"
+IDB_HICHOPPERBOY22D     BITMAP  DISCARDABLE     "res\\Chopprdd.bmp"
+IDB_HIER1               BITMAP  DISCARDABLE     "res\\Heir2.bmp"
+IDB_HIOUTSIDE1          BITMAP  DISCARDABLE     "res\\Outa.bmp"
+IDB_HIOUTSIDE2          BITMAP  DISCARDABLE     "res\\Outb.bmp"
+IDB_HILADDER            BITMAP  DISCARDABLE     "res\\bmp00012.bmp"
+IDB_HHERO5              BITMAP  DISCARDABLE     "res\\hihero5.bmp"
+IDB_YARROW_UP_R         BITMAP  DISCARDABLE     "res\\bmp00127.bmp"
+IDB_YARROW_R            BITMAP  DISCARDABLE     "res\\yarrow_r.bmp"
+IDB_GARROW_UP_R         BITMAP  DISCARDABLE     "res\\bmp00134.bmp"
+IDB_GARROW_R            BITMAP  DISCARDABLE     "res\\garrow_r.bmp"
+IDB_BGINDUSTRIAL        BITMAP  DISCARDABLE     "res\\Indt2.bmp"
+IDB_HHERO0              BITMAP  DISCARDABLE     "res\\hero0.bmp"
+IDB_HHERO0F             BITMAP  DISCARDABLE     "res\\hero0f.bmp"
+IDB_HHERO0C             BITMAP  DISCARDABLE     "res\\hero0c.bmp"
+IDB_HHERO0D             BITMAP  DISCARDABLE     "res\\hero0d.bmp"
+IDB_HHERO0E             BITMAP  DISCARDABLE     "res\\hero0e.bmp"
+IDB_HHERO0B             BITMAP  DISCARDABLE     "res\\hero0b.bmp"
+IDB_BARROW_UP_R         BITMAP  DISCARDABLE     "res\\bmp00138.bmp"
+IDB_BARROW_R            BITMAP  DISCARDABLE     "res\\barrow_r.bmp"
+IDB_HITSHIELD           BITMAP  DISCARDABLE     "res\\Yshield.bmp"
+IDB_HINSHIELD           BITMAP  DISCARDABLE     "res\\Bshield.bmp"
+IDB_HIWEIGHT            BITMAP  DISCARDABLE     "res\\Weight2.bmp"
+IDB_HIERUPDOWN          BITMAP  DISCARDABLE     "res\\Henblok.bmp"
+IDB_HIERBLOK2           BITMAP  DISCARDABLE     "res\\Hblok.bmp"
+IDB_HICHOPPERBOY21D     BITMAP  DISCARDABLE     "res\\Chopprud.bmp"
+IDB_HICHOPPERBOY21B     BITMAP  DISCARDABLE     "res\\Chopprub.bmp"
+IDB_HICHOPPERBOY21C     BITMAP  DISCARDABLE     "res\\Choppruc.bmp"
+IDB_HICHOPPERBOY21      BITMAP  DISCARDABLE     "res\\Choppru.bmp"
+IDB_HIMEDKIT            BITMAP  DISCARDABLE     "res\\himedkit.bmp"
+IDB_HIALTAR             BITMAP  DISCARDABLE     "res\\hialtar.bmp"
+IDB_HIALTARB            BITMAP  DISCARDABLE     "res\\altar2.bmp"
+IDB_HIALTARC            BITMAP  DISCARDABLE     "res\\altar3.bmp"
+IDB_HHERO0B_ATTACK      BITMAP  DISCARDABLE     "res\\39a.bmp"
+IDB_HHERO10_ATTACK      BITMAP  DISCARDABLE     "res\\27a.bmp"
+IDB_HHERO10B_ATTACK     BITMAP  DISCARDABLE     "res\\27b.bmp"
+IDB_HHERO2              BITMAP  DISCARDABLE     "res\\Jump0.bmp"
+IDB_HIDOG0B             BITMAP  DISCARDABLE     "res\\!dog0_ru.bmp"
+IDB_HIDOG0_ATTACK       BITMAP  DISCARDABLE     "res\\Dog_att0.bmp"
+IDB_SEALDEAD            BITMAP  DISCARDABLE     "res\\sealdead.bmp"
+IDB_SEAL0               BITMAP  DISCARDABLE     "res\\seal0.bmp"
+IDB_SEAL0B              BITMAP  DISCARDABLE     "res\\seal0b.bmp"
+IDB_SEAL5               BITMAP  DISCARDABLE     "res\\sealcenter.bmp"
+IDB_HIDOG22_ATTACK      BITMAP  DISCARDABLE     "res\\Dg_atd.bmp"
+IDB_HIDOG21_ATTACK      BITMAP  DISCARDABLE     "res\\dg_atu.bmp"
+IDB_HIDOG2_ATTACK       BITMAP  DISCARDABLE     "res\\hidog2_a.bmp"
+IDB_HIDOG5B             BITMAP  DISCARDABLE     "res\\Dg5_b.bmp"
+IDB_HIDOG5              BITMAP  DISCARDABLE     "res\\Dg5_a.bmp"
+IDB_HIDOG21             BITMAP  DISCARDABLE     "res\\hidog21.bmp"
+IDB_HIDOG22             BITMAP  DISCARDABLE     "res\\hidog22.bmp"
+IDB_HIDOGDEAD           BITMAP  DISCARDABLE     "res\\hidogdea.bmp"
+IDB_HIDOG21B            BITMAP  DISCARDABLE     "res\\hidog21b.bmp"
+IDB_HIDOG22B            BITMAP  DISCARDABLE     "res\\hidog22b.bmp"
+IDB_HIDOG2              BITMAP  DISCARDABLE     "res\\hidog2.bmp"
+IDB_TITLE               BITMAP  DISCARDABLE     "res\\logob5.bmp"
+IDB_HITEXTSQUARE        BITMAP  DISCARDABLE     "res\\hitextbl.bmp"
+IDB_LANCER              BITMAP  DISCARDABLE     "res\\lancer1.bmp"
+IDB_HILAUNCHER          BITMAP  DISCARDABLE     "res\\hilaunch.bmp"
+IDB_HIPISTOL            BITMAP  DISCARDABLE     "res\\hipistol.bmp"
+IDB_MGUN1               BITMAP  DISCARDABLE     "res\\mgun1.bmp"
+IDB_NONE                BITMAP  DISCARDABLE     "res\\none.bmp"
+IDB_LASERS              BITMAP  DISCARDABLE     "res\\lasers.bmp"
+IDB_HIBOMB6             BITMAP  DISCARDABLE     "res\\hibomb6.bmp"
+IDB_WHEELBACKGROUND     BITMAP  DISCARDABLE     "res\\displayb.bmp"
+IDB_HIBOMB0             BITMAP  DISCARDABLE     "res\\hibomb0.bmp"
+IDB_HIBOMB1             BITMAP  DISCARDABLE     "res\\hibomb1.bmp"
+IDB_HIBOMB2             BITMAP  DISCARDABLE     "res\\hibomb2.bmp"
+IDB_HIBOMB3             BITMAP  DISCARDABLE     "res\\hibomb3.bmp"
+IDB_HIBOMB4             BITMAP  DISCARDABLE     "res\\hibomb4.bmp"
+IDB_HIBOMB5             BITMAP  DISCARDABLE     "res\\hibomb5.bmp"
+IDB_CHAINSAW25          BITMAP  DISCARDABLE     "res\\bmp00113.bmp"
+IDB_CHAINSAW25B         BITMAP  DISCARDABLE     "res\\bmp00111.bmp"
+IDB_CHAINSAW29          BITMAP  DISCARDABLE     "res\\bmp00109.bmp"
+IDB_CHAINSAW29B         BITMAP  DISCARDABLE     "res\\bmp00107.bmp"
+IDB_CHAINSAW33          BITMAP  DISCARDABLE     "res\\bmp00105.bmp"
+IDB_CHAINSAW33B         BITMAP  DISCARDABLE     "res\\bmp00103.bmp"
+IDB_CHAINSAW37          BITMAP  DISCARDABLE     "res\\bmp00101.bmp"
+IDB_CHAINSAW37B         BITMAP  DISCARDABLE     "res\\bmp00099.bmp"
+IDB_CHAINSAW5           BITMAP  DISCARDABLE     "res\\chainsaw.bmp"
+IDB_CHAINSAW5B          BITMAP  DISCARDABLE     "res\\bmp00096.bmp"
+IDB_CLOAK               BITMAP  DISCARDABLE     "res\\cloak.bmp"
+IDB_CLOAKB              BITMAP  DISCARDABLE     "res\\bmp00001.bmp"
+IDB_CLOAKC              BITMAP  DISCARDABLE     "res\\cloak1.bmp"
+IDB_CLOAKD              BITMAP  DISCARDABLE     "res\\cloak3.bmp"
+IDB_CLOAKE              BITMAP  DISCARDABLE     "res\\cloak4.bmp"
+IDB_CLOAKF              BITMAP  DISCARDABLE     "res\\cloak5.bmp"
+IDB_HIBOMBBLK           BITMAP  DISCARDABLE     "res\\hibombbl.bmp"
+IDB_CRACKPIPE           BITMAP  DISCARDABLE     "res\\bmp00016.bmp"
+IDB_DOGWHISTLE          BITMAP  DISCARDABLE     "res\\dwhistle.bmp"
+IDB_DOPPEL              BITMAP  DISCARDABLE     "res\\doppel.bmp"
+IDB_DOPPEL2             BITMAP  DISCARDABLE     "res\\doppel1.bmp"
+IDB_EGG                 BITMAP  DISCARDABLE     "res\\egg.bmp"
+IDB_EGG_OPEN            BITMAP  DISCARDABLE     "res\\egg_open.bmp"
+IDB_FTHROWER            BITMAP  DISCARDABLE     "res\\bmp00025.bmp"
+IDB_FIREBALL            BITMAP  DISCARDABLE     "res\\bmp00151.bmp"
+IDB_FIREBALLB           BITMAP  DISCARDABLE     "res\\flame2.bmp"
+IDB_FIREBALLC           BITMAP  DISCARDABLE     "res\\flame3.bmp"
+IDB_FROGGUN             BITMAP  DISCARDABLE     "res\\FROGGUN.BMP"
+IDB_FROG_SHELL          BITMAP  DISCARDABLE     "res\\frog_she.bmp"
+IDB_FROG_SHELLB         BITMAP  DISCARDABLE     "res\\bmp00081.bmp"
+IDB_GRENADE1            BITMAP  DISCARDABLE     "res\\grenade1.bmp"
+IDB_GRENADE2            BITMAP  DISCARDABLE     "res\\grenade4.bmp"
+IDB_GRENADE3            BITMAP  DISCARDABLE     "res\\grenade3.bmp"
+IDB_GRENADE4            BITMAP  DISCARDABLE     "res\\bmp00005.bmp"
+IDB_GRENADES            BITMAP  DISCARDABLE     "res\\GRENADES.BMP"
+IDB_HIHOME              BITMAP  DISCARDABLE     "res\\hihome.bmp"
+IDB_NAPALM1             BITMAP  DISCARDABLE     "res\\napalm1.bmp"
+IDB_NAPALM2             BITMAP  DISCARDABLE     "res\\napalm2.bmp"
+IDB_NAPALM3             BITMAP  DISCARDABLE     "res\\napalm3.bmp"
+IDB_NAPALM4             BITMAP  DISCARDABLE     "res\\napalm4.bmp"
+IDB_NAPALMS             BITMAP  DISCARDABLE     "res\\napalms.bmp"
+IDB_STAR                BITMAP  DISCARDABLE     "res\\star.bmp"
+IDB_STARB               BITMAP  DISCARDABLE     "res\\starb.bmp"
+IDB_STARS               BITMAP  DISCARDABLE     "res\\STARS.BMP"
+IDB_SWAP_SHELL          BITMAP  DISCARDABLE     "res\\bmp00074.bmp"
+IDB_SWAP_SHELLB         BITMAP  DISCARDABLE     "res\\bmp00084.bmp"
+IDB_SWAPPER             BITMAP  DISCARDABLE     "res\\SWAPPER.BMP"
+IDB_TRANSMOGIFIER       BITMAP  DISCARDABLE     "res\\bmp00078.bmp"
+IDB_DROP_SCHOOL         BITMAP  DISCARDABLE     "res\\drop_sch.bmp"
+IDB_STRANGLE_CAT        BITMAP  DISCARDABLE     "res\\cat.bmp"
+IDB_ROCKHI              BITMAP  DISCARDABLE     "res\\rockhi.bmp"
+IDB_ENFORCER0D          BITMAP  DISCARDABLE     "res\\Enf_0d.bmp"
+IDB_ENFORCER0B          BITMAP  DISCARDABLE     "res\\Enf_0b.bmp"
+IDB_ENFORCER0C          BITMAP  DISCARDABLE     "res\\Enf_0c.bmp"
+IDB_ENFORCER0A          BITMAP  DISCARDABLE     "res\\Enf_0a.bmp"
+IDB_ENFORCER5           BITMAP  DISCARDABLE     "res\\Enf_5.bmp"
+IDB_HHERO4              BITMAP  DISCARDABLE     "res\\hihero4.bmp"
+IDB_HHERO2_ATTACK       BITMAP  DISCARDABLE     "res\\bitmap3.bmp"
+IDB_HERO10B             BITMAP  DISCARDABLE     "res\\hero10b.bmp"
+IDB_CHAINSAW25C         BITMAP  DISCARDABLE     "res\\bmp00024.bmp"
+IDB_CHAINSAW33C         BITMAP  DISCARDABLE     "res\\bmp00055.bmp"
+IDB_HHERO22_ATTACK      BITMAP  DISCARDABLE     "res\\hihero22.bmp"
+IDB_HHERO18             BITMAP  DISCARDABLE     "res\\hihero19.bmp"
+IDB_HININJA0B           BITMAP  DISCARDABLE     "res\\Nin0b.bmp"
+IDB_HININJA0C           BITMAP  DISCARDABLE     "res\\Nin0c.bmp"
+IDB_HININJA0D           BITMAP  DISCARDABLE     "res\\Nin0d.bmp"
+IDB_HININJA0E           BITMAP  DISCARDABLE     "res\\Nin0e.bmp"
+IDB_HININJA0F           BITMAP  DISCARDABLE     "res\\Nin0f.bmp"
+IDB_HININJA5            BITMAP  DISCARDABLE     "res\\Nin5.bmp"
+IDB_HININJA_DEAD        BITMAP  DISCARDABLE     "res\\hininja_.bmp"
+IDB_HININJA2            BITMAP  DISCARDABLE     "res\\Ninj0a.bmp"
+IDB_HININJA2B           BITMAP  DISCARDABLE     "res\\Ninj0b.bmp"
+IDB_HININJA2C           BITMAP  DISCARDABLE     "res\\Ninj0c.bmp"
+IDB_HININJA2D           BITMAP  DISCARDABLE     "res\\Ninj0d.bmp"
+IDB_HININJA0            BITMAP  DISCARDABLE     "res\\Nin0.bmp"
+IDB_HHERO_DEAD          BITMAP  DISCARDABLE     "res\\hihero_d.bmp"
+IDB_ENFORCER_DEAD       BITMAP  DISCARDABLE     "res\\bmp00065.bmp"
+IDB_HIWALKER18B         BITMAP  DISCARDABLE     "res\\hiwlk18b.bmp"
+IDB_HIWALKER0B          BITMAP  DISCARDABLE     "res\\hiwalk_0b.bmp"
+IDB_HIWALKER0C          BITMAP  DISCARDABLE     "res\\hiwalk_0c.bmp"
+IDB_HIWALKER0D          BITMAP  DISCARDABLE     "res\\hiwalk_0d.bmp"
+IDB_HIWALKER2           BITMAP  DISCARDABLE     "res\\hiwalk_2.bmp"
+IDB_HIWALKER_DEAD       BITMAP  DISCARDABLE     "res\\hiwalk_d.bmp"
+IDB_HIWALKER18          BITMAP  DISCARDABLE     "res\\hiwalk18.bmp"
+IDB_HIWALKER2B          BITMAP  DISCARDABLE     "res\\hiwalk2b.bmp"
+IDB_HIWALKER4           BITMAP  DISCARDABLE     "res\\hiwalk4.bmp"
+IDB_HIWALKER4B          BITMAP  DISCARDABLE     "res\\hiwalk4b.bmp"
+IDB_HIWALKER4C          BITMAP  DISCARDABLE     "res\\hiwalk4c.bmp"
+IDB_HIWALKER4D          BITMAP  DISCARDABLE     "res\\hiwalk4d.bmp"
+IDB_HIWALKER5           BITMAP  DISCARDABLE     "res\\hiwalk5.bmp"
+IDB_HIWALKER5B          BITMAP  DISCARDABLE     "res\\hiwalk5b.bmp"
+IDB_HIWALKER5C          BITMAP  DISCARDABLE     "res\\hiwalk5c.bmp"
+IDB_HIWALKER5D          BITMAP  DISCARDABLE     "res\\hiwalk5d.bmp"
+IDB_HIWALKER0           BITMAP  DISCARDABLE     "res\\hiwalk_0.bmp"
+IDB_XEVIL               BITMAP  DISCARDABLE     "res\\bmp00085.bmp"
+IDB_STOP                BITMAP  DISCARDABLE     "res\\stop.bmp"
+IDB_HANDTOHAND          BITMAP  DISCARDABLE     "res\\handtoha.bmp"
+IDB_HIFIREDEMON_DEAD    BITMAP  DISCARDABLE     "res\\bmp00154.bmp"
+IDB_HIFIREDEMON5B       BITMAP  DISCARDABLE     "res\\hifirede.bmp"
+IDB_HIFIREDEMON5        BITMAP  DISCARDABLE     "res\\bmp00054.bmp"
+IDB_HIFIREDEMON4        BITMAP  DISCARDABLE     "res\\bmp00092.bmp"
+IDB_HIFIREDEMON22       BITMAP  DISCARDABLE     "res\\bmp00091.bmp"
+IDB_HIFIREDEMON2        BITMAP  DISCARDABLE     "res\\bmp00056.bmp"
+IDB_HIFIREDEMON0B       BITMAP  DISCARDABLE     "res\\bmp00094.bmp"
+IDB_HIFIREDEMON0        BITMAP  DISCARDABLE     "res\\bmp00093.bmp"
+IDB_HININJA22_ATTACK    BITMAP  DISCARDABLE     "res\\ninatt_down.bmp"
+IDB_HININJA0_ATTACK     BITMAP  DISCARDABLE     "res\\nin_kick0low.bmp"
+IDB_HININJA2_ATTACK     BITMAP  DISCARDABLE     "res\\nin_kick0jmp.bmp"
+IDB_HININJA22           BITMAP  DISCARDABLE     "res\\ninjump_down1.bmp"
+IDB_HININJA22B          BITMAP  DISCARDABLE     "res\\ninjump_down2.bmp"
+IDB_HININJA21           BITMAP  DISCARDABLE     "res\\ninjump_up.bmp"
+IDB_HIFLAG              BITMAP  DISCARDABLE     "res\\hiflag.bmp"
+IDB_DROPLIFTABLE        BITMAP  DISCARDABLE     "res\\droplift.bmp"
+IDB_SUICIDEBUTTON       BITMAP  DISCARDABLE     "res\\suicideb.bmp"
+IDB_FIREBALLICON        BITMAP  DISCARDABLE     "res\\fireball.bmp"
+IDB_FIRE                BITMAP  DISCARDABLE     "res\\fire.bmp"
+IDB_HIHUGGER_RED0       BITMAP  DISCARDABLE     "res\\bmp00028.bmp"
+IDB_HIHUGGER_RED0B      BITMAP  DISCARDABLE     "res\\bmp00029.bmp"
+IDB_HIHUGGER_RED5       BITMAP  DISCARDABLE     "res\\hihugger.bmp"
+IDB_HIHUGGER_RED4       BITMAP  DISCARDABLE     "res\\bmp00031.bmp"
+IDB_HIHUGGER_RED_DEAD   BITMAP  DISCARDABLE     "res\\bmp00043.bmp"
+IDB_HIHUGGER_RED6       BITMAP  DISCARDABLE     "res\\bmp00036.bmp"
+IDB_HIHUGGER_RED6B      BITMAP  DISCARDABLE     "res\\bmp00037.bmp"
+IDB_HIHUGGER_RED4B      BITMAP  DISCARDABLE     "res\\bmp00030.bmp"
+IDB_PRICKLY             BITMAP  DISCARDABLE     "res\\none1.bmp"
+IDB_HININJA10B          BITMAP  DISCARDABLE     "res\\nin_lo0b.bmp"
+IDB_HININJA10C          BITMAP  DISCARDABLE     "res\\nin_lo0c.bmp"
+IDB_HININJA10D          BITMAP  DISCARDABLE     "res\\nin_lo0d.bmp"
+IDB_HININJA10F          BITMAP  DISCARDABLE     "res\\nin_lo0f.bmp"
+IDB_HININJA10           BITMAP  DISCARDABLE     "res\\nin_lo0.bmp"
+IDB_HININJA10E          BITMAP  DISCARDABLE     "res\\nin_lo0e.bmp"
+IDB_HININJA10_ATTACK    BITMAP  DISCARDABLE     "res\\hininja1.bmp"
+IDB_HIHUGGER_GREEN0     BITMAP  DISCARDABLE     "res\\bmp00006.bmp"
+IDB_HIHUGGER_GREEN0B    BITMAP  DISCARDABLE     "res\\bmp00007.bmp"
+IDB_HIHUGGER_GREEN4     BITMAP  DISCARDABLE     "res\\bmp00008.bmp"
+IDB_HIHUGGER_GREEN4B    BITMAP  DISCARDABLE     "res\\bmp00009.bmp"
+IDB_HIHUGGER_GREEN5     BITMAP  DISCARDABLE     "res\\bmp00010.bmp"
+IDB_HIHUGGER_GREEN6     BITMAP  DISCARDABLE     "res\\bmp00032.bmp"
+IDB_HIHUGGER_GREEN6B    BITMAP  DISCARDABLE     "res\\bmp00033.bmp"
+IDB_HIHUGGER_GREEN_DEAD BITMAP  DISCARDABLE     "res\\bmp00034.bmp"
+IDB_MD1DOOR1            BITMAP  DISCARDABLE     "res\\doortop.bmp"
+IDB_MD1LADDER           BITMAP  DISCARDABLE     "res\\ladder.bmp"
+IDB_MD1MOVER            BITMAP  DISCARDABLE     "res\\bitmap6.bmp"
+IDB_MD1VERTMOVERSQUARE  BITMAP  DISCARDABLE     "res\\moversq.bmp"
+IDB_MD1UPDOWN           BITMAP  DISCARDABLE     "res\\updn.bmp"
+IDB_MD1DOOR2            BITMAP  DISCARDABLE     "res\\doorbot.bmp"
+IDB_MD1HORIZMOVERSQUARE BITMAP  DISCARDABLE     "res\\sider.BMP"
+IDB_MD1WALL             BITMAP  DISCARDABLE     "res\\Wall.bmp"
+IDB_HININJA18           BITMAP  DISCARDABLE     "res\\bmp00004.bmp"
+IDB_HININJA18B          BITMAP  DISCARDABLE     "res\\bmp00013.bmp"
+IDB_AUTOLANCER          BITMAP  DISCARDABLE     "res\\autolanc.bmp"
+IDB_DEMONSUMMONER       BITMAP  DISCARDABLE     "res\\demonsum.bmp"
+IDB_HIDOG0              BITMAP  DISCARDABLE     "res\\hidog0.bmp"
+IDB_HIDDOG0             BITMAP  DISCARDABLE     "res\\hiddog0.bmp"
+IDB_HIDDOG0_ATTACK      BITMAP  DISCARDABLE     "res\\hiddog0_.bmp"
+IDB_HIDDOG21_ATTACK     BITMAP  DISCARDABLE     "res\\hiddog21.bmp"
+IDB_HIDDOG22_ATTACK     BITMAP  DISCARDABLE     "res\\hiddog22.bmp"
+IDB_HIDDOG2_ATTACK      BITMAP  DISCARDABLE     "res\\hiddog2_.bmp"
+IDB_HIDDOG0B            BITMAP  DISCARDABLE     "res\\hiddog0b.bmp"
+IDB_HIDDOG2             BITMAP  DISCARDABLE     "res\\hiddog2.bmp"
+IDB_HIDDOG21            BITMAP  DISCARDABLE     "res\\bmp00015.bmp"
+IDB_HIDDOG21B           BITMAP  DISCARDABLE     "res\\bmp00017.bmp"
+IDB_HIDDOG22            BITMAP  DISCARDABLE     "res\\bmp00018.bmp"
+IDB_HIDDOG22B           BITMAP  DISCARDABLE     "res\\bmp00022.bmp"
+IDB_HIDDOG5             BITMAP  DISCARDABLE     "res\\hiddog5.bmp"
+IDB_HIDDOG5B            BITMAP  DISCARDABLE     "res\\hiddog5b.bmp"
+IDB_HIDDOGDEAD          BITMAP  DISCARDABLE     "res\\hiddogde.bmp"
+IDB_MD2WALL             BITMAP  DISCARDABLE     "res\\wsqaure.BMP"
+IDB_MD2DOOR2            BITMAP  DISCARDABLE     "res\\md2door2.bmp"
+IDB_MD2DOOR1            BITMAP  DISCARDABLE     "res\\md2door1.bmp"
+IDB_MD2HORIZMOVERSQUARE BITMAP  DISCARDABLE     "res\\htrack.BMP"
+IDB_MD2LADDER           BITMAP  DISCARDABLE     "res\\md2ladde.bmp"
+IDB_MD2UPDOWN           BITMAP  DISCARDABLE     "res\\md2updow.bmp"
+IDB_MD2VERTMOVERSQUARE  BITMAP  DISCARDABLE     "res\\vtrack.BMP"
+IDB_MD1BACKGROUND       BITMAP  DISCARDABLE     "res\\back.BMP"
+IDB_SERVEROPTIONS       BITMAP  DISCARDABLE     "res\\xevil1.bmp"
+IDB_DRAGONDEAD          BITMAP  DISCARDABLE     "res\\dragonde.bmp"
+IDB_DRAGONHEADC         BITMAP  DISCARDABLE     "res\\drg_1.bmp"
+IDB_DRAGONHEADB         BITMAP  DISCARDABLE     "res\\drg_2.bmp"
+IDB_DRAGONBODY          BITMAP  DISCARDABLE     "res\\drg_bdy.bmp"
+IDB_DRAGONHEAD          BITMAP  DISCARDABLE     "res\\drg_head.bmp"
+IDB_DRAGONHEADD         BITMAP  DISCARDABLE     "res\\drgbite.bmp"
+IDB_HITRAPDOOR          BITMAP  DISCARDABLE     "res\\trapopen.bmp"
+IDB_MD2MOVER            BITMAP  DISCARDABLE     "res\\nlift.BMP"
+IDB_MD2BACKGROUND       BITMAP  DISCARDABLE     "res\\backg.BMP"
+IDB_YETI5               BITMAP  DISCARDABLE     "res\\troll5.bmp"
+IDB_YETI0B              BITMAP  DISCARDABLE     "res\\troll0b.bmp"
+IDB_YETI0C              BITMAP  DISCARDABLE     "res\\troll0c.bmp"
+IDB_YETI2               BITMAP  DISCARDABLE     "res\\troll1.bmp"
+IDB_YETI0               BITMAP  DISCARDABLE     "res\\troll0.bmp"
+IDB_OUTSIDE             BITMAP  DISCARDABLE     "res\\bmp00021.bmp"
+IDB_YETI25              BITMAP  DISCARDABLE     "res\\troll25.bmp"
+IDB_YETI0D              BITMAP  DISCARDABLE     "res\\troll0d.bmp"
+IDB_YETI18              BITMAP  DISCARDABLE     "res\\troll18.bmp"
+IDB_YETI18B             BITMAP  DISCARDABLE     "res\\troll18b.bmp"
+IDB_HIALIEN2            BITMAP  DISCARDABLE     "res\\hialien2.bmp"
+IDB_HIALIEN18           BITMAP  DISCARDABLE     "res\\hialien1.bmp"
+IDB_HIALIEN18B          BITMAP  DISCARDABLE     "res\\bmp00019.bmp"
+IDB_HIALIEN18C          BITMAP  DISCARDABLE     "res\\bmp00023.bmp"
+IDB_HIALIEN25           BITMAP  DISCARDABLE     "res\\bmp00038.bmp"
+IDB_YETI4               BITMAP  DISCARDABLE     "res\\troll4.bmp"
+IDB_ZOMBIE0             BITMAP  DISCARDABLE     "res\\aaanew.bmp"
+IDB_MD3WALL             BITMAP  DISCARDABLE     "res\\md4wall.bmp"
+IDB_MD3LADDER           BITMAP  DISCARDABLE     "res\\md4ladde.bmp"
+IDB_MD3UPDOWN           BITMAP  DISCARDABLE     "res\\md4updow.bmp"
+IDB_MD3BACKGROUND       BITMAP  DISCARDABLE     "res\\md4backg.bmp"
+IDB_MD3OUTSIDE          BITMAP  DISCARDABLE     "res\\md4outsi.bmp"
+IDB_MD3DOOR1            BITMAP  DISCARDABLE     "res\\md4door1.bmp"
+IDB_MD3DOOR2            BITMAP  DISCARDABLE     "res\\md4door2.bmp"
+IDB_MD3HORIZMOVERSQUARE BITMAP  DISCARDABLE     "res\\md4horiz.bmp"
+IDB_MD3VERTMOVERSQUARE  BITMAP  DISCARDABLE     "res\\md4vertm.bmp"
+IDB_MD3MOVER            BITMAP  DISCARDABLE     "res\\aaanew7.bmp"
+IDB_RARROW_R            BITMAP  DISCARDABLE     "res\\rarrow_r.bmp"
+IDB_YETI9               BITMAP  DISCARDABLE     "res\\crawl-forward.bmp"
+IDB_YETI10F             BITMAP  DISCARDABLE     "res\\crawl-right-6.bmp"
+IDB_YETI10B             BITMAP  DISCARDABLE     "res\\crawl-right-2.bmp"
+IDB_YETI10C             BITMAP  DISCARDABLE     "res\\crawl-right-3.bmp"
+IDB_YETI10D             BITMAP  DISCARDABLE     "res\\crawl-right-4.bmp"
+IDB_YETI10E             BITMAP  DISCARDABLE     "res\\crawl-right-5.bmp"
+IDB_YETI10              BITMAP  DISCARDABLE     "res\\crawl-right-1.bmp"
+IDB_MD4WALL             BITMAP  DISCARDABLE     "res\\md5wall.bmp"
+IDB_MD4BACKGROUND       BITMAP  DISCARDABLE     "res\\md5outsi.bmp"
+IDB_MD4DOOR1            BITMAP  DISCARDABLE     "res\\md5door1.bmp"
+IDB_MD4HORIZMOVERSQUARE BITMAP  DISCARDABLE     "res\\md5horiz.bmp"
+IDB_MD4OUTSIDE          BITMAP  DISCARDABLE     "res\\md5backg.bmp"
+IDB_MD4UPDOWN           BITMAP  DISCARDABLE     "res\\md5updow.bmp"
+IDB_MD4LADDER           BITMAP  DISCARDABLE     "res\\md5ladde.bmp"
+IDB_MD4DOOR2            BITMAP  DISCARDABLE     "res\\md5door2.bmp"
+IDB_MD4VERTMOVERSQUARE  BITMAP  DISCARDABLE     "res\\md5vertm.bmp"
+IDB_MD4MOVER            BITMAP  DISCARDABLE     "res\\md5mover.bmp"
+IDB_HIALIEN0C           BITMAP  DISCARDABLE     "res\\bmp00042.bmp"
+IDB_HIALIEN0B           BITMAP  DISCARDABLE     "res\\bmp00041.bmp"
+IDB_HIALIEN0            BITMAP  DISCARDABLE     "res\\hialien0.bmp"
+IDB_HIALIEN0D           BITMAP  DISCARDABLE     "res\\bmp00047.bmp"
+IDB_HIALIEN0E           BITMAP  DISCARDABLE     "res\\bmp00048.bmp"
+IDB_HIALIEN0F           BITMAP  DISCARDABLE     "res\\bmp00050.bmp"
+IDB_HIALIEN10           BITMAP  DISCARDABLE     "res\\bmp00002.bmp"
+IDB_HIALIEN10B          BITMAP  DISCARDABLE     "res\\bmp00011.bmp"
+IDB_HIALIEN10C          BITMAP  DISCARDABLE     "res\\bmp00014.bmp"
+IDB_HIALIEN10D          BITMAP  DISCARDABLE     "res\\bmp00026.bmp"
+IDB_HIALIEN4            BITMAP  DISCARDABLE     "res\\hialien4.bmp"
+IDB_HIALIEN5            BITMAP  DISCARDABLE     "res\\hialien5.bmp"
+IDB_FWBACKGROUND1       BITMAP  DISCARDABLE     "res\\fwbackgr.bmp"
+IDB_FWBACKGROUND2       BITMAP  DISCARDABLE     "res\\bmp00035.bmp"
+IDB_FWBACKGROUND3       BITMAP  DISCARDABLE     "res\\bmp00039.bmp"
+IDB_FWBACKGROUND4       BITMAP  DISCARDABLE     "res\\bmp00044.bmp"
+IDB_MD1OUTSIDE          BITMAP  DISCARDABLE     "res\\mdoutsid.bmp"
+IDB_HININJA21_ATTACK2   BITMAP  DISCARDABLE     "res\\bmp00045.bmp"
+IDB_HHERO21_ATTACK2     BITMAP  DISCARDABLE     "res\\hhero21_.bmp"
+IDB_HININJA_18          BITMAP  DISCARDABLE     "res\\bmp00046.bmp"
+IDB_HININJA_18B         BITMAP  DISCARDABLE     "res\\bmp00049.bmp"
+IDB_HININJA_18C         BITMAP  DISCARDABLE     "res\\bmp00051.bmp"
+IDB_HININJA_18D         BITMAP  DISCARDABLE     "res\\bmp00052.bmp"
+IDB_HININJA_18E         BITMAP  DISCARDABLE     "res\\bmp00053.bmp"
+IDB_HININJA_18F         BITMAP  DISCARDABLE     "res\\bmp00058.bmp"
+IDB_HHERO18B            BITMAP  DISCARDABLE     "res\\aaanew1.bmp"
+IDB_HHERO18C            BITMAP  DISCARDABLE     "res\\hhero18c.bmp"
+IDB_HHERO18D            BITMAP  DISCARDABLE     "res\\hhero18e.bmp"
+IDB_HHERO18E            BITMAP  DISCARDABLE     "res\\hhero18f.bmp"
+IDB_HHERO18F            BITMAP  DISCARDABLE     "res\\hhero18g.bmp"
+IDB_XIT                 BITMAP  DISCARDABLE     "res\\xit.bmp"
+IDB_BLOOD25             BITMAP  DISCARDABLE     "res\\blood25.bmp"
+IDB_BLOOD39             BITMAP  DISCARDABLE     "res\\blood39.bmp"
+IDB_BLOOD4              BITMAP  DISCARDABLE     "res\\blood4.bmp"
+IDB_BLOOD40             BITMAP  DISCARDABLE     "res\\blood40.bmp"
+IDB_BLOOD9              BITMAP  DISCARDABLE     "res\\blood9.bmp"
+IDB_BLOODG25            BITMAP  DISCARDABLE     "res\\bloodg25.bmp"
+IDB_BLOODG39            BITMAP  DISCARDABLE     "res\\bloodg39.bmp"
+IDB_BLOODG4             BITMAP  DISCARDABLE     "res\\bloodg4.bmp"
+IDB_BLOODG40            BITMAP  DISCARDABLE     "res\\bloodg40.bmp"
+IDB_BLOODG9             BITMAP  DISCARDABLE     "res\\bloodg9.bmp"
+IDB_OIL25               BITMAP  DISCARDABLE     "res\\oil25.bmp"
+IDB_OIL39               BITMAP  DISCARDABLE     "res\\oil39.bmp"
+IDB_OIL4                BITMAP  DISCARDABLE     "res\\oil4.bmp"
+IDB_OIL40               BITMAP  DISCARDABLE     "res\\oil40.bmp"
+IDB_OIL9                BITMAP  DISCARDABLE     "res\\oil9.bmp"
+IDB_LASER_HORIZ         BITMAP  DISCARDABLE     "res\\bmp00020.bmp"
+IDB_VEGETABLES          BITMAP  DISCARDABLE     "res\\bmp00057.bmp"
+IDB_TAKE_CANDY          BITMAP  DISCARDABLE     "res\\take_can.bmp"
+IDB_WINNERS_DRUGS       BITMAP  DISCARDABLE     "res\\bmp00059.bmp"
+IDB_KILL_PARENTS        BITMAP  DISCARDABLE     "res\\kill_par.bmp"
+IDB_BEAT_DOG            BITMAP  DISCARDABLE     "res\\beat_dog.bmp"
+IDB_CHICKEN4            BITMAP  DISCARDABLE     "res\\chicken4.bmp"
+IDB_CHICKEN5            BITMAP  DISCARDABLE     "res\\chicken5.bmp"
+IDB_CHICKEN2_ATT        BITMAP  DISCARDABLE     "res\\bmp00064.bmp"
+IDB_CHICKEN21_ATT       BITMAP  DISCARDABLE     "res\\bmp00066.bmp"
+IDB_CHICKEN22_ATT       BITMAP  DISCARDABLE     "res\\bmp00067.bmp"
+IDB_CHICKENDEAD         BITMAP  DISCARDABLE     "res\\chickend.bmp"
+IDB_CHICKEN2            BITMAP  DISCARDABLE     "res\\chicken2.bmp"
+IDB_CHICKEN2B           BITMAP  DISCARDABLE     "res\\bmp00062.bmp"
+IDB_CHICKEN4B           BITMAP  DISCARDABLE     "res\\bmp00063.bmp"
+IDB_CHICKEN0_ATT        BITMAP  DISCARDABLE     "res\\bmp00069.bmp"
+IDB_FEATHER25           BITMAP  DISCARDABLE     "res\\feather2.bmp"
+IDB_FEATHER39           BITMAP  DISCARDABLE     "res\\feather3.bmp"
+IDB_FEATHER40           BITMAP  DISCARDABLE     "res\\feather4.bmp"
+IDB_FEATHER4            BITMAP  DISCARDABLE     "res\\feather5.bmp"
+IDB_CHICKEN0            BITMAP  DISCARDABLE     "res\\chk0.bmp"
+IDB_CHICKEN0B           BITMAP  DISCARDABLE     "res\\chk0b.bmp"
+IDB_CHICKEN0C           BITMAP  DISCARDABLE     "res\\chk0c.bmp"
+IDB_FEATHER9            BITMAP  DISCARDABLE     "res\\feather9.bmp"
+IDB_MD5WALL             BITMAP  DISCARDABLE     "res\\bmp00060.bmp"
+IDB_MD5OUTSIDE          BITMAP  DISCARDABLE     "res\\bmp00071.bmp"
+IDB_MD5DOOR1            BITMAP  DISCARDABLE     "res\\bmp00072.bmp"
+IDB_MD5DOOR2            BITMAP  DISCARDABLE     "res\\bmp00073.bmp"
+IDB_MD5LADDER           BITMAP  DISCARDABLE     "res\\bmp00061.bmp"
+IDB_MD5UPDOWN           BITMAP  DISCARDABLE     "res\\bmp00068.bmp"
+IDB_MD5BACKGROUND       BITMAP  DISCARDABLE     "res\\bmp00070.bmp"
+IDB_ZOMBIE0B            BITMAP  DISCARDABLE     "res\\zombie0b.bmp"
+IDB_ZOMBIE_DEAD         BITMAP  DISCARDABLE     "res\\zombie_d.bmp"
+IDB_ZOMBIE10B           BITMAP  DISCARDABLE     "res\\bmp00075.bmp"
+IDB_ZOMBIE10            BITMAP  DISCARDABLE     "res\\zombie10.bmp"
+IDB_ZOMBIE4             BITMAP  DISCARDABLE     "res\\zombie4.bmp"
+IDB_ZOMBIE2             BITMAP  DISCARDABLE     "res\\zombie2.bmp"
+IDB_ZOMBIE18            BITMAP  DISCARDABLE     "res\\zombie18.bmp"
+IDB_AAANEWW             BITMAP  DISCARDABLE     "res\\aaaneww.bmp"
+IDB_ZOMBIE0C            BITMAP  DISCARDABLE     "res\\zombie0c.bmp"
+IDB_ZOMBIE0F            BITMAP  DISCARDABLE     "res\\aaanew11.bmp"
+IDB_ZOMBIE0E            BITMAP  DISCARDABLE     "res\\zombie0e.bmp"
+IDB_ZOMBIE0D            BITMAP  DISCARDABLE     "res\\zombie0d.bmp"
+IDB_ZOMBIE5             BITMAP  DISCARDABLE     "res\\zombie5.bmp"
+IDB_ZOMBIE18B           BITMAP  DISCARDABLE     "res\\bmp00077.bmp"
+IDB_ZOMBIE18C           BITMAP  DISCARDABLE     "res\\bmp00079.bmp"
+IDB_ZOMBIE18F           BITMAP  DISCARDABLE     "res\\bmp00082.bmp"
+IDB_ZOMBIE18D           BITMAP  DISCARDABLE     "res\\bmp00076.bmp"
+IDB_ZOMBIE18E           BITMAP  DISCARDABLE     "res\\bmp00080.bmp"
+IDB_ZOMBIE0_ATTACK      BITMAP  DISCARDABLE     "res\\zombie0_.bmp"
+IDB_ZOMBIE22_ATTACK     BITMAP  DISCARDABLE     "res\\zombie22.bmp"
+IDB_ZOMBIE21_ATTACK     BITMAP  DISCARDABLE     "res\\zombie21.bmp"
+IDB_ZOMBIE10_ATTACK     BITMAP  DISCARDABLE     "res\\bmp00083.bmp"
+IDB_ZOMBIE2_ATTACK      BITMAP  DISCARDABLE     "res\\zombie2_.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Cursor
+//
+
+IDC_XEVIL               CURSOR  DISCARDABLE     "res\\arrow.cur"
+IDC_XEVIL_SERVER        CURSOR  DISCARDABLE     "res\\xevil1.cur"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// WAVE
+//
+
+IDW_CHAINSAW_SOUND      WAVE    DISCARDABLE     "RES\\chainsw.wav"
+IDW_FLAMETHROWER        WAVE    DISCARDABLE     "RES\\fireball.wav"
+IDW_DEATH               WAVE    DISCARDABLE     "RES\\death.wav"
+IDW_SEAL_DEATH          WAVE    DISCARDABLE     "RES\\lemdeth.wav"
+IDW_HUGGER_DEATH        WAVE    DISCARDABLE     "res\\lemdeth.wav"
+IDW_FROG_DEATH          WAVE    DISCARDABLE     "RES\\frogdeth.wav"
+IDW_BREAKDOWN           WAVE    DISCARDABLE     "RES\\breakdwn.wav"
+IDW_BANG                WAVE    DISCARDABLE     "RES\\bangbang.wav"
+IDW_PISTOL              WAVE    DISCARDABLE     "res\\pistol.wav"
+IDW_MGUN                WAVE    DISCARDABLE     "res\\machgun.wav"
+IDW_LAUNCHER            WAVE    DISCARDABLE     "res\\missile.wav"
+IDW_EXPLOSION           WAVE    DISCARDABLE     "res\\explosion.wav"
+IDW_DOG_DEATH           WAVE    DISCARDABLE     "res\\dogdeath.wav"
+IDW_LASER               WAVE    DISCARDABLE     "res\\laser.wav"
+IDW_HERO_ATTACK         WAVE    DISCARDABLE     "res\\heroatt.wav"
+IDW_NINJA_ATTACK        WAVE    DISCARDABLE     "res\\ninjaatt.wav"
+IDW_DOG_ATTACK          WAVE    DISCARDABLE     "res\\dogatt.wav"
+IDW_CHOP_DEATH          WAVE    DISCARDABLE     "res\\chpdeath.wav"
+IDW_DOPPEL_USE          WAVE    DISCARDABLE     "res\\doppel.wav"
+IDW_CLOAK_USE           WAVE    DISCARDABLE     "res\\cloak.wav"
+IDW_TRANS_USE           WAVE    DISCARDABLE     "res\\transmog.wav"
+IDW_SHIELD_USE          WAVE    DISCARDABLE     "res\\shield.wav"
+IDW_NINJA_DEATH         WAVE    DISCARDABLE     "res\\ninjadth.wav"
+IDW_FROGGUN             WAVE    DISCARDABLE     "res\\froggun.wav"
+IDW_LANCER              WAVE    DISCARDABLE     "res\\lancer.wav"
+IDW_SWAPPER             WAVE    DISCARDABLE     "res\\swapper.wav"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_XEVIL               ICON    DISCARDABLE     "res\\idr_xevi.ico"
+IDR_XEVIL_SMALL         ICON    DISCARDABLE     "res\\SMALL.ICO"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// PALETTE
+//
+
+IDR_XEVILPAL            PALETTE DISCARDABLE     "res\\xevil.pal"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_XEVILMENU MENU PRELOAD DISCARDABLE 
+BEGIN
+    POPUP "&Game"
+    BEGIN
+        MENUITEM "&New",                        ID_NEWGAME
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       ID_APP_EXIT
+    END
+    POPUP "&Settings"
+    BEGIN
+        MENUITEM "&Options...",                 ID_OPTIONS
+        MENUITEM "&Difficulty...",              ID_DIFFICULTY
+        MENUITEM "Keyboard &Controls...",       ID_KEYS
+        MENUITEM "Reset &Graphics",             ID_RESETGFX
+        MENUITEM "&Full Screen",                ID_FULLSCREEN
+    END
+    POPUP "&Network"
+    BEGIN
+        MENUITEM "&Connect to Server...",       ID_CONNECTSERVER
+        MENUITEM "&Run as Server...",           ID_RUNSERVER
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&Online Instructions",        ID_NETHELP
+        MENUITEM "&Story of XEvil",             ID_STORY
+        MENUITEM "&About XEvil...",             ID_APP_ABOUT
+    END
+    POPUP "&Debug"
+    BEGIN
+        MENUITEM "&Surface Manager",            ID_SURFACEMGR
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// MIDI
+//
+
+IDM_SEALSOUNDTRACK      MIDI    DISCARDABLE     "res\\babyseal.mid"
+IDM_FIRESOUNDTRACK      MIDI    DISCARDABLE     "res\\fire.mid"
+IDM_HIVESOUNDTRACK      MIDI    DISCARDABLE     "res\\hive.mid"
+IDM_KILLSOUNDTRACK      MIDI    DISCARDABLE     "res\\kkkill.mid"
+IDM_ZEEPEEGSOUNDTRACK   MIDI    DISCARDABLE     "res\\ZEEPEEG.MID"
+IDM_NIGHTSKYSOUNDTRACK  MIDI    DISCARDABLE     "res\\NIGHTSKY.MID"
+IDM_SWEETDARKSOUNDTRACK MIDI    DISCARDABLE     "res\\SWEETDAR.MID"
+IDM_TERRAEXMSOUNDTRACK  MIDI    DISCARDABLE     "res\\TERRAEXM.MID"
+IDM_NEWSONGSOUNDTRACK   MIDI    DISCARDABLE     "res\\NEWSONG.MID"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_NETHELPURL          "http://www.xevil.com/docs/instructions.html"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE 9, 1
+#pragma code_page(1252)
+#endif
+#include "res\XEvil.rc2"  // non-Microsoft Visual C++ edited resources
+#include "afxres.rc"         // Standard components
+#endif
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

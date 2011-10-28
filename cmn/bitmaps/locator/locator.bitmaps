@@ -1,0 +1,111 @@
+/* 
+ * XEvil(TM) Copyright (C) 1994,2000 Steve Hardt and Michael Judge
+ * http://www.xevil.com
+ * satan@xevil.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program, the file "gpl.txt"; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA, or visit http://www.gnu.org.
+ */
+
+// locator.bitmaps
+
+#if X11
+#include "gen_xpm/locator/tick_0_0.xpm"
+#include "gen_xpm/locator/tick_0_7.xpm"
+#include "gen_xpm/locator/tick_1_0.xpm"
+#include "gen_xpm/locator/tick_1_7.xpm"
+#include "gen_xpm/locator/tick_2_0.xpm"
+#include "gen_xpm/locator/tick_2_7.xpm"
+#include "gen_xpm/locator/tick_3_0.xpm"
+#include "gen_xpm/locator/tick_3_7.xpm"
+#endif
+
+
+
+const CMN_BITS_ID Locator::tickPixmapBits[TICK_MAX][CO_DIR_HALF_PURE] = {
+  { // TICK_HUMAN
+    CMN_ID(tick_0_0,IDB_YARROW_R),
+    PH_AUTO_GEN,
+    PH_AUTO_GEN,
+    PH_AUTO_GEN,
+    PH_AUTO_GEN,
+    PH_AUTO_GEN,
+    PH_AUTO_GEN,
+    CMN_ID(tick_0_7,IDB_YARROW_UP_R),
+  },
+  { // TICK_NEUTRAL
+    CMN_ID(tick_1_0,IDB_GARROW_R),
+    PH_AUTO_GEN,
+    PH_AUTO_GEN,
+    PH_AUTO_GEN,
+    PH_AUTO_GEN,
+    PH_AUTO_GEN,
+    PH_AUTO_GEN,
+    CMN_ID(tick_1_7,IDB_GARROW_UP_R),
+  },
+  { // TICK_ENEMY
+    CMN_ID(tick_2_0,IDB_RARROW_R),
+    PH_AUTO_GEN,
+    PH_AUTO_GEN,
+    PH_AUTO_GEN,
+    PH_AUTO_GEN,
+    PH_AUTO_GEN,
+    PH_AUTO_GEN,
+    CMN_ID(tick_2_7,IDB_RARROW_UP_R),
+  },
+  { // TICK_OTHER
+    CMN_ID(tick_3_0,IDB_BARROW_R),
+    PH_AUTO_GEN,
+    PH_AUTO_GEN,
+    PH_AUTO_GEN,
+    PH_AUTO_GEN,
+    PH_AUTO_GEN,
+    PH_AUTO_GEN,
+    CMN_ID(tick_3_7,IDB_BARROW_UP_R),
+  },
+};
+
+
+
+// Stretched coordinates.
+const Size Locator::tickSizes[CO_DIR_HALF_PURE] = {
+  {8,7},
+  {8,8},
+  {7,8},
+  {8,8},
+  {8,7},
+  {8,8},
+  {7,8},
+  {8,8},
+};
+
+
+
+const OLItemInfo Locator::nonExistentClassesItemInfo[A_None - A_CLASSES_NUM] = {
+  // isItem,  isWeapon, iconId
+
+  // A_Fireballs
+  {  True,    True,      CMN_ID(0,IDB_FIREBALLICON),},
+  // A_Lasers
+  {  True,    True,      CMN_ID(0,IDB_LASERS),},
+  // A_DropLiftable
+  {  True,    True,      CMN_ID(0,IDB_DROPLIFTABLE),},
+  // A_HandToHand
+  {  True,    True,      CMN_ID(0,IDB_HANDTOHAND),},
+  // A_SuicideButton
+  {  True,    False,     CMN_ID(0,IDB_SUICIDEBUTTON),},
+  // A_Prickly
+  {  True,    True,      CMN_ID(0,IDB_PRICKLY),},
+};

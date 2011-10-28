@@ -1,0 +1,188 @@
+/* 
+ * XEvil(TM) Copyright (C) 1994,2000 Steve Hardt and Michael Judge
+ * http://www.xevil.com
+ * satan@xevil.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program, the file "gpl.txt"; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA, or visit http://www.gnu.org.
+ */
+
+
+#if X11
+#include "gen_xpm/missile/missile_25.xpm"
+#include "gen_xpm/missile/missile_39.xpm"
+#include "gen_xpm/missile/missile_40.xpm"
+#endif
+
+
+
+#define MISSILE_RADIUS 320
+#define MISSILE_DESTRUCT_TIME 65
+#define MISSILE_ROTATE_TIME 2
+
+
+
+Size Missile::get_size(Dir dir) {
+  return context.movingContext.sizes[dir];
+}
+
+
+
+Size Missile::get_size_max(){
+  Size size;
+  size.width = 10;
+  size.height = 10;
+  return size;
+}
+
+
+
+PhysicalP Missile::create(void *,WorldP,LocatorP,const Pos &)
+{
+  assert(0);
+  return NULL;
+}
+
+
+
+ShotXdata Missile::xdata;
+
+
+const ShotContext Missile::context = 
+{/** ShotContext **/
+  50, /* damage */
+  10, /* speed */
+  0,/**/
+  True,/*REPEATING*/
+
+  {/** MovingContext **/
+#if X11
+    "black",False,
+    "cyan",True,
+#endif
+#if WIN32
+    RGB(0,0,0)/*"black"*/,FALSE,
+    RGB(0,255,255)/*"cyan"*/,TRUE,
+#endif
+    
+    /* animMax */
+    {0,0,0,0,0,0,
+     0,
+     0,0,
+     0,
+     0,0,
+     0,
+     0,0,
+     0,
+     0,0,
+     0,
+     0,0,
+     0,0,
+     0,0,  
+     1,1,1,1,
+     1,1,1,1,
+     1,1,1,1,
+     1,1,1,1,
+   },
+    
+    /* sizes */
+    {{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},
+     {0},
+     {0},{0},
+     {0},
+     {0},{0},
+     {0},
+     {0},{0},
+     {0},
+     {0},{0},
+     {0},
+     {0},{0},
+     {0},{0},
+     {0},{0},
+     {10,3},{9,6},{7,7},{6,9},
+     {3,10},{6,9},{7,7},{9,6},
+     {10,3},{9,6},{7,7},{6,9},
+     {3,10},{6,9},{7,7},{9,6},
+    },
+
+    /* offsets */
+    {{0}},
+    
+    /* pixmapBits */
+    {{0},{0},{0},{0},{0},{0},
+     {0},
+     {0},{0},
+     {0},
+     {0},{0},
+     {0},
+     {0},{0},
+     {0},
+     {0},{0},
+     {0},
+     {0},{0},
+     {0},{0},
+     {0},{0},
+     {CMN_ID(missile_25,IDB_MISSLE25)},
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},
+     {CMN_ID(missile_39,IDB_MISSLE39)},
+     {CMN_ID(missile_40,IDB_MISSLE40)}
+    },
+
+    /* maskBits */
+    {{0}},
+
+    {/* PhysicalContext */
+      1, /* health */
+      0, /* mass */
+      A_Missile, /* classId */
+      "missile", /* clas */
+
+      False, /* transmogifyTarget */
+      False, /* doppelUser */
+      False, /* potentialHuman */
+      False, /* potentialEnemy */
+      0, /* enemyWeight */
+      False, /* potentialWeapon */
+      False, /* potentialOtherItem */
+      0.0f, /* objectWorldPercent */
+      0, /* levelMaxTimes */
+      {10,10}, /* sizeMax */
+      Missile::create, /* create */
+      True, /* statsCreations */
+      False, /* statsUses */
+      False, /* statsDeaths */
+      Missile::get_stats, /* get_stats */
+      NULL, /* arg */
+      Missile::init_x, /* init_x */
+      Missile::create_from_stream, /* create_from_stream */
+    },
+    True, /* hiRes */
+    0, /* offsetGenerator */
+    0, /* transformOverride */
+    True, /* useXPM */
+  },
+};

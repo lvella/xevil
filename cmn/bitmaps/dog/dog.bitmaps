@@ -1,0 +1,514 @@
+/* 
+ * XEvil(TM) Copyright (C) 1994,2000 Steve Hardt and Michael Judge
+ * http://www.xevil.com
+ * satan@xevil.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program, the file "gpl.txt"; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA, or visit http://www.gnu.org.
+ */
+
+// Also has class "Mutt".
+
+
+#if X11  
+#include "gen_xpm/dog/dog_0.xpm"
+#include "gen_xpm/dog/dog_0b.xpm"
+#include "gen_xpm/dog/dog_19.xpm"
+#include "gen_xpm/dog/dog_19b.xpm"
+#include "gen_xpm/dog/dog_2.xpm"
+#include "gen_xpm/dog/dog_20b.xpm"
+#include "gen_xpm/dog/dog_25.xpm"
+#include "gen_xpm/dog/dog_26.xpm"
+#include "gen_xpm/dog/dog_28.xpm"
+#include "gen_xpm/dog/dog_38.xpm"
+#include "gen_xpm/dog/dog_39.xpm"
+#include "gen_xpm/dog/dog_4.xpm"
+#include "gen_xpm/dog/dog_5.xpm"
+#include "gen_xpm/dog/dog_5b.xpm"
+
+#include "gen_xpm/mutt/mutt_0.xpm"
+#include "gen_xpm/mutt/mutt_0b.xpm"
+#include "gen_xpm/mutt/mutt_19.xpm"
+#include "gen_xpm/mutt/mutt_19b.xpm"
+#include "gen_xpm/mutt/mutt_2.xpm"
+#include "gen_xpm/mutt/mutt_20b.xpm"
+#include "gen_xpm/mutt/mutt_25.xpm"
+#include "gen_xpm/mutt/mutt_26.xpm"
+#include "gen_xpm/mutt/mutt_28.xpm"
+#include "gen_xpm/mutt/mutt_38.xpm"
+#include "gen_xpm/mutt/mutt_39.xpm"
+#include "gen_xpm/mutt/mutt_4.xpm"
+#include "gen_xpm/mutt/mutt_5.xpm"
+#include "gen_xpm/mutt/mutt_5b.xpm"
+#endif
+
+
+  
+Size Dog::get_size_max() {
+  return creatureContext.movingContext.physicalContext.sizeMax;
+}
+
+
+
+PhysicalP Dog::create(void *,WorldP w,LocatorP l,const Pos &pos) {
+  PhysicalP ret = new Dog(w,l,pos);
+  assert(ret);
+  return ret;
+}
+
+
+
+CreatureXdata Dog::creatureXdata;
+WalkingXdata Dog::walkingXdata;
+FighterXdata Dog::fighterXdata;
+CarrierXdata Dog::carrierXdata;
+
+
+
+const CreatureContext Dog::creatureContext =
+{ /** CreatureContext **/
+  7, /* crawlSpeed */
+  7, /* centerSpeed */
+  13, /* airSpeed */
+  5, /* climbSpeed */
+  10,  /* jump */
+  2,  /* acceleration */ 
+  50, /* corpseHealth */
+  
+  True, /* biological */
+  DROPLET_BLOOD, /* dropletType */
+  SoundNames::DOG_DEATH,
+
+  {/** MovingContext **/
+#if X11
+    "chocolate4",False,
+    "white",True,
+#endif
+
+#if WIN32
+    RGB(0,0,0)/*"black"*/,FALSE,
+    RGB(128,0,0)/*"tan"*/,TRUE,
+#endif
+    /* animMax */
+    {2,2,1,1,1,2,
+     2,
+     2,2,
+     2,
+     2,2,
+     2,
+     2,2,
+     2,
+     2,2,
+     1,
+     2,2,
+     1,1,
+     2,2,
+     1, /* deadAnimMax */
+     
+     /* Fighter attack animMax */
+     1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    },
+    
+    /* sizes */
+    {{12,10},{12,10},{12,9},{12,9},{10,12},{5,10},
+     {10,5},
+     {10,12},{10,12},
+     {5,10},
+     {12,10},{12,10},
+     {10,5},
+     {10,12},{10,12},
+     {5,10},
+     {12,10},{12,10},
+     {10,12},          /* Must be    */
+     {10,12},{10,12},  /* same size. */
+     {10,12},{10,12},	
+     {12,10},{12,10},
+     {12,7}, /* deadSize */
+     
+     /* Fighter attack sizes */
+     {12,10}, /* center_R */
+     {12,10},	/* center_L */
+     {12,9},	/* air_R */
+     {12,9},	/* air_L */
+     {10,12},	/* r_DN */
+     {10,12},	/* r_UP */
+     {12,10},	/* dn_R */
+     {12,10},	/* dn_L */
+     {10,12},	/* l_DN */
+     {10,12},	/* l_UP */
+     {12,10},	/* up_R */
+     {12,10},	/* up_L */
+     {9,12},  /* air_UP */
+     {9,12},  /* air_DN */
+    },
+    
+    {{0}}, /* offsets */
+    
+    /* pixmapBits */
+    {{CMN_ID(dog_0,IDB_HIDOG0),CMN_ID(dog_0b,IDB_HIDOG0B)},
+     {PH_AUTO_GEN},
+     {CMN_ID(dog_2,IDB_HIDOG2)},{PH_AUTO_GEN},
+     {CMN_ID(dog_4,IDB_HIDOG21)},
+     {CMN_ID(dog_5,IDB_HIDOG5),CMN_ID(dog_5b,IDB_HIDOG5B)},
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},{PH_AUTO_GEN},
+     {CMN_ID(dog_5,IDB_HIDOG5),CMN_ID(dog_5b,IDB_HIDOG5B)},
+     {CMN_ID(dog_0,IDB_HIDOG0),CMN_ID(dog_0b,IDB_HIDOG0B)}, 
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},{PH_AUTO_GEN},
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},{PH_AUTO_GEN},
+     
+     {CMN_ID(dog_4,IDB_HIDOG21)},
+     {CMN_ID(dog_19,IDB_HIDOG22),CMN_ID(dog_19b,IDB_HIDOG22B)},
+     {CMN_ID(dog_4,IDB_HIDOG21),CMN_ID(dog_20b,IDB_HIDOG21B)},
+     {CMN_ID(dog_4,IDB_HIDOG21)},{CMN_ID(dog_19,IDB_HIDOG22)},
+     {CMN_ID(dog_0,IDB_HIDOG0),CMN_ID(dog_0b,IDB_HIDOG0B)},
+     {PH_AUTO_GEN},
+     {CMN_ID(dog_25,IDB_HIDOGDEAD)}, /* deadPixmapBits */
+
+     /* Fighter attack bitmaps */
+     {CMN_ID(dog_26,IDB_HIDOG0_ATTACK)},   /* center_R */
+     {PH_AUTO_GEN},         /* center_L */
+     {CMN_ID(dog_28,IDB_HIDOG2_ATTACK)},   /* air_R */
+     {PH_AUTO_GEN},         /* air_L */
+     {PH_AUTO_GEN},         /* r_DN */
+     {PH_AUTO_GEN},         /* r_UP */
+     {CMN_ID(dog_26,IDB_HIDOG0_ATTACK)},   /* dn_R */
+     {PH_AUTO_GEN},         /* dn_L */
+     {PH_AUTO_GEN},         /* l_DN */
+     {PH_AUTO_GEN},         /* l_UP */
+     {PH_AUTO_GEN},         /* up_R */
+     {PH_AUTO_GEN},         /* up_L */
+     {CMN_ID(dog_38,IDB_HIDOG21_ATTACK)},  /* air_UP */
+     {CMN_ID(dog_39,IDB_HIDOG22_ATTACK)},  /* air_DN */
+     },
+    
+    /* maskBits */
+    {{0}},
+
+    {/** PhysicalContext **/
+      50, /* health */
+      70, /* mass */
+      A_Dog, /* classId */
+      "dog", /* clas */
+
+      True, /* transmogifyTarget */
+      True, /* doppelUser */
+      False, /* potentialHuman */
+      False, /* potentialEnemy */
+      20, /* enemyWeight */
+      False, /* potentialWeapon */
+      False, /* potentialOtherItem */
+      0.0f, /* objectWorldPercent */
+      0, /* levelMaxTimes */
+      {12,12}, /* sizeMax */
+      Dog::create, /* create */
+      False, /* statsCreations */
+      False, /* statsUses */
+      True, /* statsDeaths */
+      Dog::get_stats, /* get_stats */
+      NULL, /* arg */
+      Dog::init_x, /* init_x */
+      Dog::create_from_stream, /* create_from_stream */
+    },
+    True, /* hiRes */
+    Fighter::offset_generator, /* offsetGenerator */
+    &Fighter::transformOverride, /* transformOverride */
+    True, /* useXPM */
+    True, /* invisibility */
+  },
+};
+
+
+
+const WalkingContext Dog::walkingContext =
+{
+  0, /* dummy */
+};
+
+
+
+const FighterContext Dog::fighterContext = 
+{ /** FighterContext **/
+#if X11
+  "chocolate4", /* foreground */
+  "white", /* background */
+#endif
+#if WIN32
+	RGB(0,0,0), /* foreground */
+	RGB(128,0,0), /* background */
+#endif
+  3, /* slide */
+  9, /* jumpHorizontal */
+  9, /* jumpVertical */ 
+  15, /* damageStuck */
+  30, /* damageFree */
+  
+  /* hotSpots */
+  {{11,3},{0,0},{11,3},{0,0},{0},{0},
+   {0},
+   {0},{0},
+   {0},
+   {11,3},{0,0},
+   {0},
+   {0},{0},
+   {0},
+   {0},{0},
+   {0},
+   {0},{0},
+   {4,0},{4,11},},
+
+  SoundNames::DOG_ATTACK,
+};
+
+
+
+const CarrierContext Dog::carrierContext =
+{ /** CarrierContext **/
+  0, /* dummy */
+};
+
+
+
+///////////////////////////////////////// Mutt ///////////////////////////////
+
+// There has go to be a better way to do this than all 
+// this (fucking) code duplication.
+
+
+Size Mutt::get_size_max() {
+  return creatureContext.movingContext.physicalContext.sizeMax;
+}
+
+
+
+PhysicalP Mutt::create(void *,WorldP w,LocatorP l,const Pos &pos) {
+  PhysicalP ret = new Mutt(w,l,pos);
+  assert(ret);
+  return ret;
+}
+
+
+
+CreatureXdata Mutt::creatureXdata;
+WalkingXdata Mutt::walkingXdata;
+FighterXdata Mutt::fighterXdata;
+CarrierXdata Mutt::carrierXdata;
+
+
+
+const CreatureContext Mutt::creatureContext =
+{ /** CreatureContext **/
+  6, /* crawlSpeed */
+  6, /* centerSpeed */
+  13, /* airSpeed */
+  5, /* climbSpeed */
+  10,  /* jump */
+  2,  /* acceleration */ 
+  50, /* corpseHealth */
+  
+  True, /* biological */
+  DROPLET_BLOOD, /* dropletType */
+  SoundNames::DOG_DEATH,
+
+  {/** MovingContext **/
+#if X11
+    "chocolate3",False,
+    "white",True,
+#endif
+#if WIN32
+    RGB(0,0,0)/*"black"*/,FALSE,
+    RGB(128,0,0)/*"tan"*/,TRUE,
+#endif
+    /* animMax */
+    {2,2,1,1,1,2,
+       2,
+       2,2,
+       2,
+       2,2,
+       2,
+       2,2,
+       2,
+       2,2,
+       1,
+       2,2,
+       1,1,
+       2,2,
+	   1, /* deadAnimMax */
+
+       /* Fighter attack animMax */
+       1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+     },
+    
+    /* sizes */
+    {{12,10},{12,10},{12,9},{12,9},{10,12},{5,10},
+     {10,5},
+     {10,12},{10,12},
+     {5,10},
+     {12,10},{12,10},
+     {10,5},
+     {10,12},{10,12},
+     {5,10},
+     {12,10},{12,10},
+     {10,12},          /* Must be    */
+     {10,12},{10,12},  /* same size. */
+     {10,12},{10,12},	
+     {12,10},{12,10},
+     {12,7}, /* deadSize */
+     
+     /* Fighter attack sizes */
+     {12,10}, /* center_R */
+     {12,10},	/* center_L */
+     {12,9},	/* air_R */
+     {12,9},	/* air_L */
+     {10,12},	/* r_DN */
+     {10,12},	/* r_UP */
+     {12,10},	/* dn_R */
+     {12,10},	/* dn_L */
+     {10,12},	/* l_DN */
+     {10,12},	/* l_UP */
+     {12,10},	/* up_R */
+     {12,10},	/* up_L */
+     {9,12},  /* air_UP */
+     {9,12},  /* air_DN */
+    },
+    
+    {{0}}, /* offsets */
+    
+    /* pixmapBits */
+    {{CMN_ID(mutt_0,IDB_HIDDOG0),CMN_ID(mutt_0b,IDB_HIDDOG0B)},
+     {PH_AUTO_GEN},
+     {CMN_ID(mutt_2,IDB_HIDDOG2)},{PH_AUTO_GEN},
+     {CMN_ID(mutt_4,IDB_HIDDOG21)},
+     {CMN_ID(mutt_5,IDB_HIDDOG5),CMN_ID(mutt_5b,IDB_HIDDOG5B)},
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},{PH_AUTO_GEN},
+     {CMN_ID(mutt_5,IDB_HIDDOG5),CMN_ID(mutt_5b,IDB_HIDDOG5B)},
+     {CMN_ID(mutt_0,IDB_HIDDOG0),CMN_ID(mutt_0b,IDB_HIDDOG0B)}, 
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},{PH_AUTO_GEN},
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},{PH_AUTO_GEN},
+     
+     {CMN_ID(mutt_4,IDB_HIDDOG21)},
+     {CMN_ID(mutt_19,IDB_HIDDOG22),CMN_ID(mutt_19b,IDB_HIDDOG22B)},
+     {CMN_ID(mutt_4,IDB_HIDDOG21),CMN_ID(mutt_20b,IDB_HIDDOG21B)},
+     {CMN_ID(mutt_4,IDB_HIDDOG21)},{CMN_ID(mutt_19,IDB_HIDDOG22)},
+     {CMN_ID(mutt_0,IDB_HIDDOG0),CMN_ID(mutt_0b,IDB_HIDDOG0B)},
+     {PH_AUTO_GEN},
+     {CMN_ID(mutt_25,IDB_HIDDOGDEAD)}, /* deadPixmapBits */
+
+     /* Fighter attack bitmaps */
+     {CMN_ID(mutt_26,IDB_HIDDOG0_ATTACK)},   /* center_R */
+     {PH_AUTO_GEN},         /* center_L */
+     {CMN_ID(mutt_28,IDB_HIDDOG2_ATTACK)},   /* air_R */
+     {PH_AUTO_GEN},         /* air_L */
+     {PH_AUTO_GEN},         /* r_DN */
+     {PH_AUTO_GEN},         /* r_UP */
+     {CMN_ID(mutt_26,IDB_HIDDOG0_ATTACK)},   /* dn_R */
+     {PH_AUTO_GEN},         /* dn_L */
+     {PH_AUTO_GEN},         /* l_DN */
+     {PH_AUTO_GEN},         /* l_UP */
+     {PH_AUTO_GEN},         /* up_R */
+     {PH_AUTO_GEN},         /* up_L */
+     {CMN_ID(mutt_38,IDB_HIDDOG21_ATTACK)},  /* air_UP */
+     {CMN_ID(mutt_39,IDB_HIDDOG22_ATTACK)},  /* air_DN */
+    },
+    
+    /* maskBits */
+    {{0}},
+
+    {/** PhysicalContext **/
+      65, /* health */
+      70, /* mass */
+      A_Mutt, /* classId */
+      "mutt", /* clas */
+
+      True, /* transmogifyTarget */
+      True, /* doppelUser */
+      False, /* potentialHuman */
+      False, /* potentialEnemy */
+      20, /* enemyWeight */
+      False, /* potentialWeapon */
+      False, /* potentialOtherItem */
+      0.0f, /* objectWorldPercent */
+      0, /* levelMaxTimes */
+      {12,12}, /* sizeMax */
+      Mutt::create, /* create */
+      False, /* statsCreations */
+      False, /* statsUses */
+      True, /* statsDeaths */
+      Mutt::get_stats, /* get_stats */
+      NULL, /* arg */
+      Mutt::init_x, /* init_x */
+      Mutt::create_from_stream, /* create_from_stream */
+    },
+    True, /* hiRes */
+    Fighter::offset_generator, /* offsetGenerator */
+    &Fighter::transformOverride, /* transformOverride */
+    True, /* useXPM */
+	True, /* invisibility */
+  },
+};
+
+
+
+const WalkingContext Mutt::walkingContext = {
+  0, /* dummy */
+};
+
+
+
+const FighterContext Mutt::fighterContext = 
+{ /** FighterContext **/
+#if X11
+  "chocolate4", /* foreground */
+  "white", /* background */
+  #endif
+#if WIN32
+	RGB(0,0,0), /* foreground */
+	RGB(128,0,0), /* background */
+#endif
+  3, /* slide */
+  9, /* jumpHorizontal */
+  9, /* jumpVertical */ 
+  20, /* damageStuck */
+  40, /* damageFree */
+  
+  /* hotSpots */
+  {{11,3},{0,0},{11,3},{0,0},{0},{0},
+   {0},
+   {0},{0},
+   {0},
+   {11,3},{0,0},
+   {0},
+   {0},{0},
+   {0},
+   {0},{0},
+   {0},
+   {0},{0},
+   {4,0},{4,11},},
+  SoundNames::DOG_ATTACK,
+};
+
+
+
+const CarrierContext Mutt::carrierContext =
+{ /** CarrierContext **/
+  0, /* dummy */
+};

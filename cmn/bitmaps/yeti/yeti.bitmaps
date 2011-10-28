@@ -1,0 +1,228 @@
+/* 
+ * XEvil(TM) Copyright (C) 1994,2000 Steve Hardt and Michael Judge
+ * http://www.xevil.com
+ * satan@xevil.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program, the file "gpl.txt"; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA, or visit http://www.gnu.org.
+ */
+
+
+#if X11  
+#include "gen_xpm/yeti/yeti_0.xpm"
+#include "gen_xpm/yeti/yeti_0b.xpm"
+#include "gen_xpm/yeti/yeti_0c.xpm"
+#include "gen_xpm/yeti/yeti_0d.xpm"
+#include "gen_xpm/yeti/yeti_2.xpm"
+#include "gen_xpm/yeti/yeti_4.xpm"
+#include "gen_xpm/yeti/yeti_5.xpm"
+#include "gen_xpm/yeti/yeti_9.xpm"
+#include "gen_xpm/yeti/yeti_10.xpm"
+#include "gen_xpm/yeti/yeti_10b.xpm"
+#include "gen_xpm/yeti/yeti_10c.xpm"
+#include "gen_xpm/yeti/yeti_10d.xpm"
+#include "gen_xpm/yeti/yeti_10e.xpm"
+#include "gen_xpm/yeti/yeti_10f.xpm"
+#include "gen_xpm/yeti/yeti_18.xpm"
+#include "gen_xpm/yeti/yeti_20b.xpm"
+#include "gen_xpm/yeti/yeti_25.xpm"
+#endif
+
+
+
+Size Yeti::get_size_max() {
+  return creatureContext.movingContext.physicalContext.sizeMax;
+}
+
+
+
+PhysicalP Yeti::create(void *,WorldP w,LocatorP l,const Pos &pos) {
+  PhysicalP ret = new Yeti(w,l,pos);
+  assert(ret);
+  return ret;
+}
+
+
+
+CreatureXdata Yeti::creatureXdata;
+WalkingXdata Yeti::walkingXdata;
+PricklyXdata Yeti::pricklyXdata;
+AnimTimeXdata Yeti::animTimeXdata;
+SensitiveXdata Yeti::sensitiveXdata;
+
+  
+
+const CreatureContext Yeti::creatureContext =
+{ /** CreatureContext **/
+  2, /* crawlSpeed */
+  6, /* centerSpeed */
+  13, /* airSpeed */
+  3, /* climbSpeed */
+  10,  /* jump */
+  1,  /* acceleration */ 
+  300, /* corpseHealth */
+  
+  True, /* biological */
+  DROPLET_BLOOD, /* dropletType */
+  SoundNames::DEATH,
+  
+  {/** MovingContext **/
+#if X11
+    "black",False,
+    "tan",True,
+#endif
+#if WIN32
+    RGB(0,0,0),FALSE,
+    RGB(128,0,0),TRUE,
+#endif
+
+    /* animMax */
+    {4,4,1,1,1,1,
+#if 0 
+       1,
+       10,10,
+#endif
+       0,
+       0,0,
+       1,
+       10,10,
+#if 0
+       1,
+       10,10,
+       1,
+       10,10,
+#endif
+       0,
+       0,0,
+       0,
+       0,0,
+       1,
+       2,2,
+       1,1,
+       2,2,
+       1, /* deadAnimMax */
+     },
+    
+    /* sizes */
+    {{24,25},{24,25},{25,25},{25,25},{22,25},{22,25},    
+     {19,20},
+     {19,25},{19,25},
+     {20,19}, 
+     {25,19},{25,19},
+     {19,20},
+     {19,25},{19,25},
+     {20,19},
+     {25,19},{25,19},
+     {16,25},          /* Must be    */
+     {16,25},{16,25},  /* same size. */
+     {22,25},{22,25},	
+     {16,25},{16,25},
+     {25,10}, /* deadSize */
+    },
+    
+    {{0}}, /* offsets */
+    
+    /* pixmapBits */
+    {{CMN_ID(yeti_0,IDB_YETI0),CMN_ID(yeti_0b,IDB_YETI0B),
+      CMN_ID(yeti_0c,IDB_YETI0C),CMN_ID(yeti_0d,IDB_YETI0D)},
+     {PH_AUTO_GEN},
+     {CMN_ID(yeti_2,IDB_YETI2)},{PH_AUTO_GEN},
+     {CMN_ID(yeti_4,IDB_YETI4)},{CMN_ID(yeti_5,IDB_YETI5)},
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},{PH_AUTO_GEN},
+     {CMN_ID(yeti_9,IDB_YETI9)},
+     {CMN_ID(yeti_10,IDB_YETI10),CMN_ID(yeti_10b,IDB_YETI10B),
+      CMN_ID(yeti_10c,IDB_YETI10C),CMN_ID(yeti_10d,IDB_YETI10D),
+      CMN_ID(yeti_10e,IDB_YETI10E),CMN_ID(yeti_10f,IDB_YETI10F),
+      CMN_ID(yeti_10e,IDB_YETI10E),
+      CMN_ID(yeti_10d,IDB_YETI10D),CMN_ID(yeti_10c,IDB_YETI10C),
+      CMN_ID(yeti_10b,IDB_YETI10B),
+     },
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},{PH_AUTO_GEN},
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},{PH_AUTO_GEN},
+     {CMN_ID(yeti_18,IDB_YETI18)},
+     {PH_AUTO_GEN},{CMN_ID(yeti_18,IDB_YETI18),CMN_ID(yeti_20b,IDB_YETI18B)},
+     {PH_AUTO_GEN},{PH_AUTO_GEN},
+     {CMN_ID(yeti_18,IDB_YETI18),CMN_ID(yeti_20b,IDB_YETI18B)},{PH_AUTO_GEN},
+     {CMN_ID(yeti_25,IDB_YETI25)}, /* deadPixmapBits */
+    },
+    
+    /* maskBits */
+    {{0}},
+
+    {/** PhysicalContext **/
+      350, /* health */
+      400, /* mass */
+      A_Yeti, /* classId */
+      "yeti", /* clas */
+
+      True, /* transmogifyTarget */
+      True, /* doppelUser */
+      False, /* potentialHuman */
+      True, /* potentialEnemy */
+      10, /* enemyWeight */
+      False, /* potentialWeapon */
+      False, /* potentialOtherItem */
+      0.0f, /* objectWorldPercent */
+      0, /* levelMaxTimes */
+      {25,25}, /* sizeMax */
+      Yeti::create, /* create */
+      False, /* statsCreations */
+      False, /* statsUses */
+      True, /* statsDeaths */
+      Yeti::get_stats, /* get_stats */
+      NULL, /* arg */
+      Yeti::init_x, /* init_x */
+      Yeti::create_from_stream, /* create_from_stream */
+    },
+    True, /* hiRes */
+    0, /* offsetGenerator */
+    0, /* transformOverride */
+    True, /* useXPM */
+    True, /* invisibility */
+  },
+};
+
+
+
+const WalkingContext Yeti::walkingContext =
+{
+  0, /* dummy */
+};
+
+
+
+const PricklyContext Yeti::pricklyContext = 
+{
+  24, /* damage */
+};
+
+
+
+const AnimTimeContext Yeti::animTimeContext = 
+{ /** AnimTimeContext **/
+  4, /* animTime */
+};
+
+
+
+const SensitiveContext Yeti::sensitiveContext = 
+{ /** SensitiveContext **/
+  0, /* corporealMultiplier */
+  4, /* heatMultiplier */
+};

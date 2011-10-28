@@ -1,0 +1,225 @@
+/* 
+ * XEvil(TM) Copyright (C) 1994,2000 Steve Hardt and Michael Judge
+ * http://www.xevil.com
+ * satan@xevil.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program, the file "gpl.txt"; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA, or visit http://www.gnu.org.
+ */
+
+
+The inheritence graph of all classes in XEvil.
+
+<> means an object with Statistics
+
+
+===============================================================================
+
+Physical
+    Explosion
+    Fire
+    FireExplosion
+    Protection
+        NProtection
+        TProtection
+        XProtection
+    Moving
+        Trapdoor
+        Home
+        Shot 
+            Shell <>
+            SwapShell <>
+            Lance <>
+            Laser <>
+            FrogShell <>
+            Fireball
+            Missile <>
+            Star <>
+        Droplet
+            Blood
+            GreenBlood
+            OilDroplet
+            Feather         
+        Falling
+            Grenade <>
+            Napalm <>
+            Egg
+            Touchable
+                Xit
+                Flag
+            Heavy
+                AltarOfSin
+                Liftable
+                    Rock
+                    Weight
+            Item
+                Cloak <>        800
+                AutoUse
+                    Doppel <>       900
+                    Transmogifier <>    90
+                    MedKit <>       8000
+                    Drugs
+                        CrackPipe <>    6000
+                        Caffine <>      6500
+                        PCP <>          6300
+                    Shield 
+                        NShield <>  9000
+                        TShield <>  7000
+                Animated
+                    Bomb <>         80
+                Weapon
+                    Cutter
+                        Chainsaw    800
+                    Gun
+                        Pistol      5000
+                        MGun        9000
+                        Lancer      7000
+                        AutoLancer 11000
+                        FThrower    900
+                        Launcher    8000
+                        Grenades    -10
+                        Napalms     -5
+                        Stars       6000
+                        SingleGun
+                            Swapper -20
+                            FrogGun 700
+                    Whistle
+                        DogWhistle 10000 (-30 if no ammo)
+                        DemonSummoner 10100 (-25 if no ammo)
+        Creature <> 
+            Enforcer <>
+            Seal <>
+            Frog <>
+            Hero <>
+            Zombie <>
+            Ninja <>
+            ChopperBoy <>
+            Walker <>
+            Dog <>
+            Mutt <>
+            Alien <>
+            RedHugger
+            GreenHugger
+            FireDemon
+            Dragon
+            Yeti <>
+            Chicken <>
+
+
+Ability
+    Locomotion
+        Grounded
+            (Enforcer) <>
+            (Seal) <>
+        Hopping
+            (Frog) <>       
+        Walking     
+            (Hero) <>
+            (Walker) <>
+            (Dog) <>
+            (Yeti) <>
+        Sticky
+            (Alien) <>
+            (Ninja) <>
+            (RedHugger)
+            (GreenHugger)
+        Flying
+            (ChopperBoy) <>
+            (FireDemon)
+			(Chicken) <>
+    Holder
+        User
+            (Hero) <>
+            (Ninja) <>
+            (ChopperBoy) <>
+            (Walker) <>
+        Carrier
+            (Dog) <>
+    Suicide
+        (Enforcer) <>
+        (Seal) <>
+        (Frog) <>
+    Fighter
+        (Hero) <>
+        (Ninja) <>
+        (Dog) <>
+        (Chicken) <>
+    BuiltIn
+        (FireDemon)         90000
+        (Walker) <>         5500
+        (Dragon)
+    Hugger
+        (RedHugger)
+        (GreenHugger)
+    Prickly
+        (Enforcer)
+        (Alien)
+        (Yeti)
+    Healing
+        (Hero)
+        (Alien)
+    Lifter
+        (ChopperBoy)
+    Morphed
+        (Frog)
+    AnimTime
+        (Seal)
+        (Walker)
+    OnFire
+        (FireDemon)
+        (Dragon)
+    SwapProtect
+        (FireDemon)
+    Composite
+        Segmented
+            (Dragon)
+    Sensitive
+        (Yeti)  
+
+
+Modifier
+    Crack
+    CaffineM
+    PCPM
+    DoubleSpeed
+    DoubleJump
+    DoubleHealth
+
+
+
+Values for "Dir":
+
+   +---------------CO_up_L<17>-------CO_up<15>-------CO_up_R<16>--------------+
+   |                                                                          |
+   |                     ||                                                   |
+   |                     ||                                                   |
+CO_l_UP<14>              ||                                          CO_r_UP<8>
+   |                CO_climb_UP<20>                                           |
+   |                     ||                                                   |
+ CO_l<12>                ||                                             CO_r<6>
+   |                     ||                                                   |
+   |  CO_climb_L<24>=CO_climb<18>=CO_climb_R<23>   CO_air_UP<21>              |
+   |                     ||                              |                    |
+   |                     ||               CO_air_L<3>--CO_air<4>--CO_air_R<2> |
+   |                     ||                              |                    |
+   |                CO_climb_DN<19>                CO_air_DN<22>              |
+CO_l_DN<13>              ||                                          CO_r_DN<7>
+   |                     ||                                                   |
+   |                                                                          |
+   |               CO_center_L<1>   CO_center<5>   CO_center_R<0>             |
+   +-----------------CO_dn_L<11>-------CO_dn<9>-------CO_dn_R<10>-------------+
+
+  
+CO_R<25>...CO_UP_R_R<40> are the "pure" directions, the 16 cardinal directions.

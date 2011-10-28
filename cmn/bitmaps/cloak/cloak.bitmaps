@@ -1,0 +1,132 @@
+/* 
+ * XEvil(TM) Copyright (C) 1994,2000 Steve Hardt and Michael Judge
+ * http://www.xevil.com
+ * satan@xevil.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program, the file "gpl.txt"; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA, or visit http://www.gnu.org.
+ */
+
+#if X11
+#include "gen_xpm/cloak/cloak_4.xpm"
+#include "gen_xpm/cloak/cloak_4b.xpm"
+#include "gen_xpm/cloak/cloak_4c.xpm"
+#include "gen_xpm/cloak/cloak_4d.xpm"
+#include "gen_xpm/cloak/cloak_4e.xpm"
+#include "gen_xpm/cloak/cloak_4f.xpm"
+#endif
+
+
+
+Size Cloak::get_size_max() {
+  return context.fallingContext.movingContext.sizes[CO_air];
+} 
+
+
+
+PhysicalP Cloak::create(void *,WorldP w,LocatorP l,const Pos &pos) {
+  PhysicalP ret = new Cloak(w,l,pos);
+  assert(ret);
+  return ret;
+}
+
+
+
+static void cloak_get_item_info(Boolean &isItem,Boolean &isWeapon,
+                                CMN_BITS_ID &iconId) {
+  isItem = True;
+  isWeapon = False;
+#if WIN32
+  iconId = IDB_CLOAK;
+#endif
+#if X11
+  iconId = 0;
+#endif
+}
+
+
+
+ItemXdata Cloak::xdata;
+
+
+
+const ItemContext Cloak::context = 
+{ /** ItemContext **/
+  True, /* persists */
+  800, /* coolness */
+  SoundNames::CLOAK_USE,/*use sound*/
+  { /** FallingContext **/
+    {/** MovingContext **/
+#if X11
+      "black",False,
+      "brown",True,
+#endif
+#if WIN32
+      RGB(0,0,0)/*"black"*/,FALSE,
+      RGB(128,0,0)/*"brown"*/,TRUE,
+#endif      
+      
+      /* animMax */
+      {0,0,0,0,6},
+      
+      /* sizes */
+      {{0,0},{0,0},{0,0},{0,0},{15,15},},
+      
+      /* offsets */
+      {{0,0},{0,0},{0,0},{0,0},{0,0},},
+      
+      /* pixmapBits */
+      {{0},{0},{0},{0},
+       {CMN_ID(cloak_4,IDB_CLOAK),CMN_ID(cloak_4b,IDB_CLOAKB),
+        CMN_ID(cloak_4c,IDB_CLOAKC),CMN_ID(cloak_4d,IDB_CLOAKD),
+        CMN_ID(cloak_4e,IDB_CLOAKE),CMN_ID(cloak_4f,IDB_CLOAKF)},},
+      
+      /* maskBits */
+      {{0}},
+      
+      { /** PhysicalContext **/
+        10, /* health */
+        10, /* mass */
+        A_Cloak, /* classId */
+        "cloak", /* clas */
+        
+        False, /* transmogifyTarget */
+        False, /* doppelUser */
+        False, /* potentialHuman */
+        False, /* potentialEnemy */
+        0, /* enemyWeight */
+        False, /* potentialWeapon */
+        True, /* potentialOtherItem */
+        .00002f, /* objectWorldPercent */
+        0, /* levelMaxTimes */
+        {15,15}, /* sizeMax */
+        Cloak::create, /* create */
+        False, /* statsCreations */
+        True, /* statsUses */
+        False, /* statsDeaths */
+        Cloak::get_stats, /* get_stats */
+        NULL, /* arg */
+        Cloak::init_x, /* init_x */
+        Cloak::create_from_stream, /* create_from_stream */
+        cloak_get_item_info, /* get_item_info */
+      },
+      True, /* hiRes */
+      0, /* offsetGenerator */
+      0, /* transformOverride */
+      True, /* useXPM */
+    },
+  },
+};
+

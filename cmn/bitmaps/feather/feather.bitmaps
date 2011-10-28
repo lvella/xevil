@@ -1,0 +1,166 @@
+/*
+ *  XEvil(TM) Copyright (C) 1994,1999  Steve Hardt and Michael Judge
+ *  
+ *  The file, license.txt, distributed along with this source code contains
+ *  the license agreement for the XEvil source code and executable.
+ *  If you do not have this file, obtain a copy from 
+ *  http://www.xevil.com/docs/license.txt
+ * 
+ *  http://www.xevil.com
+ *  satan@xevil.com
+ */
+
+#if X11
+#include "gen_xpm/feather/feather_25.xpm"
+#include "gen_xpm/feather/feather_39.xpm"
+#include "gen_xpm/feather/feather_4.xpm"
+#include "gen_xpm/feather/feather_40.xpm"
+#include "gen_xpm/feather/feather_9.xpm"
+#endif
+
+
+
+Size Feather::get_size_max() {
+  return context.movingContext.physicalContext.sizeMax;
+}
+
+
+
+PhysicalP Feather::create(void *,WorldP w,LocatorP l,const Pos &pos) {
+  PhysicalP ret = new Feather(w,l,pos);
+  assert(ret);
+  return ret;
+}
+
+
+
+DropletXdata Feather::xdata;
+
+
+
+const DropletContext Feather::context = 
+{/** DropletContext **/
+  45, /* dissolveTime */
+  -2, /* gravity */
+  0.7f, /* speedModifier */
+  False, /* stickWalls */
+
+  {/** MovingContext **/
+#if X11
+    "red",False,
+    "white",True,
+#endif
+#if WIN32
+    RGB(0,0,0)/*"black"*/,FALSE,
+    RGB(0,255,255)/*"cyan"*/,TRUE,
+#endif
+
+    /* animMax */
+    {0,0,0,0,1,0,
+     1,
+     0,0,
+     1,
+     0,0,
+     1,
+     0,0,
+     1,
+     0,0,
+     0,
+     0,0,
+     0,0,
+     0,0,  
+     1,1,1,1,
+     1,1,1,1,
+     1,1,1,1,
+     1,1,1,1,
+    },
+
+    /* sizes */
+    {{0,0},{0,0},{0,0},{0,0},{2,4},{0,0},
+     {2,10},
+     {0},{0},
+     {10,2},
+     {0},{0},
+     {2,10},
+     {0},{0},
+     {10,2},
+     {0},{0},
+     {0},
+     {0},{0},
+     {0},{0},
+     {0},{0},
+     {8,4},{7,4},{8,8},{4,7},
+     {4,8},{4,7},{8,8},{7,4},
+     {8,4},{7,4},{8,8},{4,7},
+     {4,8},{4,7},{8,8},{7,4},
+    },
+
+     /* offsets */
+    {{0}},
+    
+    /* pixmapBits */
+    {{0},{0},{0},{0},{CMN_ID(feather_4,IDB_FEATHER4)},{0},
+     {PH_AUTO_GEN},
+     {0},{0},
+     {CMN_ID(feather_9,IDB_FEATHER9)},
+     {0},{0},
+     {PH_AUTO_GEN},
+     {0},{0},
+     {PH_AUTO_GEN},
+     {0},{0},
+     {0},
+     {0},{0},
+     {0},{0},
+     {0},{0},
+     {CMN_ID(feather_25,IDB_FEATHER25)},
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},
+     {PH_AUTO_GEN},
+     {CMN_ID(feather_39,IDB_FEATHER39)},
+     {CMN_ID(feather_40,IDB_FEATHER40)}
+   },
+
+    /* maskBits */
+    {{0}},
+
+    {/* PhysicalContext */
+      1, /* health */
+      0, /* mass */
+      A_Feather, /* classId */
+      "feather", /* className */
+
+      False, /* transmogifyTarget */
+      False, /* doppelUser */
+      False, /* potentialHuman */
+      False, /* potentialEnemy */
+      0, /* enemyWeight */
+      False, /* potentialWeapon */
+      False, /* potentialOtherItem */
+      0.0f, /* objectWorldPercent */
+      0, /* levelMaxTimes */
+      {10,10}, /* sizeMax */
+      Feather::create, /* create */
+      False, /* statsCreations */
+      False, /* statsUses */
+      False, /* statsDeaths */
+      NULL, /* get_stats */
+      NULL, /* arg */
+      Feather::init_x, /* init_x */
+      Feather::create_from_stream, /* create_from_stream */
+    },
+    True, /* hiRes */
+    0, /* offsetGenerator */
+    0, /* transformOverride */
+    True, /* useXPM */
+  },
+};

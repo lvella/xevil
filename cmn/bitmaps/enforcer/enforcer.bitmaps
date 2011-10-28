@@ -1,0 +1,193 @@
+/* 
+ * XEvil(TM) Copyright (C) 1994,2000 Steve Hardt and Michael Judge
+ * http://www.xevil.com
+ * satan@xevil.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program, the file "gpl.txt"; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA, or visit http://www.gnu.org.
+ */
+
+
+#if X11  
+#include "gen_xpm/enforcer/enforcer_0.xpm"
+#include "gen_xpm/enforcer/enforcer_0b.xpm"
+#include "gen_xpm/enforcer/enforcer_0c.xpm"
+#include "gen_xpm/enforcer/enforcer_25.xpm"
+#include "gen_xpm/enforcer/enforcer_4.xpm"
+#endif
+
+
+
+Size Enforcer::get_size_max() {
+  return creatureContext.movingContext.physicalContext.sizeMax;
+}
+
+
+
+PhysicalP Enforcer::create(void *,WorldP w,LocatorP l,const Pos &pos) {
+  PhysicalP ret = new Enforcer(w,l,pos);
+  assert(ret);
+  return ret;
+}
+
+
+
+CreatureXdata Enforcer::creatureXdata;
+GroundedXdata Enforcer::groundedXdata;
+SuicideXdata Enforcer::suicideXdata;
+PricklyXdata Enforcer::pricklyXdata;
+
+
+
+const CreatureContext Enforcer::creatureContext = 
+{ /** CreatureContext **/
+  0, /* crawlSpeed */
+  5, /* centerSpeed */
+  12, /* airSpeed */
+  0, /* climbSpeed */
+  0,  /* jump */
+  2,  /* acceleration */ 
+  300, /* corpseHealth */
+
+  False, /* biological */
+  DROPLET_OIL, /* dropletType */
+  SoundNames::BREAKDOWN, /* deadSoundId */
+  
+  {/** MovingContext **/
+#if WIN32
+	RGB(0,0,0)/*"black"*/,FALSE,
+	RGB(255,0,0)/*"red"*/,TRUE, 
+#endif
+#if X11
+    "black",False,
+    "red",True, 
+#endif
+    
+    /* animMax */
+    {4,4,4,4,1,1,
+       0,
+       0,0,
+       0,
+       0,0,
+       0,
+       0,0,
+       0,
+       0,0,
+       0,
+       0,0,
+       1,1,
+	   0,0,
+	   1, /* deadAnimNum */
+     },
+    
+    /* sizes */
+    {{16,30},{16,30},{16,30},{16,30},{16,30},{16,30},
+       {0,0},
+       {0,0},{0,0},
+       {0,0},
+       {0,0},{0,0},
+       {0,0},
+       {0,0},{0,0},
+       {0,0},
+       {0,0},{0,0},
+       {0,0},          /* Must be    */
+       {0,0},{0,0},  /* same size. */
+       {16,30},{16,30},	
+	   {0,0},{0,0},
+       {30,16}, /* deadSize */
+     },
+    
+    /* offsets */
+    {{0}},
+    
+    /* pixmapBits */
+    {{CMN_ID(enforcer_0,IDB_ENFORCER0),CMN_ID(enforcer_0b,IDB_ENFORCER0B),
+      CMN_ID(enforcer_0c,IDB_ENFORCER0C),CMN_ID(enforcer_0,IDB_ENFORCER0D)},
+     {PH_AUTO_GEN},
+     {CMN_ID(enforcer_0,IDB_ENFORCER0),CMN_ID(enforcer_0b,IDB_ENFORCER0B),
+      CMN_ID(enforcer_0c,IDB_ENFORCER0C),CMN_ID(enforcer_0,IDB_ENFORCER0D)},
+     {PH_AUTO_GEN},		
+     {CMN_ID(enforcer_4,IDB_ENFORCER5)},{CMN_ID(enforcer_4,IDB_ENFORCER5)},
+     {0},
+     {0},{0},
+     {0},
+     {0},{0},
+     {0},
+     {0},{0},
+     {0},
+     {0},{0},
+     {0},
+     {0},{0},
+     {CMN_ID(enforcer_4,IDB_ENFORCER5)},{CMN_ID(enforcer_4,IDB_ENFORCER5)},
+     {0},{0},
+     {CMN_ID(enforcer_25,IDB_ENFORCER_DEAD)}
+    },
+    
+    /* maskBits */
+    {{0}},
+
+    {/** PhysicalContext **/
+      400, /* health */
+      500, /* mass */
+      A_Enforcer, /* classId */
+      "enforcer", /* clas */
+
+      False, /* transmogifyTarget */
+      True, /* doppelUser */
+      False, /* potentialHuman */
+      True, /* potentialEnemy */
+      10, /* enemyWeight */
+      False, /* potentialWeapon */
+      False, /* potentialOtherItem */
+      0.0f, /* objectWorldPercent */
+      0, /* levelMaxTimes */
+      {30,30}, /* sizeMax */
+      Enforcer::create, /* create */
+      False, /* statsCreations */
+      False, /* statsUses */
+      True, /* statsDeaths */
+      Enforcer::get_stats, /* get_stats */
+      NULL, /* arg */
+      Enforcer::init_x, /* init_x */
+      Enforcer::create_from_stream, /* create_from_stream */
+    },
+    True, /* hiRes */
+    0, /* offsetGenerator */
+    0, /* transformOverride */
+    True, /* useXPM */
+	True, /* invisibility */
+  },
+};
+
+
+
+const GroundedContext Enforcer::groundedContext =
+{ /** GroundedContext **/
+  0, /* dummy */
+};
+
+
+
+const SuicideContext Enforcer::suicideContext =
+{ /** SuicideContext **/
+  0, /* dummy */
+};
+
+
+
+const PricklyContext Enforcer::pricklyContext =
+{ /** PricklyContext **/
+  25, /* damage */
+};

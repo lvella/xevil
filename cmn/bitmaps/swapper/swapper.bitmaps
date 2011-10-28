@@ -1,0 +1,141 @@
+/* 
+ * XEvil(TM) Copyright (C) 1994,2000 Steve Hardt and Michael Judge
+ * http://www.xevil.com
+ * satan@xevil.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program, the file "gpl.txt"; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA, or visit http://www.gnu.org.
+ */
+
+
+#if X11
+#include "gen_xpm/soul_swapper/soul_swapper_4.xpm"
+#endif
+
+
+
+#define SWAPPER_TIME 10
+
+ 
+
+Size Swapper::get_size_max() {
+  return context.gunContext.weaponContext.itemContext.fallingContext.
+    movingContext.sizes[CO_air];
+}
+
+
+
+PhysicalP Swapper::create(void *,WorldP w,LocatorP l,const Pos &pos) {
+  PhysicalP ret = new Swapper(w,l,pos);
+  assert(ret);
+  return ret;
+}
+
+
+
+static void swapper_get_item_info(Boolean &isItem,Boolean &isWeapon,
+                                  CMN_BITS_ID &iconId) {
+  isItem = True;
+  isWeapon = True;
+#if WIN32
+  iconId = IDB_SWAPPER;
+#endif
+#if X11
+  iconId = 0;
+#endif
+}
+
+
+
+SingleGunXdata Swapper::xdata;
+
+
+
+const SingleGunContext Swapper::context = 
+{ /** SingleGunContext **/
+  { /** GunContext **/
+    12, /* shotTime */
+    PH_AMMO_UNLIMITED, /* ammoInitial */
+    PH_AMMO_UNLIMITED, /* ammoMax */
+    
+    { /** WeaponContext **/
+      SoundNames::SWAPPER,
+      { /** ItemContext **/
+        True, /* persists */
+        -20, /* coolness */
+        0, /*item use sound */
+        
+        { /** FallingContext **/
+          {/** MovingContext **/
+#if X11
+            "black",False,
+            Xvars_BACKGROUND,True,
+#endif
+#if WIN32
+            RGB(0,0,0)/*"black"*/,False,
+            Xvars_BACKGROUND,True,
+#endif	    
+            /* animMax */
+            {0,0,0,0,1},
+            
+            /* sizes */
+            {{0,0},{0,0},{0,0},{0,0},{15,7},},
+            
+            /* offsets */
+            {{0}},
+	    
+            /* pixmapBits */
+            {{0},{0},{0},{0},{CMN_ID(soul_swapper_4,IDB_SWAPPER)},},
+            
+            /* maskBits */
+            {{0}},
+            
+            { /** PhysicalContext **/
+              5, /* health */
+              15, /* mass */
+              A_Swapper, /* classId */
+              "soul-swapper", /* clas */
+              
+              False, /* transmogifyTarget */
+              False, /* doppelUser */
+              False, /* potentialHuman */
+              False, /* potentialEnemy */
+              0, /* enemyWeight */
+              True, /* potentialWeapon */
+              False, /* potentialOtherItem */
+              .0002f, /* objectWorldPercent */
+              0, /* levelMaxTimes */
+              {15,7}, /* sizeMax */
+              Swapper::create, /* create */
+              False, /* statsCreations */
+              False, /* statsUses */
+              False, /* statsDeaths */
+              NULL, /* get_stats */
+              NULL, /* arg */
+              Swapper::init_x, /* init_x */
+              Swapper::create_from_stream, /* create_from_stream */
+              swapper_get_item_info, /* get_item_info */
+            },
+            True, /* hiRes */
+            0, /* offsetGenerator */
+            0, /* transformOverride */
+            True, /* useXPM */
+          },
+        },
+      },
+    },
+  },
+};
+

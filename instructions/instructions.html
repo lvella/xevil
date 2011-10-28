@@ -1,0 +1,1000 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.61 [en] (Win98; I) [Netscape]">
+   <meta name="Author" content="Steve Hardt">
+   <title>XEvil Instruction Manual</title>
+</head>
+<body>
+
+<h1>
+The XEvil 2.X Instruction Manual</h1>
+Copyright &copy; 1999 Steve Hardt
+<p><font size=-1>Last Modified 1/19/2000</font>
+<br><font size=-1>Most recent version is at <a href="http://www.xevil.com/docs/instructions.html">http://www.xevil.com/docs/instructions.html</a>.</font>
+<br><font size=-1>Visit <a href="http://www.xevil.com">www.xevil.com</a>
+for downloads, source code, screen shots, and more documentation.</font>
+<p>
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or (at
+your option) any later version.
+<p>
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+<a href="http://www.xevil.com/docs/gpl.txt">General Public License</a> for more details.
+<p>
+
+<hr WIDTH="100%">
+<h1>
+<a NAME="intro"></a>Introduction</h1>
+XEvil is a side-view, single or network-multiplayer, fast-action, kill-everything,
+game for Windows and UNIX.
+<p>You have sinned in life.&nbsp; Now, you die and go to Hell.&nbsp; XEvil
+is the contest that determines your fate in Hell for all eternity.&nbsp;
+At the end of a game, you receive one of many possible rankings.&nbsp;
+A poor player, for example, may spend the rest of time as "Satan's Earwax
+Remover", while a good one might achieve a prestigious title such as "VP
+of Hell Marketing" or even "Lead Software Engineer of Hell".
+<p>
+<hr WIDTH="100%">
+<h1>
+<a NAME="contents"></a>Contents</h1>
+
+<ol type="I">
+<li>
+<a href="#userinterface">User Interface</a></li>
+
+<li>
+<a href="#gameplay">Game Play</a></li>
+
+<li>
+<a href="#appendix">Appendix</a></li>
+</ol>
+
+<p><br>
+<hr WIDTH="100%">
+<h1>
+<a NAME="userinterface"></a>Part I: User Interface</h1>
+The XEvil user interface is designed to be as simple and direct as possible.&nbsp;
+We're not trying to win any awards for fancy GUI gizmos, we just want to
+get you to the death-and-gore of XEvil itself.
+<br>&nbsp;
+<h3>
+<a NAME="unixvswin"></a>UNIX and Windows Differences</h3>
+Although game play, graphics, networking, and pretty much everything else
+is the same between the UNIX and Windows versions, the user interfaces
+are quite different.&nbsp; From here on, we will mark sections that apply
+only to UNIX or only to Windows with with "<i>UNIX:</i>" or "<i>Windows:</i>",
+respectively.
+<p><i>UNIX:</i>
+<br>Menu Bar
+<br><img SRC="UNIXmenu.gif" ALT="UNIX Menu" height=39 width=761>
+<p><i>Windows</i>:
+<br>Options Dialog
+<br><img SRC="optionsdlg.gif" ALT="Windows Options Dialog" height=319 width=405>
+<br>&nbsp;
+<h3>
+
+<hr WIDTH="50%"></h3>
+
+<h3>
+<a NAME="graphicops"></a>Graphics Options</h3>
+At startup, the XEvil License Agreement Dialog appears and gives you several
+graphics options.&nbsp; XEvil is designed to run on a variety of machines,
+with widely varying graphics capabilities.&nbsp; So, most of these options
+are meant to allow fast machines to use all the whiz-bang graphics features,
+while still allowing slow machines to play full speed (with fewer features
+enabled).
+<p><i>UNIX:</i>
+<ol>
+<li>
+[Large Viewport] chooses between large- and small-viewport modes.&nbsp;
+Large-viewport mode is the default, playing XEvil in full resolution.&nbsp;
+Small-viewport plays XEvil at half-resolution (similar to XEvil 1.x), shrinking
+all graphics to half normal size.&nbsp; Two uses: With small-viewport,
+you can fit two XEvil windows on one display to play two players on the
+same machine.&nbsp; And, small-viewport mode is much faster on machines
+with slow graphics.</li>
+
+<li>
+[Smooth Scroll] chooses between smooth-scroll and discrete-scroll modes.&nbsp;
+In smooth-scroll, your character is always at the center of the screen,
+with the world scrolling to follow you.&nbsp; However, smooth-scroll requires
+a machine with very fast graphics, so discrete-scroll is the default.&nbsp;
+In the latter, the viewport shifts in discrete chunks, only scrolling when
+your character gets to the edge of the screen.</li>
+
+<li>
+Turn off [Draw Background] to speed up smooth-scroll mode.&nbsp; Instead
+of the appropriate world-background, the background will be solid black.&nbsp;
+This switch does nothing in discrete-scroll mode.</li>
+</ol>
+<i>Windows</i>:
+<ol>
+<li>
+[Full Screen] chooses between full-screen and windowed modes.&nbsp; Full-screen
+is generally faster, running in 800x600, 256-color mode.&nbsp; But, windowed
+mode allows you to easily switch between XEvil and other applications.</li>
+
+<li>
+Turn off [Draw Background] to speed up drawing.&nbsp; Instead of the appropriate
+world-background, the background will be solid black.</li>
+</ol>
+
+<hr WIDTH="50%">
+<h3>
+<a NAME="controls"></a>Controls</h3>
+XEvil uses keyboard controls, 9 keys for movement, 3 keys each for weapons
+and items, and one key for network chat.&nbsp; We use the same default
+keyboard layout on both UNIX and Windows to assist multi-platform users.&nbsp;&nbsp;
+The default setting uses the 9-key number pad for movement, the "insert-home-pageup-delete-end-pagedn"
+block of six keys for weapons and items, and the space bar for network
+chat.
+<p>Movement:
+<br>For Walking characters, press right-left to walk.&nbsp; Up and up-diagonals
+to jump, down and down-diagonals to duck and crawl.&nbsp; Middle key to
+stop moving.
+<br>For Sticky (wall-crawling) characters, press the appropriate diagonal
+towards the wall to climb, away-diagonal to jump off the wall.
+<br>Press up-down to climb ladders.&nbsp; If you are jumping through the
+air, you can grab a ladder by pressing up or down while passing over the
+ladder.
+<br>For Flying characters, press the direction you would like to fly.&nbsp;
+Middle key to stop in place.
+<p>Weapons/Items:
+<br>To fire a weapon, or attack hand-to-hand, <i>hold</i> down the weapon-use
+key and tap the direction you would like to attack.&nbsp; Movement will
+not be affected as long as the weapon-use key is held down.&nbsp; Thus,
+you can move in one direction while firing in another.
+<br>Tap weapon-change to cycle through available weapons, and weapon-drop
+to drop your current weapon.
+<br>Item use, change, and drop keys allow you to use items, cycle through
+available items, and drop items, respectively.
+<p>Network chat is described in the Network XEvil section.
+<br>&nbsp;
+<p><a NAME="wincontrols"></a><i>Windows</i>:
+<p>The [Settings | Keyboard Controls...] menu activates the Keyboard Controls
+Dialog:
+<br><img SRC="keysdlg.gif" ALT="Windows Keyboard Controls" height=319 width=455>
+<br>Click on a button to set the key for that command.&nbsp; On Windows,
+keyboard controls are saved persistently between sessions.
+<br>&nbsp;
+<p><a NAME="unixcontrols"></a><i>UNIX</i>:
+<p>Keyboard controls set via user interface are not saved between sessions.&nbsp;
+However, they can be set permanently via <a href="#xresources">X Resources</a>.
+<p>To pause, hit F1, then any key to resume.
+<h4>
+<a NAME="unixviewcntrls"></a><i>UNIX: </i>Viewing current keyboard controls</h4>
+Cllick the [Show Controls] button on the menu to view the current keyboard
+controls.
+<br><img SRC="UNIXShowControls.gif" ALT="UNIX Show Controls" height=299 width=728>
+<br>A few tricky things.&nbsp; On UNIX, you can have a two player game
+on a single machine, by sharing the same keyboard.&nbsp; The first player
+uses the right side of the keyboard, the second player the left.&nbsp;
+If you are playing one-player, or are connecting to a server as a client,
+you only need to think about keys on the right side.
+<p>Another tricky things is that UNIX XEvil allows you to map one-or-two
+different keys to each function.&nbsp; Here's why.&nbsp; The default left
+keyboard mapping use nine-keys centered on the 'L' key.&nbsp; Put your
+right hand on the keyboard with middle finger on 'L' and you'll notice
+that up-right and down-left both have two nearby possible keys.&nbsp; So,
+XEvil allows you to hit either 'P' or '[' for up-right and either 'M' or
+'&lt;' for down-left.&nbsp; In these cases, two different keys are mapped
+to the same function.
+<p>And, yet another tricky thing (YATT) is the X Window System key naming
+convention.&nbsp; Most of the key names, e.g. "period" or "comma", are
+obvious.&nbsp; But, some are more obscure.&nbsp; "Prior" and "Next" generally
+mean "Page Up" and "Page Down".&nbsp; Anything starting with "KP_" means
+a key on the numeric keypad.&nbsp; If you are really stuck, read "/usr/include/X11/keysymdef.h"
+or the "X" man pages.
+<h4>
+<a NAME="unixsetcntrls"></a><i>UNIX: </i>Setting Keyboard Controls via
+User Interface</h4>
+Click the [Set Controls] button to change the keyboard controls.
+<br><img SRC="UNIXSetControls.gif" ALT="UNIX Set Controls" height=162 width=590>
+<br>The dialog will ask you, in order, for all keyboard controls.&nbsp;
+Click on the Set Controls Dialog, and type in the requested keys.&nbsp;
+Now, there is the whole two-keys-to-one-function thing described above,
+so you have the option to enter two different keys for each function.&nbsp;
+But, <i>most of the time, you will just hit the same key twice</i>.
+<p>Changes take effect immediately, so you don't always have to cycle through
+all controls.&nbsp; In particular, if you are playing one-player, dismiss
+the dialog after setting controls for the right side.&nbsp; To dismiss
+the dialog, click the close-window button (usually) in the upper-right
+corner, or unselect [Set Controls] from the XEvil menu.&nbsp; If you type
+an incorrect key, dismiss the dialog and start again.
+<br>&nbsp;
+<h4>
+<a NAME="xresources"></a><i>UNIX: </i>Setting Keyboard Controls via X Resources</h4>
+If you're sick of going through the [Set Controls] dialog every time you
+run XEvil, set the controls once via X Resources (part of the X Window
+System). Generally, you add lines to the ".Xdefaults" or ".Xresources"
+file in your home directory.&nbsp; See the man pages for X(1) and xrdb(1)
+to learn more about setting/viewing X resources.
+<p>Remember, there are separate sets of controls for the right and left
+sides of the keyboard.&nbsp; If you are playing one-player mode, or running
+as a client connecting to a server, you only need think about the right
+hand set.&nbsp; Also remember, up to two keys can be mapped to each function.
+<p>The easiest way to show this is with a few examples. The possible values
+for each function are the keys in "/usr/include/X11/keysymdef.h" with the
+"XK_" prefix stripped, e.g. "XK_asterisk" becomes "asterisk".
+<p>"XEvil.right_weapon_use:&nbsp;&nbsp;&nbsp; Insert"
+<br>The keysym for weapon-use on the right side controls is the insert
+key.
+<p>"XEvil.right_left:&nbsp;&nbsp;&nbsp; KP_Left"
+<br>The keysym for move-left on the right side controls is the left-arrow
+key on the numerical keypad ("KP_" means numerical keypad).
+<p>"XEvil.left_up_right_2:&nbsp;&nbsp;&nbsp; bracketleft"
+<br>The second keysym for move-up-right on the left side controls is the
+left-square-bracket.
+<br>&nbsp;
+<p>A sample resource file.&nbsp; Further examples are in the "x11/app-defaults"
+directory in the XEvil source distribution.
+<blockquote>
+<pre>! XEvil resources for a sun4 SPARC station 1
+!
+! Right side of keyboard
+XEvil.right_center:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; F31
+XEvil.right_right:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Right
+XEvil.right_down_right:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; F35
+XEvil.right_down:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Down
+XEvil.right_down_left:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; F33
+XEvil.right_left:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Left
+XEvil.right_up_left:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; F27
+XEvil.right_up:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Up
+XEvil.right_up_right:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; F29
+XEvil.right_weapon_use:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; F21
+XEvil.right_weapon_change:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; F22
+XEvil.right_weapon_drop:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; F23
+XEvil.right_item_use:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; F24
+XEvil.right_item_change:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; F25
+XEvil.right_item_drop:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; F26
+! Left side of keyboard
+XEvil.left_center:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; l
+XEvil.left_right:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; semicolon
+XEvil.left_down_right:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; slash
+XEvil.left_down:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; period
+XEvil.left_down_left:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m
+XEvil.left_down_left_2:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; comma
+XEvil.left_left:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; k
+XEvil.left_up_left:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; i
+XEvil.left_up:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; o
+XEvil.left_up_right:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; p
+XEvil.left_up_right_2:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bracketleft
+XEvil.left_weapon_use:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a
+XEvil.left_weapon_change:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; s
+XEvil.left_weapon_drop:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; d
+XEvil.left_item_use:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; z
+XEvil.left_item_change:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; x
+XEvil.left_item_drop:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; c</pre>
+</blockquote>
+
+<hr WIDTH="50%">
+<h3>
+<a NAME="gamestyle"></a>Game Style</h3>
+There are six "Styles" of XEvil game play, controlled by the "Game Style"
+toggle buttons.
+<ul>
+<dl>
+<dt>
+<b>Levels</b></dt>
+
+<dd>
+The default style for single-player games.&nbsp; Kill all enemies on each
+level to advance to the next more difficult level.&nbsp; Every five levels,
+you must complete a scenario.&nbsp; A scenario is a mission with a specific
+goal, e.g. "Capture the Flag", "Hive"-find the exit before the hoards of
+Aliens kill you, "Kill the Baby Seals", or "The Pound"-survive an onslaught
+of rabid dogs.</dd>
+
+<dt>
+<b>Scenarios Only</b></dt>
+
+<dd>
+No normal levels, you only play scenarios.</dd>
+
+<dt>
+<b>Kill, Kill, Kill</b></dt>
+
+<dd>
+Everything attacks everything, machine players even attack each other.
+Game is over when there is one (or fewer) survivors.&nbsp; Also makes a
+good screen-saver, set zero human players and watch the machines fight
+it out.</dd>
+
+<dt>
+<b>Duel</b></dt>
+
+<dd>
+Good for multi-player tournaments.&nbsp; Each player has three lives.</dd>
+
+<dt>
+<b>Extended Duel</b></dt>
+
+<dd>
+The default "Death Match" style for multi-player network games.&nbsp; Humans
+have infinite lives and the game keeps track of the number of kills per
+player.</dd>
+
+<dt>
+<b>Training</b></dt>
+
+<dd>
+No enemies, good for learning the controls (and debugging).</dd>
+</dl>
+</ul>
+You can further specify the type of game by setting values for [Human Players],
+[Enemy Players], [Regenerate Enemies], and [Cooperative].&nbsp; Depending
+on the Game Style setting, certain of these controls will be ghosted out
+because their values are unused.
+<ul>
+<dl>
+<dt>
+[Human Players]</dt>
+
+<dd>
+Set the number of players on this machine.&nbsp; On Windows, this is zero
+or one.&nbsp; You can set zero players then sit back and watch the machines
+kill each other.&nbsp; On UNIX, this can be zero to six.&nbsp; Two players
+can share the same machine, each using half of the keyboard.&nbsp; Or,
+you can open windows on multiple X Displays with the -display&lt;N> command
+line option, to play up to six players.&nbsp; Note: multiplayer by opening
+multiple X Displays is different than true client/server network play,
+described in the "Network XEvil" section.&nbsp; This control is unused
+for true network play, because the value is set implicitly by the number
+of machines connected to the server.</dd>
+
+<dt>
+[Enemy Players]</dt>
+
+<dd>
+Only used for certain Game Styles, set the number of enemy players in the
+game.&nbsp; E.g. for a human vs. human duel, you may or may not want to
+have computer players running around in the game.</dd>
+
+<dt>
+[Regenerate Enemies]</dt>
+
+<dd>
+Only used for certain Game Styles, choose whether enemy players are automatically
+regenerated.&nbsp; E.g. if [Enemy Players] is set to ten, and all but four
+have been killed, six new ones will soon appear to take the place of their
+fallen comrades.</dd>
+
+<dt>
+[Cooperative]</dt>
+
+<dd>
+You can choose a [Cooperative] game, where all humans work together.&nbsp;
+Your dogs and doppelgangers will not attack other humans, human-fired missiles
+will not track other humans, humans will not bump into each other, and
+you all share the same set of lives.</dd>
+</dl>
+</ul>
+
+<h3>
+
+<hr WIDTH="50%"></h3>
+
+<h3>
+<a NAME="network"></a>Network XEvil</h3>
+For ease of use and distribution, the XEvil client, server, and standalone
+games are bundled in the same executable.
+<p>XETP, the XEvil Transport Protocol, is platform independent. You can
+connect Windows clients to UNIX servers and vice versa.&nbsp; Even though
+UNIX XEvil has no sound (yet), Windows clients connected to UNIX servers
+will get correct sound effects.&nbsp; XETP works over standard TCP/IP connections
+(using UDP and TCP packets), so XEvil can be played over the internet,
+a LAN, or a dialup connection.
+<p>Network XEvil provides a simple chat mode, facilitating taunts and other
+important modes of inter-player communication.&nbsp; On either Client or
+Server, press the chat key (default is spacebar), enter your message, then
+"Enter" to send the message or "Esc" to abort the message and return to
+normal controls.
+<br>&nbsp;
+<h4>
+<a NAME="netclient"></a>Client</h4>
+<i>Windows:</i>
+<br>You can run an XEvil client from the user interface at run time.&nbsp;
+Select the "Network | Connect to Server..." menu.&nbsp; Enter the hostname
+or IP address of the server along with the port number (if different than
+the default port 6066).&nbsp; Optionally, enter a player name.&nbsp; If
+you do not choose a player name, your name will be chosen randomly each
+game.&nbsp; Hit "OK" to connect.
+<p><i>UNIX</i>:
+<br>Use the command line options described below.
+<p><i>Windows and UNIX</i>:
+<br>You can run an XEvil client from the command line.&nbsp; Type "xevil
+-connect &lt;server_name> {server_port}" to connect to a specific server,
+optionally specifying the server port number, e.g. "xevil -connect xevil.notgod.com".
+<p>While connected, you can hit [New Game] to restart.&nbsp; The server
+will end your old game and start you with a new character.
+<br>&nbsp;
+<h4>
+<a NAME="netserver"></a>Server</h4>
+The server has the option to either be a regular "Player" in the game,
+or to run in "Observer" mode with a scrollable window watching the action.&nbsp;
+"Player" mode makes it very easy to set up, say, two player games.&nbsp;
+One machine runs the server, the other connects to it, done.
+<p><i>Windows</i>:
+<br>You can run an XEvil server from the user interface at run time.&nbsp;
+Select the "Network | Run as Server..." menu.&nbsp; You may change the
+port number to run on a port other than the default, 6066.&nbsp; Choose
+either "Player" or "Observer" mode and hit "OK".&nbsp; Clients can&nbsp;
+now to connect to your machine.
+<p><i>UNIX</i>:
+<br>Use the command line options described below to run a UNIX XEvil server.
+<p><i>Windows and UNIX</i>:
+<br>You can run an XEvil server from the command line.&nbsp; Type "xevil
+-server {port_number}" to run an XEvil server in "Player" mode, optionally
+specifying a server port number.&nbsp; Add the "-observer" flag to run
+in "Observer" mode.
+<p><i>Windows</i>:
+<br>Windows XEvil provides a dedicated server mode, with a small window
+to control game options and view server logs.&nbsp; Dedicated-Server mode
+performs no drawing, so inflicts little slowdown on other applications.
+<br>Run "xevil -server -dedicated" from the command line.&nbsp; Dedicated
+servers are always in "Observer" mode.
+<p><i>UNIX</i>:
+<br>UNIX XEvil provides a non-graphical command-line-only server interface.&nbsp;
+This allows XEvil servers to be run in startup scripts or remotely via
+telnet when no graphical interface is available.
+<br>Run "xevil -server -no_ui" from the command line.&nbsp; Command-line
+servers are always in "Observer" mode.
+<p>You can record a server log by redirecting the output to a file, say
+"log.txt".
+<br>"xevil -server -no_ui > log.txt"
+<br>or
+<br>"xevil -server -no_ui | tee log.txt"
+<br>The second form will copy the log to "log.txt" while still displaying
+it on the command line.
+<h4>
+<a NAME="servermonitoring"></a>Remote Server Monitoring</h4>
+You can remotely monitor an XEvil server with the "serverping" utility
+program.&nbsp; serverping queries a server for certain information, including
+the list of players on the server, and their kills.&nbsp; serverping can
+be used to make web pages that actively monitor XEvil servers.
+<p>Currently the only way to obtain serverping is to download the XEvil
+source code and compile it on a UNIX machine.&nbsp; serverping will be
+generated in the same directory as the XEvil executable.&nbsp; I haven't
+tried building serverping.cpp on a Windows machine, but it is all cross-platform
+code and shouldn't be too hard to make it work.
+<h3>
+
+<hr WIDTH="50%"><a NAME="difficulty"></a>Difficulty</h3>
+There are four levels of difficulty, "Trivial", "Normal", "Hard", and "Bend
+Over".
+<p><i>UNIX</i>:
+<br>You will be prompted for the level of difficulty at the start of the
+first game.&nbsp; Press the key for the desired level of difficulty.&nbsp;
+Or, hit space or click a mouse button as a shortcut for "Normal".
+<p><i>Windows</i>:
+<br>The [Settings | Keyboard Controls...] menu will activate the Difficulty
+dialog.&nbsp; Changing level of difficulty will not effect a game currently
+in progress.&nbsp; Start a new game to play with the new level of difficulty.
+<br>
+<hr WIDTH="50%">
+<h3>
+<a NAME="gamespeed"></a>Game Speed</h3>
+<i>UNIX</i>:
+<br>The [Speed] control in the upper-right corner sets the time (in milliseconds)
+between turns, e.g. 40ms implies a frame rate of 25 fps.&nbsp; A little
+counter-intuitive in that smaller numbers give higher speeds.&nbsp; Set
+[Speed] to zero to play at the max speed supported by your machine.
+<p><i>Windows</i>:
+<br>Move the [Game Speed] slider in the Options Dialog to the right to
+go faster, left to go slower.
+<p><i>UNIX and Windows</i>:
+<br>Run "xevil -speed &lt;speed_in_ms>" to set the exact speed in milliseconds,
+similar to the UNIX [Speed] control.
+<p>If playing a network game, it's best to leave the speed at default.&nbsp;
+If a client and server are running at different speeds, the client-side
+dead-reckoning algorithm will be off, resulting in objects jumping around
+the screen more than necessary.
+<br>
+<hr WIDTH="50%">
+<h3>
+<a NAME="sound"></a>Sound (Windows only)</h3>
+The Options Dialog provides several options for controlling XEvil sound:
+<ol>
+<li>
+Set the volume of the background music with the "Soundtrack" slider.</li>
+
+<li>
+Set the volume of the sound effects (gunshots, screams, and the like) with
+the "Effects" slider.</li>
+
+<li>
+Turn sound on/off altogether with the "Sound" toggle button.</li>
+
+<li>
+Set background music to play from the built-in MIDI files (default).</li>
+
+<li>
+Set background music to play random tracks from an audio CD.</li>
+</ol>
+In general, changes will take effect when you click "OK" on the Options
+Dialog.
+<p>Sometimes, even with the "Soundtrack" slider all the way up, the MIDI
+sound is still too quiet.&nbsp; Two ways to deal with this:
+<ol>
+<li>
+Open the Windows Volume Controls by right-clicking on the speaker icon
+in the lower-right corner of your screen.&nbsp; Then crank the "Synth Volume"
+all the way up.</li>
+
+<li>
+Turn down the "Effect" volume in the XEvil Options Dialog.&nbsp; Then increase
+the master volume on your speakers.</li>
+</ol>
+
+<p><br>UNIX XEvil has no sound.&nbsp; But, with the source freely available,
+I'm sure some industrious soul could write it (hint, hint).
+<p>
+<hr WIDTH="100%">
+<h1>
+<a NAME="gameplay"></a>Part II: Game Play</h1>
+
+<h3>
+<a NAME="world"></a>World</h3>
+The XEvil World is a randomly generated two-dimensional map composed of
+walls, floors, ladders, horizontal and vertical movers(elevators), and
+doors.&nbsp; The maze algorithm guarantees every character that can at
+least walk and climb ladders can get from any room to any other room.&nbsp;
+Each level randomly chooses one of several graphical "themes",&nbsp; e.g.
+a "Mayan" theme, a "Medieval" theme, an "Industrial" theme.
+<br>&nbsp;
+<h3>
+<a NAME="characters"></a>Characters</h3>
+XEvil characters walk, climb ladders, climb on walls and ceilings, fly,
+use weapons and items, and/or fight hand-to-hand depending on their specific
+set of abilities.&nbsp; At the start of each life, you are randomly given
+one of the characters to play.&nbsp; One time you may be a "Ninja", next
+time a "Chopper-Boy". To succeed in XEvil, you need to learn all the major
+characters.&nbsp; The <a href="http://www.xevil.com/xevil/profiles" target="_top">XEvil
+Character Profiles</a> gives a full description of each.
+<p>You can build up characters with more powerful weapon and items, with
+shields, or by earning bonuses like double health, double speed, hellfire
+powers (light enemies on fire by touching them), or healing powers.&nbsp;
+But, life is cheap, and often very short.&nbsp; A much less pumped character,
+controlled by a clever and fast opponent, might just find the right weapon/item
+combination to nail you where you least expect it.
+<br>&nbsp;
+<h3>
+<a NAME="weapsitems"></a>Weapons and Items</h3>
+Next to the characters themselves, weapons and items are the heart of XEvil
+gameplay.&nbsp; We include many of the standard video game weapons and
+items (hand-to-hand combat, melee weapons, projectile weapons, throwing
+weapons, shields, MedKit), but also a number of more creative devices (Soul-Swapper,
+Frog-Gun, Transmogifier, Doppelganger, Dog-Whistle, drugs, Cloak, and heat
+weapons).&nbsp; The <a href="http://www.xevil.com/xevil/armory" target="_top">XEvil
+Armory</a> lists all the weapons and items in XEvil.
+<p>We implemented a system where it is fairly easy to find weapons, but
+not too easy, and where it is impossible to hoard weapons from other players.&nbsp;
+If you pick up a weapon you already have, your character will take the
+ammunition from the new weapon.&nbsp; After killing an opponent, you may
+loot all the weapons and items from the corpse (assuming you didn't blow
+up the entire area with a Bomb or Grenade).
+<p>Don't get too attached to your body, you never know when it might get
+snatched from under you.&nbsp; The XEvil Soul-Swapper lets you swap souls
+between your body and someone else's.&nbsp; The Soul-Swapper is good for
+taking over powerful enemies, or getting rid of your current near-death
+body.&nbsp; The frog-gun temporarily turns an enemy into a harmless, hopping,
+little amphibian.&nbsp; Be sure to catch and nail the critter before he
+turns back.&nbsp; The Transmogifier (based on "transmogrify"), randomly
+turns its user into a different Creature.&nbsp; It's good if your current
+body is weak or wounded, or if you just feel like a change.
+<p>Doppelgangers and Dog-Whistles give you followers.&nbsp; Your followers
+help you out, protecting you and attacking your enemies.&nbsp; And, you
+even get the credit for all your followers' kills.&nbsp; Using a Doppelganger
+generates a copy of your current body.&nbsp; It is largely independent,
+wandering around the world attacking your enemies.&nbsp; Blowing a Dog-Whistle
+summons two loyal and obedient Dogs.&nbsp; Unless ordered otherwise, Dogs
+follow nearby protecting their master, attacking nearby targets and fetching
+weapons and items.&nbsp; You can use the Dog-Whistle to order your Dogs
+to seek in a certain direction or to return to your side.
+<p>XEvil has more drugs than a elementary school playground.&nbsp; Caffine
+is the legal drug, keeps you awake and makes you go faster.&nbsp; No really
+bad side-effects, although the shaking may make you fall off ladders and
+such.&nbsp; Crack and PCP make you faster and stronger.&nbsp; But, they
+come with a chance of overdose.&nbsp; If you do drugs and die, well, you
+should've listened to Nancy Reagan.&nbsp; As long as you keep constantly
+high, feeding your habit with more drugs, you won't suffer the negative
+effects of the come-down.&nbsp; If you see your opponents shaking, twitching,
+and jumping all over the place, be careful, they may be strung out on Crack.
+<p>The "Cloak" gives limited invisibility.&nbsp; The background shimmers
+in the shape of your character, so only very observant players can see
+you.&nbsp; Cloaking effects last for quite a while (not infinite, don't
+want cowards to hide in the corners forever), but end as soon as you fire
+a weapon.&nbsp; Cloak is perfect for ambush attacks.
+<p>Now, what would Hell be without fire?&nbsp; Flame-Throwers, Napalm-Grenades,
+and Fireballs allow you to have a barbecue with your unwanted guests.&nbsp;
+The more you hit 'em, the hotter they get, the longer they burn, and the
+more damage they take.&nbsp; Sometimes you can hit someone with enough
+fire so that after they kill you, they still burn to death.&nbsp; Vengeance
+from the grave.&nbsp; Of course, all Demons and Demonic objects are immune
+to heat attacks.&nbsp; "Gee, that tickles."
+<p>XEvil has <i>no</i> personal hand-held or built-in teleporters.&nbsp;
+I hate games where your quarry magically beams away right before you kill
+them.&nbsp; Stationary teleporters are ok.&nbsp; Doors and teleportation
+booths set into in the world background move you instantly from one fixed
+location to another.
+<p>
+<hr WIDTH="100%">
+<h1>
+<a NAME="appendix"></a>Part III: Appendix</h1>
+
+<h3>
+<a NAME="title"></a>Title</h3>
+The title, "XEvil", reflects the game's early UNIX roots, the X Window
+naming convention of&nbsp; applications like XTerm, XClock, XTrek, and
+XEmacs.&nbsp; Now, with cross-platform support, the title is read as "XEvil"
+== "eXtremely Evil", "eXceptionally Evil", "eXcessively Evil", "eXtraordinarily
+Evil", "eXclusively Evil", "eXquisitely Evil", "eXorbitantly Evil", etc,
+etc.
+<br>
+<hr WIDTH="50%">
+<h3>
+<a NAME="hints"></a>Hints</h3>
+The combination of weapons and items in XEvil allows for a number of creative,
+"classy" kills and strategies, many we never thought of while writing the
+game.&nbsp; Here are a few examples:
+<ol>
+<li>
+While an enemy is shooting at you, hit him with the Soul-Swapper.&nbsp;
+After switching bodies, his own bullets will kill him.</li>
+
+<li>
+Drop a Transmogifier on an Alien or some other tough enemy.&nbsp; It will
+probably turn him into something easier to kill.</li>
+
+<li>
+Trigger a Bomb, but don't drop it.&nbsp; Then soul-swap an enemy.&nbsp;
+He will find himself holding the hot-potato when it goes off.</li>
+
+<li>
+Activate Doppelgangers and Dogs as living shields when being pursued by
+a really nasty enemy, say a FireDemon.</li>
+
+<li>
+Drop drugs on your enemies until they die from overdose.</li>
+
+<li>
+Use a Transmogifier to change bodies when missiles are tracking you.&nbsp;
+They will lose the lock-on and fly into a wall.</li>
+</ol>
+
+<h3>
+
+<hr WIDTH="50%"></h3>
+
+<h3>
+<a NAME="commline"></a>Command Line Arguments</h3>
+Throughout the bulk of this manual, we mention command line arguments only
+when they are especially relevant. Here we give an exhaustive list of all&nbsp;
+XEvil command line arguments.
+<p>Values in &lt;> are required, values in {} are optional.&nbsp; Arguments
+that say (<i>UNIX)</i> or (<i>Windows)</i>, are only meaningful for that
+platform.
+<p><i>Windows</i>:
+<br>UNIX users, of course, are intimately familiar with the command line.&nbsp;
+Some Windows users may not be.&nbsp; On Win 95/98/NT, there are several
+ways to run a program from the command line.
+<ol>
+<li>
+From the "Start" menu, click "Run...".&nbsp; In the dialog, type the command
+line to run XEvil,</li>
+
+<br>e.g. "c:\xevil2.0\xevil &lt;some_list_of_command_line_arguments>"
+<li>
+"Start | Programs | MS-DOS Prompt".&nbsp; Then type the command line in
+the MS-DOS window.</li>
+
+<li>
+Create a shortcut to XEvil.&nbsp; Right-click on the shortcut icon and
+bring up the Properties dialog.&nbsp; Choose the "Shortcut" tab, then add
+any command line arguments to the "Target" field.&nbsp; Click "OK", then
+double click the shortcut to execute.</li>
+</ol>
+
+<p><br><i>UNIX and Windows</i>:
+<ul>
+<li>
+Arguments applicable to all modes of playing, StandAlone, Client, or Server.</li>
+
+<ul>
+<li>
+-debug_info</li>
+
+<br>Extra debugging information.&nbsp; On Windows this adds a menu for
+debugging the SurfaceManager.
+<li>
+-name &lt;player_name></li>
+
+<br>Set the name for the first player, i.e. player number 0.
+<li>
+-name&lt;N> &lt;player_name></li>
+
+<br>Set the name for player number N, N starts at 0,
+<br>e.g. "xevil -name0 bob -name1 fred -name2 jane".
+<li>
+-reduce_draw</li>
+
+<br>Don't draw backgrounds.
+<li>
+-speed &lt;time_in_ms></li>
+
+<br>Set the time for each turn in milliseconds.
+<li>
+-display &lt;display_name></li>
+
+<br><i>(UNIX)</i> Run all XEvil windows on the given X Display.&nbsp; See
+the "X" man pages for info on display names.&nbsp; Remember to include
+the ":&lt;screen_number>" after the machine name, e.g. "somemachine:0".
+<li>
+-display&lt;N> &lt;display_name></li>
+
+<br><i>(UNIX) </i>Associate player number N with the given X Display.&nbsp;
+N starts at zero.
+<br>E.g. "xevil -display0 chainsaw.domain.com:0 -display1 fthrower.anotherdomain.edu:0"
+will play a game where player number 0 is on the machine "chainsaw" while
+player 1 is on the machine "fthrower".
+<li>
+-draw_rects</li>
+
+<br><i>(UNIX)</i> Debugging tool for discrete-scroll mode.&nbsp; Show the
+exact rectangles being drawn.
+<li>
+-help or -h</li>
+
+<br><i>(UNIX) </i>Print out a help message.
+<li>
+-info</li>
+
+<br><i>(UNIX)</i> Print out license agreement text, including credits.
+<li>
+-keys &lt;keyset_name></li>
+
+<br><i>(UNIX)</i> Use one of the built-in default keyboard settings.&nbsp;
+Possible values are "alpha", "decmips", 'iris", "linux", "mac", "ncd",
+"rsaix", "sun3", "sun4", "sun4_sparc", "tektronix".&nbsp; The default is
+set at compile-time with the -DXEVIL_KEYSET flag.
+<li>
+-large_viewport</li>
+
+<br><i>(UNIX)</i> Start in large-viewport mode.
+<li>
+-no_buffer</li>
+
+<br><i>(UNIX)</i> Don't use double-buffer for smooth-scroll mode.
+<li>
+-no_smooth_scroll</li>
+
+<br><i>(UNIX)</i> Turn smooth scroll off.
+<li>
+-old_draw</li>
+
+<br><i>(UNIX) </i>Use an older drawing algorithm.
+<li>
+-small_viewport</li>
+
+<br><i>(UNIX)</i> Start in small-viewport mode.
+<li>
+-smooth_scroll</li>
+
+<br><i>(UNIX)</i> Turn smooth scroll on.
+<li>
+-stats</li>
+
+<br><i>(UNIX) </i>Periodically print out a few useful statistics about
+timing and events.
+<li>
+-use_averaging</li>
+
+<br><i>(UNIX) </i>For small viewport mode, set the image reduction algorithm
+to take the average of the source pixels.&nbsp; Default is sub-sampling.
+<li>
+-use_buffer</li>
+
+<br><i>(UNIX)</i> Use a double-buffer for smooth-scroll mode.
+<li>
+-cd</li>
+
+<br><i>(Windows)</i> Set soundtrack to play an audio CD.
+<li>
+-full_screen</li>
+
+<br><i>(Windows)</i> Run XEvil in full-screen mode.
+<li>
+-gen_xpm &lt;directory_name></li>
+
+<br><i>(Windows) </i>Auto-generate UNIX XPM images for XEvil into the given
+directory.&nbsp; Used for development work.
+<li>
+-midi</li>
+
+<br><i>(Windows)</i> Set soundtrack to play the built-in MIDI music
+<li>
+-no_init_graphics</li>
+
+<br><i>(Windows) </i>Don't initialize all graphics at startup.&nbsp; Initialize
+graphics lazily, load images when they are first needed.
+<li>
+-no_soundtrack</li>
+
+<br><i>(Windows) </i>Turn off the soundtrack.
+<li>
+-window_screen</li>
+
+<br><i>(Windows)</i> Run XEvil in windowed mode.</ul>
+
+<li>
+Arguments for StandAlone or Server.</li>
+
+<ul>
+<li>
+-cooperative</li>
+
+<br>Turn on "Cooperative" mode.
+<li>
+-difficulty &lt;difficulty_level></li>
+
+<br>Set difficulty level, possible values are "trivial", "normal", "hard",
+or "bend-over".
+<li>
+-duel</li>
+
+<br>Set game style to "Duel".
+<li>
+-extended</li>
+
+<br>Set game style to "Extended Duel".
+<li>
+-enemies &lt;enemies_num></li>
+
+<br>Set number of enemy players.
+<li>
+-kill</li>
+
+<br>Set game style to "Kill, Kill, Kill".
+<li>
+-levels</li>
+
+<br>Set game style to "Levels".
+<li>
+-no_demo</li>
+
+<br>Don't show a demo at game startup.&nbsp; Mostly for debugging.
+<li>
+-no_items</li>
+
+<br>No weapons or items will be added to the XEvil world.&nbsp; Mostly
+for debugging.
+<li>
+-no_level_title</li>
+
+<br>Don't pause at the beginning of each level, displaying the level title.
+<li>
+-no_movers</li>
+
+<br>No horizontal or vertical movers(elevators) in the game.
+<li>
+-no_new_level</li>
+
+<br>Never advance to the next level.&nbsp; Only useful for debugging.
+<li>
+-one_item &lt;item_name></li>
+
+<br>Only put one item in the XEvil world, an instance of the named class.&nbsp;
+For debugging.
+<li>
+-regenerate_enemies</li>
+
+<br>Turn on auto-regenerate enemies.
+<li>
+-rooms &lt;N>x&lt;M></li>
+
+<br>Set the dimensions of the XEvil world to be N rooms across and M rooms
+down.&nbsp; Only used for certain game styles and scenarios.
+<li>
+-scenario &lt;scenario_name></li>
+
+<br>For the "Scenarios" game style, always play the named scenario.
+<li>
+-scenarios</li>
+
+<br>Set game style to "Scenarios".
+<li>
+-training</li>
+
+<br>Set game style to "Training".</ul>
+
+<li>
+Arguments for Client Only.</li>
+
+<ul>
+<li>
+-connect &lt;server_name> {server_port}</li>
+
+<br>Run XEvil as a client, connecting to the given server.&nbsp; Server
+port number may optionally be specified, default is 6066.
+<li>
+-client_port &lt;port_number></li>
+
+<br>Manually specifiy the UDP port used on the client side.&nbsp; Use this
+if you get an error like "Could not bind local UDP port".
+<li>
+-no_dead_reckoning</li>
+
+<br>Disable client-side dead reckoning.&nbsp; Objects will jump around
+on the screen more.
+<li>
+-skip &lt;skip_turns></li>
+
+<br>Manually specify the rate of data flow from the connected XEvil server.&nbsp;
+"-skip 1" means send data at full rate no matter what.&nbsp; "-skip 2"
+means only send every other turn, "-skip 3" means only send every three
+turns, etc.&nbsp; "-skip 0" means automatically adjust the rate (default).</ul>
+
+<li>
+Arguments for Server Only.</li>
+
+<ul>
+<li>
+-server {server_port}</li>
+
+<br>Run an XEvil server.&nbsp; Optionally specify the server port number,
+default is 6066.
+<li>
+-disconnect_time &lt;time_in_ms></li>
+
+<br>Specify time in milliseconds before disconnecting clients that do not
+respond.
+<li>
+-no_adjust_skip</li>
+
+<br>Don't adjust the data flow rate to clients.
+<li>
+-no_disconnect</li>
+
+<br>Never disconnect clients, even if they don't respond.&nbsp; Useful
+for debugging.
+<li>
+-observer</li>
+
+<br>Run the server in "Observer" mode.&nbsp; Default is "Player" mode.
+<li>
+-target_delay &lt;num_turns></li>
+
+<br>Server will adjust rate of data flow to Clients to keep latency &lt;=
+this number of turns.
+<li>
+-no_ui</li>
+
+<br><i>(UNIX)</i> Run a command-line XEvil server.&nbsp; Implies "-observer".
+<li>
+-dedicated</li>
+
+<br><i>(Windows)</i> Run a dedicated XEvil server. Implies "-observer".</ul>
+
+<li>
+Arguments for Client or Server.</li>
+
+<ul>
+<li>
+-buggy</li>
+
+<br>Purposely drop packets, scramble packets, and send duplicate packets.&nbsp;
+Simulate a crappy network connection to assist debugging.
+<li>
+-net_stats</li>
+
+<br>Print out stats on network packets.</ul>
+</ul>
+
+</body>
+</html>
+

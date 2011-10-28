@@ -1,0 +1,13 @@
+/* XPM */
+static char *blood_25[] = {
+  /* width height ncolors chars_per_pixel */
+  "14 4 2 1 0 0",
+  /* colors */
+  "! c #ff0000",
+  "# c None",
+  /* pixels */
+  "#######!!!!!!#",
+  "##!!!!!!!!!!!!",
+  "!!!!!!!!!!!!!#",
+  "########!!!###",
+};
