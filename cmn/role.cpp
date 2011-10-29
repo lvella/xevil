@@ -29,9 +29,9 @@
 
 #include "stdafx.h"
 
-#include <iostream.h>
+#include <iostream>
 #if X11
-#include <strstream.h>
+#include <strstream>
 #include <time.h>
 #endif
 #if WIN32
@@ -50,7 +50,7 @@
 #include "intel.h"
 #include "game_style.h"
 
-
+using namespace std;
 
 /////////////////////////////////////////////////////////////////////////////
 //  Different Roles: StandAlone, Client, and Server

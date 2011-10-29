@@ -32,7 +32,7 @@
 
 // Include Files
 #if X11
-#include <strstream.h>
+#include <strstream>
 #endif
 #if WIN32
 #include <strstrea.h>
@@ -124,7 +124,7 @@
 #include "bitmaps/yeti/yeti.bitmaps"
 #include "bitmaps/chicken/chicken.bitmaps"
 
-
+using namespace std;
 
 ///// Some helper macros to define creatures with certain abilities.
 #define DEFINE_CREATURE_CTORS_1(CLASSNAME,ABILITY0,ability0) \

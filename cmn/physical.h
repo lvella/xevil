@@ -510,7 +510,7 @@ public:
 
   void set_no_death_delete() {noDeathDelete = True;}
 
-  virtual Boolean Physical::corporeal_attack(PhysicalP,int damage,
+  virtual Boolean corporeal_attack(PhysicalP,int damage,
            AttackFlags flags = ATT_DAMAGE | ATT_DROPLETS);
   /* EFFECTS: Inflict some sort of bodily damage on the Physical.
      Return True if attack succeeded, False if it was blocked in

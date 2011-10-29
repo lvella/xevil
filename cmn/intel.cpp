@@ -35,7 +35,7 @@ extern "C" {
   #include <string.h>
 }
 #if X11
-#include <strstream.h>
+#include <strstream>
 #endif
 #if WIN32
 #include <strstrea.h>

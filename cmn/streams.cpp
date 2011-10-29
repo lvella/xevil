@@ -31,7 +31,7 @@
 #include "utils.h"
 #include "neth.h" // needed for recv, send, recvfrom, sendto
 
-#include <iostream.h>
+#include <iostream>
 
 #include "streams.h"
 #include "xetp.h" // yuck, need this for XETP::versionStr

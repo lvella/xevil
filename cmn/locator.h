@@ -47,7 +47,7 @@ the world. */
 
 
 // Include Files
-#include <iostream.h>
+#include <iostream>
 
 #include "utils.h"
 #include "coord.h"
@@ -95,12 +95,15 @@ class SoundRequest;
 
 #define OL_RECENT_SOUNDS_MAX 30
 
-
+class OLgridEntry;
+#if X11
+class OLshadowEntry;
+#endif
 
 // An entry for one object in the list of all objects currently in the game.
 class OLentry {
   friend class Locator;
-  friend class OLgridEntry; 
+  friend class OLgridEntry;
 #if X11
   friend class OLshadowEntry;
 #endif
@@ -131,8 +134,6 @@ class OLentry {
   // Only used one viewport at a time.
   Boolean alreadyDrawn; 
 };
-
-
 
 // The entry in the object grid, mostly a forwarding pointer to the OLentry
 // for the object.

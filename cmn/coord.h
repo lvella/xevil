@@ -147,7 +147,7 @@
 #define CO_DIR_PURE 16  // "Pure" does not include CO_center.  Use CO_air.
 #define CO_DIR_HALF_PURE 8
 
-typedef int ClassId;
+typedef long int ClassId;
 // Possible values for a ClassId.  There should be an entry for every class
 // of Physical objects in the game.
 // Also used as an index into Locator::contexts.

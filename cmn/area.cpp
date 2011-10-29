@@ -35,12 +35,12 @@ extern "C" {
   //#include <stdlib.h> // For the abs() function.
 #include <limits.h> // For INT_MAX
 }
-#include <iostream.h>
+#include <iostream>
 #include "utils.h"
 #include "coord.h"
 #include "area.h"
 
-
+using namespace std;
 
 Size Area::operator - (const Area &other) const {
   assert ((shape == AR_RECT) && (other.shape == AR_RECT));

@@ -33,10 +33,10 @@
 // Include Files
 #include "xdata.h"
 #include "physical.h"
-#include <iostream.h>
+#include <iostream>
 
 #if X11
-#include <strstream.h>
+#include <strstream>
 #endif
 #if WIN32
 #include <strstrea.h>

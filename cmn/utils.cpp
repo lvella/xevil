@@ -30,16 +30,16 @@
 
 // Include Files
 #include "stdafx.h"
-#include <iostream.h>
+#include <iostream>
+#include <fstream>
 #include <limits.h>
 #include <string.h>
 #include <ctype.h>
-#include <fstream.h>
 #if WIN32
 #include <strstrea.h>
 #endif
 #if X11
-#include <strstream.h>
+#include <strstream>
 #endif
 
 #ifdef NO_STDLIB
@@ -62,7 +62,7 @@
 #include "utils.h"
 #include "streams.h"
 
-
+using namespace std;
 
 #define PTR_LIST_DEFAULT_ALLC 5
 

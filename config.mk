@@ -230,7 +230,7 @@ LIBS_DIRS=-L/usr/local/X11R5/sun4/lib $(TARGETS)
 #For lancer running Linux
 i386:
 	@$(MAKE) CC="g++" \
-CFLAGS="-DUSE_RANDOM -DXEVIL_KEYSET=UIlinux -DUSE_UINT_NET_LENGTH" \
+CFLAGS="-DUSE_RANDOM -DXEVIL_KEYSET=UIlinux -DUSE_UINT_NET_LENGTH -w" \
 LINK_FLAGS="-static" \
 INCL_DIRS="-I/usr/X11R6/include" \
 LIBS_DIRS="-L/usr/X11R6/lib" \

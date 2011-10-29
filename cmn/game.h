@@ -35,7 +35,7 @@
 extern "C" {
 #include <time.h>
 }
-#include <iostream.h>
+#include <iostream>
 #include "utils.h"
 #include "ui.h"
 #include "world.h"
