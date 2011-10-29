@@ -270,7 +270,7 @@ powerpc:
 
 x86_64:
 	@$(MAKE) CC="g++" \
-CFLAGS="-DUSE_RANDOM -DXEVIL_KEYSET=UIlinux -DUSE_UINT_NET_LENGTH -m32 -O3 -fpermissive -w" \
+CFLAGS="-DUSE_RANDOM -DXEVIL_KEYSET=UIlinux -DUSE_UINT_NET_LENGTH -m32 -O3 -fpermissive" \
 LINK_FLAGS="-m32 -O3" \
 INCL_DIRS="-I/usr/X11R6/include" \
 LIBS_DIRS="" \
