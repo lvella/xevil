@@ -268,6 +268,9 @@ powerpc-linux:
 powerpc:
 	@$(MAKE) i386
 
+x86_64:
+	@$(MAKE) i386
+
 
 i386-sco:
 	@$(MAKE) CC="CC" CFLAGS="-b elf -DUSE_RANDOM -DUSE_SELECT_H -DMATH_H_IS_CC" \
