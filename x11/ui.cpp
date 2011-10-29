@@ -915,7 +915,7 @@ void Ui::menu_humans_num_CB(void* value,Viewport*,void* closure) {
   UiP ui = (UiP)closure;
   ui->settingsChanges |= UIhumansNum; 
   const char* chPValue = (const char*)value;
-  ui->settings.humansNum = Utils::atoi(chPValue);
+  ui->settings.humansNum = atoi(chPValue);
 }
 
 
@@ -924,7 +924,7 @@ void Ui::menu_enemies_num_CB(void* value,Viewport*,void* closure) {
   UiP ui = (UiP)closure;
   ui->settingsChanges |= UIenemiesNum; 
   const char* chPValue = (const char*)value;
-  ui->settings.enemiesNum = Utils::atoi(chPValue);
+  ui->settings.enemiesNum = atoi(chPValue);
 }
 
 
@@ -1065,7 +1065,7 @@ void Ui::menu_quanta_CB(void* value,Viewport*,void* closure) {
   UiP ui = (UiP)closure;
   ui->settingsChanges |= UIquanta;
   const char* chPValue = (const char*)value;
-  ui->settings.quanta = Utils::atoi(chPValue);
+  ui->settings.quanta = atoi(chPValue);
 }
 
 
@@ -1143,7 +1143,7 @@ void Ui::chat_CB(void* value,Viewport* vPort,void* closure) {
   ui->settings.chatReceiver[0] = '\0';
 
   // Copy over the message.
-  Utils::strncpy(ui->settings.chatMessage,message,UI_CHAT_MESSAGE_MAX);
+  strncpy(ui->settings.chatMessage,message,UI_CHAT_MESSAGE_MAX);
   ui->settings.chatMessage[UI_CHAT_MESSAGE_MAX] = '\0';
 }
 
@@ -1325,7 +1325,7 @@ void Ui::init_x() {
       
       // Get font.  Use user-specified font if given.
       // regular size font.
-      char *theFont = fontName ? fontName : DEFAULT_FONT_NAME;
+      const char *theFont = fontName ? fontName : DEFAULT_FONT_NAME;
       xvars.font[xvars.dpyMax] = 
         XLoadQueryFont(xvars.dpy[xvars.dpyMax],theFont);
       if (!xvars.font[xvars.dpyMax]) {

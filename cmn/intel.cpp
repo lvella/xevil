@@ -240,18 +240,18 @@ Intel::Intel(WorldP w,LocatorP l,char *name,
   }
 
   // intelStatus
-  assert(Utils::strlen(name) < IT_STRING_LENGTH);
-  Utils::strcpy(intelStatus.name,name); 
+  assert(strlen(name) < IT_STRING_LENGTH);
+  strcpy(intelStatus.name,name); 
   intelStatus.classId = A_None;
-  Utils::strcpy(intelStatus.className,"none");
+  strcpy(intelStatus.className,"none");
   intelStatus.health = 0;
   intelStatus.mass = 0;
   intelStatus.weaponClassId = A_None;
-  Utils::strcpy(intelStatus.weapon,"none");
+  strcpy(intelStatus.weapon,"none");
   intelStatus.weaponReady = False;
   intelStatus.ammo = PH_AMMO_UNLIMITED;
   intelStatus.itemClassId = A_None;
-  Utils::strcpy(intelStatus.item,"none");
+  strcpy(intelStatus.item,"none");
   intelStatus.itemCount = 0;
 
   intelStatus.lives = -666; // This should never be used.

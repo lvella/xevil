@@ -476,15 +476,15 @@ Boolean ChatPanel::process_event(int dpy_num,XEvent *event) {
     // Printable character typed.
     if ((keysym >= XK_KP_Space && keysym <= XK_KP_9) ||
         (keysym >= XK_space && keysym <= XK_asciitilde)) {
-      if (Utils::strlen(value) + len < PANEL_STRING_LENGTH) {
-        Utils::strcat(value,buffer);
+      if (strlen(value) + len < PANEL_STRING_LENGTH) {
+        strcat(value,buffer);
       }
       update_message();
     }
     // Delete a character.
     else if (keysym == XK_BackSpace || keysym == XK_Delete) {
-      if (Utils::strlen(value) > 0) {
-        value[Utils::strlen(value) - 1] = '\0';
+      if (strlen(value) > 0) {
+        value[strlen(value) - 1] = '\0';
       }
       update_message();      
     }

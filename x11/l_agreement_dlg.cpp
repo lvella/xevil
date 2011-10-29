@@ -166,7 +166,7 @@ LAgreementDlg::LAgreementDlg(Xvars &x_vars,int dpy_num,int argc,char** argv,
   for (n = 0; n < BUTTONS_MAX; n++) {
     buttonSizes[n] = 
       TextPanel::get_unit(xvars->font[dpyNum],
-                          Utils::strlen(buttonLabels[n]));
+                          strlen(buttonLabels[n]));
   }
   // Just used for the height, for two rows.
   Size optionTextUnit = 
@@ -203,7 +203,7 @@ LAgreementDlg::LAgreementDlg(Xvars &x_vars,int dpy_num,int argc,char** argv,
   for (n = 0; n < OPTIONS_MAX; n++) {
     Size opSize = 
       TogglePanel::get_unit(xvars->font[dpyNum],
-                            Utils::strlen(optionToggleLabels[n]),1);
+                            strlen(optionToggleLabels[n]),1);
     optionsMaxWidth = Utils::maximum(optionsMaxWidth,opSize.width);
   }
     

@@ -253,37 +253,6 @@ class Utils {
   /* EFFECTS: Copy str, allocating new memory.  If str is NULL, return 
      NULL. */
 
-  static int strlen(const char* cs)
-    {assert(cs); return ::strlen(cs);}
-  /* REQUIRES: cs is non-NULL */
-  
-  static int strcmp(const char* str1,const char* str2)
-    {return ::strcmp(str1,str2);}
-  /* EFFECTS: Wrapper for C library strcmp().  Return 0 if strings are the
-     same. */
-
-  static char* strchr(const char* cs,int c)
-    {return ::strchr(cs,c);}
-
-  static char* strrchr(const char* cs,int c)
-    {return ::strrchr(cs,c);}
-
-  static char* strstr(const char* cs,const char* ct)
-    {return ::strstr(cs,ct);}
-
-  static void strcpy(char* s,const char* ct)
-    {::strcpy(s,ct);}
-
-  static void strncpy(char* s,const char* ct,int n)
-    {::strncpy(s,ct,(size_t)n);}
-
-  static void strcat(char* s,const char* ct)
-    {::strcat(s,ct);}
-
-  static int atoi(const char*);
-
-  static const char* getenv(const char*);
-
   static int mod(int n,int m) 
     {return (n >= 0) ? (n % m) : (-(-n % m) + m) % m;} 
   /* EFFECTS: Return (n % m), allowing n to be negative. */

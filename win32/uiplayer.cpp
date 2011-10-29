@@ -2612,7 +2612,7 @@ void UiPlayer::chat_process_char(char charPressed) {
       settings.chatReceiver[0] = '\0';
 
       // Copy over the message.
-      Utils::strncpy(settings.chatMessage,m_chatMessage,UI_CHAT_MESSAGE_MAX);
+      strncpy(settings.chatMessage,m_chatMessage,UI_CHAT_MESSAGE_MAX);
       settings.chatMessage[UI_CHAT_MESSAGE_MAX] = '\0';
     }
 

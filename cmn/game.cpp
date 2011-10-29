@@ -557,7 +557,7 @@ void GameObjects::level_reset(const Dim &worldDim,GameStyleP style) {
   style->filter_weapons_and_other_items(locator,weaponsNum,weapons,oItemsNum,oItems);
 
   // Normal case.
-  if (!Utils::strlen(oneItem) && !noItems && !oneEach) {
+  if (!strlen(oneItem) && !noItems && !oneEach) {
     // Area of the world.
     int areaFactor = worldDim.rowMax * worldDim.colMax;
 
@@ -595,7 +595,7 @@ void GameObjects::level_reset(const Dim &worldDim,GameStyleP style) {
   }
 
   // If only one item in the Game.
-  else if (Utils::strlen(oneItem)) {
+  else if (strlen(oneItem)) {
     ClassId classId = Game::parse_class_name(locator,oneItem);
     if (classId != A_None) {
       maximums[classId] = 1;
@@ -1556,7 +1556,7 @@ void Game::ui_settings_check(RestartEnd &restartEnd) {
     else if (mask & UIrunServer) {
       // A little funny the way we mutate humanNames[] here, but it's
       // just the same as if the user specified -name on the commmand line.
-      if (Utils::strlen(settings.humanName)) {
+      if (strlen(settings.humanName)) {
         Utils::freeif(humanNames[0]);
         humanNames[0] = Utils::strdup(settings.humanName);
       }
@@ -2400,7 +2400,7 @@ void Game::parse_args(int *argc,char **argv) {
       LAgreement::comm_line_accepted();
     }
     else if (!strcmp("-client_port",argv[n]) && (n + 1 < *argc)) {
-      clientPort = Utils::atoi(argv[n+1]);
+      clientPort = atoi(argv[n+1]);
       n++;
     }
     else if (! strcmp("-dedicated",argv[n])) {
@@ -2417,7 +2417,7 @@ void Game::parse_args(int *argc,char **argv) {
       observer = True;
     }
     else if (!strcmp("-skip",argv[n]) && (n + 1 < *argc)) {
-      skip = Utils::maximum(Connection::ADJUST_SKIP,Utils::atoi(argv[n + 1]));
+      skip = Utils::maximum(Connection::ADJUST_SKIP,atoi(argv[n + 1]));
       n++;
     }
     // Check "-name<x>" arguments.
@@ -2487,7 +2487,7 @@ void Game::parse_args(int *argc,char **argv) {
     }
     else if (!strcmp("-disconnect_time",argv[n]) && (n + 1 < *argc)) {
       n++;
-      Server::set_no_activity_disconnect(Utils::atoi(argv[n]));
+      Server::set_no_activity_disconnect(atoi(argv[n]));
     }
     else if (! strcmp("-draw_rects",argv[n])) {
       locator.set_draw_rects(True);
@@ -2523,8 +2523,8 @@ void Game::parse_args(int *argc,char **argv) {
       musictype = UIsettings::NONE;
     }
 #endif
-    else if (!Utils::strcmp("-h",argv[n])
-             || !Utils::strcmp("-help",argv[n])) {
+    else if (!strcmp("-h",argv[n])
+             || !strcmp("-help",argv[n])) {
       cout 
         << endl
         << "See http://www.xevil.com/docs/instructions.html for full description." << endl 
@@ -2580,12 +2580,12 @@ void Game::parse_args(int *argc,char **argv) {
     }
     else if (! strcmp("-human_reflexes",argv[n]) && (n + 1 < *argc)) {
       n++;
-      int val = Utils::atoi(argv[n]);
+      int val = atoi(argv[n]);
       Client::set_human_reflexes(val);
       cout << "Human reflexes set to " << val << " milliseconds." << endl;
     }
     else if ((! strcmp("-humans",argv[n])) && (n + 1 < *argc)) {
-      humansNumNext = Utils::atoi(argv[n+1]);
+      humansNumNext = atoi(argv[n+1]);
       n++;
     }
     else if (! strcmp("-infinity",argv[n])) {
@@ -2650,7 +2650,7 @@ void Game::parse_args(int *argc,char **argv) {
     }
     else if ((!strcmp("-machines",argv[n]) || !strcmp("-enemies",argv[n]))
              && (n + 1 < *argc)) {
-      enemiesNumNext = Utils::atoi(argv[n+1]);
+      enemiesNumNext = atoi(argv[n+1]);
       enemiesNumNext = Utils::minimum(enemiesNumNext,Locator::ENEMIES_MAX);
       n++;
     }
@@ -2770,7 +2770,7 @@ void Game::parse_args(int *argc,char **argv) {
     }
 #endif
     else if ((! strcmp("-speed",argv[n])) && (n + 1 < *argc)) {
-      quanta = Utils::atoi(argv[n+1]);
+      quanta = atoi(argv[n+1]);
       n++;
     }
     else if (! strcmp("-stats",argv[n])) {
@@ -2783,7 +2783,7 @@ void Game::parse_args(int *argc,char **argv) {
 #endif
     else if ((! strcmp("-target_delay",argv[n])) && (n + 1 < *argc)) {
       n++;
-      Turn val = Utils::maximum(1,Utils::atoi(argv[n]));
+      Turn val = Utils::maximum(1,atoi(argv[n]));
       Connection::set_target_delay(val);
     }
     else if (! strcmp("-training",argv[n])) {
@@ -2801,8 +2801,8 @@ void Game::parse_args(int *argc,char **argv) {
       Ui::set_use_buffer(False);
     }
 #endif
-    else if (!Utils::strcmp("-v",argv[n])
-             || !Utils::strcmp("-version",argv[n])) {
+    else if (!strcmp("-v",argv[n])
+             || !strcmp("-version",argv[n])) {
       // Don't have to do anything, info was already printed.
 
       // Just exit, don't want to deal with Ui being created, etc, if we
@@ -2977,7 +2977,7 @@ void Game::create_human_and_physical(int h) {
 
   // Choose random name if -name was not specified for this player.
   char *nameNonPc = 
-    Utils::strlen(humanNames[h]) ? 
+    strlen(humanNames[h]) ? 
     humanNames[h] :
     intelNames[intelNamesIndices[h % INTEL_NAMES_NUM]];
   

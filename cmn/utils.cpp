@@ -242,18 +242,6 @@ char *Utils::strdup(const char *str) {
 
 
 
-int Utils::atoi(const char* s) {
-  return ::atoi(s);
-}
-
-
-
-const char* Utils::getenv(const char* varName) {
-  return ::getenv(varName);
-}
-
-
-
 int Utils::ceil_div(int n,int m) {
   assert(n >= 0 && m > 0);
   if (n % m == 0) {
@@ -367,7 +355,7 @@ void Utils::string_write(OutStreamP out,const char *msg) {
 const char* Utils::arg_value_check(int& n,int argc,char** argv,
                                    const char* name) {
   assert(n < argc);
-  if (!Utils::strcmp(name,argv[n]) && (n + 1 < argc)) {
+  if (!strcmp(name,argv[n]) && (n + 1 < argc)) {
     n++;
     return argv[n];
   }
@@ -379,7 +367,7 @@ const char* Utils::arg_value_check(int& n,int argc,char** argv,
 Boolean Utils::arg_name_check(int n,int argc,char** argv,
                               const char* name) {
   assert(n < argc);
-  if (!Utils::strcmp(name,argv[n])) {
+  if (!strcmp(name,argv[n])) {
     return True;
   }
   return False;
@@ -486,8 +474,8 @@ char* Utils::get_OS_info() {
     // Only copy in the extra info (like service pack number)
     // if there is something there.
     if (set) {
-      if (Utils::strlen(osInfo.szCSDVersion) && 
-          Utils::strcmp(osInfo.szCSDVersion," ")) {
+      if (strlen(osInfo.szCSDVersion) && 
+          strcmp(osInfo.szCSDVersion," ")) {
         ret << '(' << osInfo.szCSDVersion << ')';
       }
       ret << ends;
@@ -513,7 +501,7 @@ char* Utils::get_OS_info() {
     const int BUF_LEN = 120;
     char buffer[120];
     if (fgets(buffer,BUF_LEN,fp) != 0) {
-      int strLen = Utils::strlen(buffer);
+      int strLen = strlen(buffer);
       if (strLen > 0) {
         // Kill trailing newline
         if (buffer[strLen - 1] == '\n') {
@@ -786,7 +774,7 @@ public:
 
 
 private:
-  Bucket* HashTable::_get(int &index,void* key);
+  Bucket* _get(int &index,void* key);
   /* MODIFIES: index */
   /* EFFECTS: Internal helper function.  Return the Bucket containing key
      or NULL if not found.  Set index to the bucket list for key whether

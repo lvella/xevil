@@ -29,6 +29,7 @@
 
 #include "stdafx.h"
 
+#include <cstdlib>
 #include <iostream>
 #if X11
 #include <strstream>
@@ -139,16 +140,16 @@ void Role::yield_time(CMN_TIME startTime,int quanta) {
 
 void Role::display_chat_message(LocatorP locator,const char* sender,
                                 const char* message) {
-  int senLen = Utils::strlen(sender);
-  int msgLen = Utils::strlen(message);
+  int senLen = strlen(sender);
+  int msgLen = strlen(message);
   // Two for '<', '>' and one for '\0'.
   char *newMsg = new char[senLen + msgLen + 3];  
   assert(newMsg);
 
   newMsg[0] = '<';
-  Utils::strcpy(newMsg + 1,sender);
+  strcpy(newMsg + 1,sender);
   newMsg[senLen + 1] = '>';
-  Utils::strcpy(newMsg + senLen + 2,message);
+  strcpy(newMsg + senLen + 2,message);
 
   // Display as an arena message, don't propogate message to the Clients.
   // Clients will already receive XETP::CHAT packets.
@@ -566,7 +567,7 @@ Client::Client(char *sName,char *portName,CMN_PORT clientPrt,char *hName,
   strncpy(serverName,sName,R_NAME_MAX);
 
   if (portName) {
-    port = Utils::atoi(portName);
+    port = atoi(portName);
     if (port <= 0) {
       error("Invalid port ",portName,".");
       return;
@@ -1794,7 +1795,7 @@ Server::Server(Boolean lHuman,char *portName,LocatorP errLocator) {
   XETP::check_sizes();
 
   if (portName) {
-    port = Utils::atoi(portName);
+    port = atoi(portName);
     if (port <= 0) {
       error("Invalid port ",portName,".");
       return;
@@ -1977,7 +1978,7 @@ void Server::human_created(IGameManagerP manager,
   assert(cn);
 
   // If client provided us with a name, set it on the newly created Human.
-  if (Utils::strlen(cn->get_human_name())) {
+  if (strlen(cn->get_human_name())) {
     human->set_name(cn->get_human_name());
   }
   
@@ -3164,18 +3165,18 @@ void Server::_process_chat_request(LocatorP locator,IntelP sender,
   // If a receiver name is specified, only send to that player.
   int rIndex = -1; // Means send to everyone.
   int n;
-  if (Utils::strlen(receiver)) {
+  if (strlen(receiver)) {
     for (n = 0; n < connections.length(); n++) {
       Connection* cn = get_connection(n);
       IntelP intel = locator->lookup(cn->get_human());
-      if (intel && !Utils::strcmp(intel->get_name(),receiver)) {
+      if (intel && !strcmp(intel->get_name(),receiver)) {
         rIndex = n;
         break;
       }
     }
     if (localHuman) {
       IntelP intel = locator->lookup(localHumanId);
-      if (intel && !Utils::strcmp(intel->get_name(),receiver)) {
+      if (intel && !strcmp(intel->get_name(),receiver)) {
         // Special flag to mean display on Server only.
         rIndex = connections.length();
       }      
@@ -3190,7 +3191,7 @@ void Server::_process_chat_request(LocatorP locator,IntelP sender,
 
 
   // Don't send empty messages.
-  if (Utils::strlen(message) > 0) {
+  if (strlen(message) > 0) {
     const char* senderName;
     IntelId senderId;
     if (sender) {

@@ -2437,7 +2437,7 @@ void GenericSeals::refill_enemies(Boolean,WorldP,LocatorP locator,IPhysicalManag
   assert(diff >= 0);
   
   // Change the num argument to enemy_physical if this list is changed.
-  int list[] = {A_Ninja,A_Dog,A_Walker};  // No more Hero or Alien
+  long int list[] = {A_Ninja,A_Dog,A_Walker};  // No more Hero or Alien
 
   for (int n = 0; n < diff; n++) {
     manager->create_enemy(manager->enemy_physical(list,3));

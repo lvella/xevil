@@ -95,17 +95,17 @@ ServerPing::ServerPing(int argc,char** argv) {
   const char* value;
   for (n = 0; n < argc; n++) {
     if (value = Utils::arg_value_check(n,argc,argv,"-count")) {
-      count = Utils::atoi(value);
+      count = atoi(value);
     }
     if (value = Utils::arg_value_check(n,argc,argv,"-timeout")) {
-      timeout = Utils::atoi(value);
+      timeout = atoi(value);
     }
     if (Utils::arg_name_check(n,argc,argv,"-h") ||
         Utils::arg_name_check(n,argc,argv,"-help")) {
       print_usage_and_exit();
     }
     if (value = Utils::arg_value_check(n,argc,argv,"-client_port")) {
-      clientPort = Utils::atoi(value);
+      clientPort = atoi(value);
     }
   }
   
@@ -115,14 +115,14 @@ ServerPing::ServerPing(int argc,char** argv) {
 
 
   char* sString = argv[argc - 1];
-  char* port = Utils::strchr(sString,':');
+  char* port = strchr(sString,':');
   // server:port
   if (port) {
     serverName = new char[port - sString + 1];
     assert(serverName);
-    Utils::strncpy(serverName,sString,port - sString);
+    strncpy(serverName,sString,port - sString);
     serverName[port - sString] = '\0';
-    serverPort = (CMN_PORT)Utils::atoi(port + 1);
+    serverPort = (CMN_PORT)atoi(port + 1);
   }
   // No port specified, use default.
   else {
