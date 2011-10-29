@@ -40,8 +40,9 @@ extern "C" {
 #include <X11/Xatom.h>
 }
 
-#include <iostream.h>
-#include <strstream.h>
+#include <cstdlib>
+#include <iostream>
+#include <strstream>
 
 #include "coord.h"
 #include "area.h"
@@ -58,6 +59,8 @@ extern "C" {
 #include "l_agreement.h"
 #include "panel.h"
 #include "viewport.h"
+
+using namespace std;
 
 
 // Defines

@@ -30,8 +30,11 @@
 #include "xetp_basic.h"
 #include "neth.h"
 #include "id.h"
-#include <strstream.h>
+#include <cstdlib>
+#include <iostream>
+#include <strstream>
 
+using namespace std;
 
 
 class ServerPing {

@@ -27,7 +27,7 @@
 // Include Files
 #include "utils.h"
 
-#include <iostream.h>
+#include <iostream>
 #include <strstrea.h>
 
 #include "xdata.h"

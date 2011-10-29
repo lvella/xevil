@@ -41,7 +41,7 @@ extern "C" {
 #include <strstrea.h>
 #endif
 
-#include <iomanip.h>
+#include <iomanip>
 #include "utils.h"
 #include "coord.h"
 #include "world.h"
@@ -49,6 +49,8 @@ extern "C" {
 #include "game_style.h"
 #include "actual.h"
 #include "sound_cmn.h"
+
+using namespace std;
 
 
 #define SCENARIO_BONUS_TIME 650

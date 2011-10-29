@@ -36,7 +36,7 @@
 #include "streams.h"
 #include "xetp.h" // yuck, need this for XETP::versionStr
 
-
+using namespace std;
 
 Checksum GenericStream::compute_checksum(u_char *data,int len) {
   Checksum c = 0;

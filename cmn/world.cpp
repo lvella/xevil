@@ -48,6 +48,7 @@
 // For PhysMover.
 #include "actual.h"
 
+using namespace std;
 
 // Defines.
 #define HANGING_PERCENT 0.40 // The % of the edge hanging off the corner.

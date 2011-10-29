@@ -31,7 +31,7 @@ extern "C" {
 #include <X11/Xatom.h>
 }
 
-#include <strstream.h>
+#include <strstream>
 
 #include "xdata.h"
 #include "panel.h"

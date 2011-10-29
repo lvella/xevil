@@ -36,12 +36,13 @@
 #include <unistd.h>
 #include <sysexits.h>
 
-#include <iostream.h>
+#include <cstdlib>
+#include <iostream>
 #include <X11/Xutil.h>
 #include <X11/xpm.h>
 #include <X11/Xatom.h>
 
-
+using namespace std;
 
 // Means always allocate some color, even if it's really, really bad.
 #define XPM_CLOSENESS 65535

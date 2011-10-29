@@ -54,6 +54,7 @@
 
 #include "bitmaps/transform/transform.bitmaps"
 
+using namespace std;
 
 // Defines
 #define VEL_SMALL 1

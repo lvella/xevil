@@ -24,7 +24,7 @@
 #include "stdafx.h"
 #include "utils.h"
 
-#include <iostream.h>
+#include <iostream>
 #include <strstrea.h>
 #include <iomanip.h>
 #include <ctype.h>

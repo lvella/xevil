@@ -44,7 +44,9 @@ extern "C" {
 #include <X11/Xos.h>
 #include <X11/keysym.h>
 }
-#include <strstream.h>
+#include <strstream>
+
+using namespace std;
 
 
 #define TICK_BORDER_WIDTH 5 // border width big enough for a tick mark.

@@ -31,11 +31,13 @@ extern "C" {
 #include <X11/Xutil.h>
 #include <X11/keysym.h>
 }
-#include <strstream.h>
+#include <strstream>
 
 #include "utils.h"
 #include "xdata.h"
 #include "panel.h"
+
+using namespace std;
 
 
 #define PANEL_BORDER 1

@@ -50,6 +50,7 @@
 
 #include "bitmaps/locator/locator.bitmaps" // for arrows
 
+using namespace std;
 
 // When we reach this, start deleting objects.
 #define OL_LIST_WARN ((int)(OL_LIST_MAX * 0.9))

@@ -33,12 +33,14 @@ extern "C" {
 #include <X11/Xos.h>
 }
 
-#include <iostream.h>
+#include <cstdlib>
+#include <iostream>
 
 #include "utils.h"
 #include "neth.h"
 #include "game.h"
 
+using namespace std;
 
 
 class TurnStarter: public ITurnStarter {
@@ -64,7 +66,7 @@ private:
 // main's job is very simple.
 // Create the Game, then run the outer loop, one iteration per turn.
 // Empty the event queue and feed it to Game every turn.
-void main(int argc, char **argv) {
+int main(int argc, char **argv) {
   Utils::seed_random();
 
   GameP game = new Game(&argc,argv);

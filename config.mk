@@ -230,7 +230,7 @@ LIBS_DIRS=-L/usr/local/X11R5/sun4/lib $(TARGETS)
 #For lancer running Linux
 i386:
 	@$(MAKE) CC="g++" \
-CFLAGS="-DUSE_RANDOM -DXEVIL_KEYSET=UIlinux -DUSE_UINT_NET_LENGTH -w" \
+CFLAGS="-DUSE_RANDOM -DXEVIL_KEYSET=UIlinux -DUSE_UINT_NET_LENGTH" \
 LINK_FLAGS="-static" \
 INCL_DIRS="-I/usr/X11R6/include" \
 LIBS_DIRS="-L/usr/X11R6/lib" \
@@ -269,7 +269,14 @@ powerpc:
 	@$(MAKE) i386
 
 x86_64:
-	@$(MAKE) i386
+	@$(MAKE) CC="g++" \
+CFLAGS="-DUSE_RANDOM -DXEVIL_KEYSET=UIlinux -DUSE_UINT_NET_LENGTH -m32 -O3 -fpermissive -w" \
+LINK_FLAGS="-m32 -O3" \
+INCL_DIRS="-I/usr/X11R6/include" \
+LIBS_DIRS="" \
+LIBS="-lXpm -lX11 -lm" \
+OBJ_DIR=$(DEPTH)/x11/REDHAT_LINUX PCKG_NAME="redhatlinux" \
+$(TARGETS)
 
 
 i386-sco:

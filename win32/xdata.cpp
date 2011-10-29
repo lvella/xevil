@@ -21,7 +21,7 @@
 
 #include "stdafx.h"
 #include "xdata.h"
-#include <iostream.h>
+#include <iostream>
 #include <strstrea.h>
 #include "ui.h"
 

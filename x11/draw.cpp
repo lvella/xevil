@@ -34,6 +34,7 @@
 // in Xvars instead.
 #include "viewport.h"  
 
+using namespace std;
 
 
 // Draw functions for World
@@ -385,7 +386,7 @@ void World::init_x(Xvars &xvars,IXCommand,void*) {
     for (n = 0; n < W_ALL_DOORS_NUM; n++) {
 #ifdef W_DOORS_TRANSPARENT
       Drawable* mask = &xdata.doorMasks[dpyNum][n];
-#elif
+#else
       Drawable* mask = NULL;
 #endif      
       Boolean val = 

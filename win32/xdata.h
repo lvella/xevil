@@ -22,7 +22,7 @@
 #ifndef _XVARS_H
 #define _XVARS_H
 
-#include <iostream.h>
+#include <iostream>
 #include <strstrea.h>
 #include "ddraw.h"
 

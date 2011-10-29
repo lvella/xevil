@@ -112,7 +112,7 @@ typedef u_int DropletSet;
    CLASSNAME::CLASSNAME(InStreamP in,const CLASSNAME ## Context &cx, \
                          CLASSNAME ## Xdata &x_data, \
                          WorldP w,LocatorP l) \
-   : PARENT(in,cx. ## parent ## Context,x_data,w,l) 
+   : PARENT(in,cx.parent ## Context,x_data,w,l)
 
 // Used by internal nodes and leaves.
 #define DEFINE_UPDATE_FROM_STREAM(CLASSNAME,PARENT) \

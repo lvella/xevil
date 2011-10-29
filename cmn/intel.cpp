@@ -31,9 +31,7 @@
 
 // Include Files
 #include "stdafx.h"
-extern "C" {
-  #include <string.h>
-}
+#include <cstring>
 #if X11
 #include <strstream>
 #endif
@@ -49,7 +47,7 @@ extern "C" {
 #include "xetp.h"
 #include "xdata.h"
 
-
+using namespace std;
 
 // Defines
 #define FIGHT_RANGE 40 // made it smaller for Dogs 45  // [50-40]
@@ -1662,7 +1660,7 @@ Boolean Machine::weapon_current_is_cutter(HolderP p) {
 Boolean Machine::weapon_current_is_drop_liftable(PhysicalP p) {
   // This is a HACK, we should really make Lifter override 
   // get_weapon_current(), etc.
-  char *dummy;
+  const char *dummy;
   ClassId classId = p->get_weapon_string(dummy);
   if (classId == A_DropLiftable) {
     return True;

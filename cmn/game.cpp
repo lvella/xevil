@@ -40,7 +40,8 @@ extern "C" {
 #include <strstrea.h>
 #endif
 
-#include <iomanip.h>
+#include <iomanip>
+#include <cstdlib>
 
 #include "utils.h"
 #include "coord.h"
@@ -71,7 +72,7 @@ extern "C" {
 }
 #endif
 
-
+using namespace std;
 
 // Defines
 #define VERSION "2.1 Beta 1"
