@@ -106,7 +106,7 @@ extern "C" {
 #endif
 
 #if X11
-typedef char Boolean;
+typedef bool Boolean;
 #endif
 
 typedef int ColorNum;
