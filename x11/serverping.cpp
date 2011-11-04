@@ -357,7 +357,7 @@ void ServerPing::print_results_and_exit() {
 
 
 
-main(int argc,char** argv) {
+int main(int argc,char** argv) {
   ServerPing ping(argc,argv);
   ping.go();
 }
