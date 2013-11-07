@@ -2888,7 +2888,7 @@ int ZigZag::new_level_check(int,WorldP world,LocatorP locator,
     HumanP human = locator->get_human(n);
     if (human) {
       // previous depth
-      int depthOld = (int)human->get_data();
+      intptr_t depthOld = (intptr_t)human->get_data();
       Id id = human->get_id();
 
       // Get physical for intelligence
@@ -2898,7 +2898,7 @@ int ZigZag::new_level_check(int,WorldP world,LocatorP locator,
         const Area &area = p->get_area();
         Loc mSquare = area.middle_wsquare();
         Dim roomDim = world->get_room_dim();
-        int depth = mSquare.r / roomDim.rowMax;
+        intptr_t depth = mSquare.r / roomDim.rowMax;
 
         if (depth != depthOld) {
 	        // so doesn't get set next turn.

@@ -590,7 +590,8 @@ PtrList::~PtrList() {
 }
 
 
-
+/*
+// Code broken on 64 bits, doesn't compile
 PtrList::PtrList(InStreamP in) {
   if (in->alive()) {
     commonConstructor(0);
@@ -604,7 +605,7 @@ PtrList::PtrList(InStreamP in) {
     add((void *)in->read_int());
   }  
 }
-
+*/
 
 
 int PtrList::get_write_length(int len) {
@@ -613,7 +614,8 @@ int PtrList::get_write_length(int len) {
 }
 
 
-
+/*
+// Code broken on 64 bits, doesn't compile
 void PtrList::write(OutStreamP out) const{
   // Not tested.
   out->write_int(len);
@@ -621,7 +623,7 @@ void PtrList::write(OutStreamP out) const{
     out->write_int((int)data[n]);
   }
 }
-
+*/
 
 
 void PtrList::add(void *val) {
@@ -957,7 +959,7 @@ Bucket* HashTable::_get(int &index,void* key) {
 // Pretty crappy hash function, I know.
 // Careful if bucketsNum is a power of 2.
 int HashTable::defaultHash(void* key,int bucketsNum) {
-  return ((unsigned int)key) % bucketsNum;
+  return ((intptr_t) key) % bucketsNum;
 }
 
 

@@ -1638,7 +1638,7 @@ void Viewport::panel_callback(Panel* panel,void* value,void* closure) {
   // Would be much better to put the radio-button logic in the Panel classes.
   if (pClosure->radio) {
     // SGI compiler says you can't cast void* to Boolean.
-    Boolean bValue = (Boolean)(int)value;
+    Boolean bValue = (Boolean)(intptr_t)value;
     if (!bValue) {
       ((TogglePanel*)panel)->set_value(True);
     }

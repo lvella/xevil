@@ -57,7 +57,6 @@
 void XETP::check_sizes() {
   XETPBasic::check_sizes();
 
-  assert(sizeof(ClassId) == sizeof(int));
   assert(sizeof(Dir) == sizeof(int));
   assert(sizeof(Health) == sizeof(int));
   assert(sizeof(ColorNum) == sizeof(int));

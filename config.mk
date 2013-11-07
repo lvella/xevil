@@ -231,7 +231,7 @@ LIBS_DIRS=-L/usr/local/X11R5/sun4/lib $(TARGETS)
 i386:
 	@$(MAKE) CC="g++" \
 CFLAGS="-DUSE_RANDOM -DXEVIL_KEYSET=UIlinux -DUSE_UINT_NET_LENGTH" \
-LINK_FLAGS="-static" \
+LINK_FLAGS="" \
 INCL_DIRS="-I/usr/X11R6/include" \
 LIBS_DIRS="-L/usr/X11R6/lib" \
 LIBS="-lXpm -lX11 -lm" \

@@ -641,7 +641,7 @@ enum {DIFF_TRIVIAL,DIFF_NORMAL,DIFF_HARD,DIFF_BEND_OVER,
 
 
 
-typedef int TickType;
+typedef intptr_t TickType;
 enum {TICK_HUMAN,TICK_NEUTRAL,TICK_ENEMY,TICK_OTHER,TICK_MAX};
 
 

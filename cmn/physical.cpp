@@ -1851,7 +1851,7 @@ void* Moving::compute_key(Dir dir,int animNum,Boolean isMask,
   }
 
   // Use the pixmap resource id as the base.
-  u_int cmnBitsId = (unsigned int)mc->pixmapBits[baseDir][animNum];
+  u_int cmnBitsId = (intptr_t)mc->pixmapBits[baseDir][animNum];
 
   // It is ok to call OneTransform::compute_key() even if there is no 
   // transformation, will just return 0x0.  
