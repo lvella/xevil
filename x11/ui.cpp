@@ -66,7 +66,7 @@ using namespace std;
 // Defines
 #define DEFAULT_BIG_FONT_NAME "-*-helvetica-*-r-*-*-18-*-*-*-*-*-*-*"
 //#define DEFAULT_FONT_NAME "-*-courier-*-r-*-*-17-*-*-*-*-*-*-*"
-#define DEFAULT_FONT_NAME "8x13bold"
+#define DEFAULT_FONT_NAME "6x13"
 #define BACKUP_FONT_NAME "9x15"
 
 #define MESSAGE_TIME 9

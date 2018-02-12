@@ -265,6 +265,9 @@ i486-linux:
 powerpc-linux:
 	@$(MAKE) i386
 
+arm:
+	@$(MAKE) i386
+
 powerpc:
 	@$(MAKE) i386
 

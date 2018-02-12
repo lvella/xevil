@@ -86,8 +86,8 @@ class SoundRequest;
 #define OL_GRID_ROW_MAX 4
 #define OL_GRID_WIDTH (OL_GRID_COL_MAX * WSQUARE_WIDTH) // In pixels.
 #define OL_GRID_HEIGHT (OL_GRID_ROW_MAX * WSQUARE_HEIGHT) // In pixels.
-#define OL_GRID_SIZE_MAX (max(OL_GRID_WIDTH,OL_GRID_HEIGHT))
-#define OL_GRID_SIZE_MIN (min(OL_GRID_WIDTH,OL_GRID_HEIGHT))
+#define OL_GRID_SIZE_MAX (std::max(OL_GRID_WIDTH,OL_GRID_HEIGHT))
+#define OL_GRID_SIZE_MIN (std::min(OL_GRID_WIDTH,OL_GRID_HEIGHT))
 // Max size of world in grid squares.
 #define OL_GRID_HORIZ_MAX (W_COL_MAX_MAX / OL_GRID_COL_MAX + 1)
 #define OL_GRID_VERT_MAX (W_ROW_MAX_MAX / OL_GRID_ROW_MAX + 1)

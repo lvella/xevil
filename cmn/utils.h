@@ -98,13 +98,6 @@ extern "C" {
 #define MSEC_PER_CLOCK (1.0e3 / CLOCKS_PER_SEC) 
 #endif
 
-#ifndef max
-#define max(a,b)               (a<b ? b : a)
-#endif
-#ifndef min
-#define min(a,b)               (a>b ? b : a)
-#endif
-
 #if X11
 typedef bool Boolean;
 #endif
