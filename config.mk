@@ -75,6 +75,12 @@ win32/*.dsw
 
 STRIP		=	strip
 
+ifeq ($(OS),Windows_NT)
+    uname_S := Windows
+else
+    uname_S := $(shell uname -s)
+endif
+
 
 #### Other macros are defined in the Specific Architectures section below.
 
@@ -269,14 +275,25 @@ powerpc:
 	@$(MAKE) i386
 
 x86_64:
+ifeq ($(uname_S), Darwin)
 	@$(MAKE) CC="g++" \
-CFLAGS="-DUSE_RANDOM -DXEVIL_KEYSET=UIlinux -DUSE_UINT_NET_LENGTH -m32 -O3" \
+CFLAGS="-DUSE_RANDOM -DUSE_UINT_NET_LENGTH -m32 -O3 -DUNAME_USR_BIN" \
 LINK_FLAGS="-m32 -O3" \
 INCL_DIRS="-I/usr/X11R6/include" \
 LIBS_DIRS="-L/usr/X11R6/lib" \
 LIBS="-lXpm -lX11 -lm" \
 OBJ_DIR=$(DEPTH)/x11/REDHAT_LINUX PCKG_NAME="redhatlinux" \
 $(TARGETS)
+else
+	@$(MAKE) CC="g++" \
+CFLAGS="-DUSE_RANDOM -DXEVIL_KEYSET=UIlinux -DUSE_UINT_NET_LENGTH -m32 -O3" \
+LINK_FLAGS="-m32 -O3" \
+INCL_DIRS="-I/usr/X11R6/include" \
+LIBS_DIRS="" \
+LIBS="-lXpm -lX11 -lm" \
+OBJ_DIR=$(DEPTH)/x11/REDHAT_LINUX PCKG_NAME="redhatlinux" \
+$(TARGETS)
+endif
 
 
 i386-sco:
