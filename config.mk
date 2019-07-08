@@ -277,12 +277,12 @@ powerpc:
 x86_64:
 ifeq ($(uname_S), Darwin)
 	@$(MAKE) CC="g++" \
-CFLAGS="-DUSE_RANDOM -DUSE_UINT_NET_LENGTH -m32 -O3 -DUNAME_USR_BIN" \
-LINK_FLAGS="-m32 -O3" \
+CFLAGS="-DUSE_RANDOM -DUSE_UINT_NET_LENGTH -m64 -O3 -DUNAME_USR_BIN" \
+LINK_FLAGS="-m64 -O3" \
 INCL_DIRS="-I/usr/X11R6/include" \
 LIBS_DIRS="-L/usr/X11R6/lib" \
 LIBS="-lXpm -lX11 -lm" \
-OBJ_DIR=$(DEPTH)/x11/REDHAT_LINUX PCKG_NAME="redhatlinux" \
+OBJ_DIR=$(DEPTH)/x11/DARWIN PCKG_NAME="redhatlinux" \
 $(TARGETS)
 else
 	@$(MAKE) CC="g++" \
