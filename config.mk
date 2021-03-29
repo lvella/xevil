@@ -238,7 +238,7 @@ LIBS="-lXpm -lX11 -lm" \
 OBJ_DIR=$(DEPTH)/x11/REDHAT_LINUX PCKG_NAME="redhatlinux" \
 $(TARGETS)
 
-# use static 
+# use static
 # Should add -DXEVIL_KEYSET=UIlinux
 i386-linux-old:
 	@$(MAKE) CC="g++" CFLAGS="-DUSE_RANDOM -DPROTECTED_IS_PUBLIC -DIO_COOKIE_HACK" \
