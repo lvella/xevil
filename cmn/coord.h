@@ -32,6 +32,7 @@
 
 
 // Include Files
+#include <cstdint>
 #include "utils.h"
 #include "id.h"
 #include "streams.h"
