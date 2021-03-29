@@ -567,7 +567,7 @@ void GameObjects::level_reset(const Dim &worldDim,GameStyleP style) {
       assert(maximums[weapons[n]->classId] == 0);
 
       // Don't allow objectWorldPercent values that are too small.
-      float objWPercent = (float)fmax(weapons[n]->objectWorldPercent,
+      float objWPercent = std::max<float>(weapons[n]->objectWorldPercent,
 			      OBJECT_WORLD_PERCENT_MIN);
 
       maximums[weapons[n]->classId] = (int)ceil(areaFactor * objWPercent);
@@ -580,7 +580,7 @@ void GameObjects::level_reset(const Dim &worldDim,GameStyleP style) {
     for (n = 0; n < oItemsNum; n++) {
       // Check not already set.
       assert(maximums[oItems[n]->classId] == 0);
-      float objWPercent = (float)fmax(oItems[n]->objectWorldPercent,
+      float objWPercent = std::max<float>(oItems[n]->objectWorldPercent,
 			      OBJECT_WORLD_PERCENT_MIN);
 
       maximums[oItems[n]->classId] = (int)ceil(areaFactor * objWPercent);
