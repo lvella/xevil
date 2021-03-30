@@ -275,16 +275,6 @@ powerpc:
 	@$(MAKE) i386
 
 x86_64:
-ifeq ($(uname_S), Darwin)
-	@$(MAKE) CC="g++" \
-CFLAGS="-DUSE_RANDOM -DUSE_UINT_NET_LENGTH -m64 -O3 -DUNAME_USR_BIN" \
-LINK_FLAGS="-m64 -O3" \
-INCL_DIRS="-I/usr/X11R6/include" \
-LIBS_DIRS="-L/usr/X11R6/lib" \
-LIBS="-lXpm -lX11 -lm" \
-OBJ_DIR=$(DEPTH)/x11/DARWIN PCKG_NAME="redhatlinux" \
-$(TARGETS)
-else
 	@$(MAKE) CC="g++" \
 CFLAGS="-DUSE_RANDOM -DXEVIL_KEYSET=UIlinux -DUSE_UINT_NET_LENGTH -m32 -O3" \
 LINK_FLAGS="-m32 -O3" \
@@ -293,8 +283,6 @@ LIBS_DIRS="" \
 LIBS="-lXpm -lX11 -lm" \
 OBJ_DIR=$(DEPTH)/x11/REDHAT_LINUX PCKG_NAME="redhatlinux" \
 $(TARGETS)
-endif
-
 
 i386-sco:
 	@$(MAKE) CC="CC" CFLAGS="-b elf -DUSE_RANDOM -DUSE_SELECT_H -DMATH_H_IS_CC" \
@@ -302,6 +290,15 @@ INCL_DIRS="-I/usr/include/X11 -I/usr/include/CC" \
 LIBS_DIRS="-L/usr/lib -L/usr/lib/CC" \
 LIBS="-lXpm -lX11 -lm -lc -lsocket -lmalloc" $(TARGETS)
 
+darwin:
+	@$(MAKE) CC="g++" \
+CFLAGS="-DUSE_RANDOM -DUSE_UINT_NET_LENGTH -O3 -DUNAME_USR_BIN" \
+LINK_FLAGS="-O3" \
+INCL_DIRS="-I/usr/X11R6/include" \
+LIBS_DIRS="-L/usr/X11R6/lib" \
+LIBS="-lXpm -lX11 -lm" \
+OBJ_DIR=$(DEPTH)/x11/DARWIN PCKG_NAME="redhatlinux" \
+$(TARGETS)
 
 #static doesn't work on jordan
 rs6000jordanalso:
