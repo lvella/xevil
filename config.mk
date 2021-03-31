@@ -297,7 +297,7 @@ LINK_FLAGS="-O3" \
 INCL_DIRS="-I/usr/X11R6/include" \
 LIBS_DIRS="-L/usr/X11R6/lib" \
 LIBS="-lXpm -lX11 -lm" \
-OBJ_DIR=$(DEPTH)/x11/DARWIN PCKG_NAME="redhatlinux" \
+OBJ_DIR=$(DEPTH)/x11/MACOS PCKG_NAME="darwin" \
 $(TARGETS)
 
 #static doesn't work on jordan
