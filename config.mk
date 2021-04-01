@@ -75,12 +75,6 @@ win32/*.dsw
 
 STRIP		=	strip
 
-ifeq ($(OS),Windows_NT)
-    uname_S := Windows
-else
-    uname_S := $(shell uname -s)
-endif
-
 
 #### Other macros are defined in the Specific Architectures section below.
 
