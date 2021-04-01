@@ -190,7 +190,13 @@ static int UI_error_handler(Display *dpy,XErrorEvent *evt) {
   return 0;
 }
 
-
+char* keysym_to_string(KeySym keysym) {
+  char* result = XKeysymToString(keysym);
+  if (!result) {
+    return "";
+  }
+  return result;
+}
 
 Ui::Ui(int *agc, char **agv, WorldP w, LocatorP l,char **d_names,
        char *font_name,SoundManager *,
@@ -1175,7 +1181,7 @@ void Ui::learn_controls_CB(Panel* panel,void* value,void* closure) {
       << " player: The "
       << (ui->lControls[dpyNum].which ? "second" : "first") << " key for <" 
       << ui->keysNames[ui->lControls[dpyNum].key] << "> is "
-      << XKeysymToString(XKeycodeToKeysym(ui->xvars.dpy[dpyNum],
+      << keysym_to_string(XKeycodeToKeysym(ui->xvars.dpy[dpyNum],
 					  event->xkey.keycode,0))
       << "." << "\n" << "\n";
   ui->keycodes[dpyNum][ui->lControls[dpyNum].input]
@@ -1621,32 +1627,32 @@ void Ui::controls_redraw(int dpyNum) {
 	      line,strlen(line));
 
 
-  // Loop through all keys.
+  // // Loop through all keys.
   for (int n = 0; n < UI_KEYS_MAX; n++) {
     // String for right side.
     strstream str0;
-    str0 << keysNames[n] << ":  " << XKeysymToString(keymaps[0][n][0][0]);
-    if (keymaps[0][n][0][1] && strlen(XKeysymToString(keymaps[0][n][0][1])))
-      str0 << ", " << XKeysymToString(keymaps[0][n][0][1]);
+    str0 << keysNames[n] << ":  " << keysym_to_string(keymaps[0][n][0][0]);
+    if (keymaps[0][n][0][1] && strlen(keysym_to_string(keymaps[0][n][0][1])))
+      str0 << ", " << keysym_to_string(keymaps[0][n][0][1]);
     if (keymaps[0][n][0][0] != keymaps[0][n][1][0] && keymaps[0][n][1][0]) {
-	  str0 << ", " << XKeysymToString(keymaps[0][n][1][0]);
+	  str0 << ", " << keysym_to_string(keymaps[0][n][1][0]);
 	  if (keymaps[0][n][1][1]
-	      && strlen(XKeysymToString(keymaps[0][n][1][1])))
-	    str0 << ", " << XKeysymToString(keymaps[0][n][1][1]);
+	      && strlen(keysym_to_string(keymaps[0][n][1][1])))
+	    str0 << ", " << keysym_to_string(keymaps[0][n][1][1]);
 	}
     str0 << ends;
     
     // String for left side.
     strstream str1;
-    str1 << keysNames[n] << ":  " << XKeysymToString(keymaps[1][n][0][0]);
-    if (keymaps[1][n][0][1] && strlen(XKeysymToString(keymaps[1][n][0][1]))) {
-      str1 << ", " << XKeysymToString(keymaps[1][n][0][1]);
+    str1 << keysNames[n] << ":  " << keysym_to_string(keymaps[1][n][0][0]);
+    if (keymaps[1][n][0][1] && strlen(keysym_to_string(keymaps[1][n][0][1]))) {
+      str1 << ", " << keysym_to_string(keymaps[1][n][0][1]);
     }
     if (keymaps[1][n][0][0] != keymaps[1][n][1][0] && keymaps[1][n][1][0]) {
-	  str1 << ", " << XKeysymToString(keymaps[1][n][1][0]);
+	  str1 << ", " << keysym_to_string(keymaps[1][n][1][0]);
 	  if (keymaps[1][n][1][1]
-	      && strlen(XKeysymToString(keymaps[1][n][1][1])))
-	    str1 << ", " << XKeysymToString(keymaps[1][n][1][1]);
+	      && strlen(keysym_to_string(keymaps[1][n][1][1])))
+	    str1 << ", " << keysym_to_string(keymaps[1][n][1][1]);
 	}
     str1 << ends;
     

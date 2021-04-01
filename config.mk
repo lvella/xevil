@@ -75,6 +75,12 @@ win32/*.dsw
 
 STRIP		=	strip
 
+ifeq ($(OS),Windows_NT)
+    uname_S := Windows
+else
+    uname_S := $(shell uname -s)
+endif
+
 
 #### Other macros are defined in the Specific Architectures section below.
 
@@ -281,13 +287,21 @@ LIBS="-lXpm -lX11 -lm" \
 OBJ_DIR=$(DEPTH)/x11/REDHAT_LINUX PCKG_NAME="redhatlinux" \
 $(TARGETS)
 
-
 i386-sco:
 	@$(MAKE) CC="CC" CFLAGS="-b elf -DUSE_RANDOM -DUSE_SELECT_H -DMATH_H_IS_CC" \
 INCL_DIRS="-I/usr/include/X11 -I/usr/include/CC" \
 LIBS_DIRS="-L/usr/lib -L/usr/lib/CC" \
 LIBS="-lXpm -lX11 -lm -lc -lsocket -lmalloc" $(TARGETS)
 
+darwin:
+	@$(MAKE) CC="g++" \
+CFLAGS="-DUSE_RANDOM -DUSE_UINT_NET_LENGTH -O3 -DUNAME_USR_BIN" \
+LINK_FLAGS="-O3" \
+INCL_DIRS="-I/usr/X11R6/include" \
+LIBS_DIRS="-L/usr/X11R6/lib" \
+LIBS="-lXpm -lX11 -lm" \
+OBJ_DIR=$(DEPTH)/x11/MACOS PCKG_NAME="darwin" \
+$(TARGETS)
 
 #static doesn't work on jordan
 rs6000jordanalso:
