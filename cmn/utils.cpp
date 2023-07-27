@@ -30,6 +30,7 @@
 
 // Include Files
 #include "stdafx.h"
+#include <cstdint>
 #include <iostream>
 #include <fstream>
 #include <limits.h>
