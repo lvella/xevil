@@ -64,10 +64,8 @@ unsigned int SoundNames::names[SoundNames::SOUND_MAX] = {
     IDM_ZEEPEEGSOUNDTRACK,
     IDM_NIGHTSKYSOUNDTRACK,
     IDM_SWEETDARKSOUNDTRACK,
-#if 0
-    // Nice piece but sounds really painful on cheap sound cards.
-    IDM_TERRAEXMSOUNDTRACK,   
-#endif
-    IDM_NEWSONGSOUNDTRACK,    
+    // Restored in XEvil 2.5; the "painful on cheap sound cards" era is over.
+    IDM_TERRAEXMSOUNDTRACK,
+    IDM_NEWSONGSOUNDTRACK,
 };
 #endif

@@ -335,6 +335,10 @@ typedef TeamOptions *TeamOptionsP;
 // Do not overlap drawing for different displays, different renderers.
 class ITickRenderer {
 public:
+  virtual ~ITickRenderer() {}
+  /* NOTE: Virtual so that deleting a derived renderer (e.g. DiscreteScroller)
+     through this abstract base pointer runs the derived destructor. */
+
   virtual void begin_draw(int dpyNum) = 0;
   /* EFFECTS: Get ready to draw the tick marks for given display. */
 

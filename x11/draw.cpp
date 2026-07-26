@@ -45,7 +45,8 @@ void World::draw_square(Drawable buffer,Xvars &xvars,int dpyNum,const Loc &l,
     return;
   }
   
-  int blockNum = themes[themeIndex].blockIndices[map[l.r][l.c]];
+  int blockNum =
+    themes[themeIndex].blockIndices[(unsigned char)map[l.r][l.c]];
   
 
   // Draw union square, not regular square.
@@ -161,8 +162,8 @@ void World::draw_square(Drawable buffer,Xvars &xvars,int dpyNum,const Loc &l,
     // World::draw_background() takes care of drawing empty squares.
     if (blockNum != Wempty) {
       // Only use transparent CopyArea for certain bricks.
-      Boolean useTransparent = 
-        blockUseTransparent[map[l.r][l.c]] && !reduceDraw;
+      Boolean useTransparent =
+        blockUseTransparent[(unsigned char)map[l.r][l.c]] && !reduceDraw;
       
       if (useTransparent) {
         XSetClipMask(xvars.dpy[dpyNum],xvars.gc[dpyNum],
@@ -1095,7 +1096,7 @@ void Moving::draw(Drawable buffer,Xvars &xvars,int dpyNum,
   area.get_rect(pos,size);
   Size offset = area - bufArea;
 
-  Pixmap scratch;
+  Pixmap scratch = None;
   if (is_invisible()) {
     LocatorP locator = get_locator();
     Pos dummy;

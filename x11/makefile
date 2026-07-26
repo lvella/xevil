@@ -27,7 +27,8 @@ include $(DEPTH)/config.mk
 OBJS = $(OBJ_DIR)/xdata.o $(OBJ_DIR)/panel.o $(OBJ_DIR)/l_agreement_dlg.o \
        $(OBJ_DIR)/viewport.o \
        $(OBJ_DIR)/ui.o \
-       $(OBJ_DIR)/draw.o $(OBJ_DIR)/main.o
+       $(OBJ_DIR)/draw.o $(OBJ_DIR)/main.o \
+       $(OBJ_DIR)/sound.o $(OBJ_DIR)/miniaudio.o
 ALL_INCL_DIRS = -I$(DEPTH)/cmn -I$(DEPTH)/x11 -I$(DEPTH)/x11/bitmaps $(INCL_DIRS)
 ALL_CFLAGS = -DX11=1 $(CFLAGS) 
 
@@ -62,7 +63,18 @@ $(OBJ_DIR)/draw.o: draw.cpp ../cmn/utils.h xdata.h ../cmn/coord.h ../cmn/actual.
 $(OBJ_DIR)/main.o: main.cpp ../cmn/utils.h ../cmn/coord.h ../cmn/area.h \
 	../cmn/world.h ../cmn/id.h ../cmn/intel.h \
 	../cmn/physical.h ../cmn/locator.h ui.h ../cmn/game.h ../cmn/neth.h xdata.h
-	$(CC) $(DEBUG_OPT) $(ALL_CFLAGS) $(ALL_INCL_DIRS) -o $(OBJ_DIR)/main.o -c main.cpp 
+	$(CC) $(DEBUG_OPT) $(ALL_CFLAGS) $(ALL_INCL_DIRS) -o $(OBJ_DIR)/main.o -c main.cpp
+
+# X11 sound engine (XEvil 2.5).  All miniaudio contact lives in sound.cpp.
+$(OBJ_DIR)/sound.o: sound.cpp sound.h ../cmn/sound_cmn.h ../cmn/utils.h \
+	../cmn/coord.h vendor/miniaudio.h
+	$(CC) $(DEBUG_OPT) $(ALL_CFLAGS) $(ALL_INCL_DIRS) -o $(OBJ_DIR)/sound.o -c sound.cpp
+
+# miniaudio's implementation is plain C (miniaudio.c just defines
+# MINIAUDIO_IMPLEMENTATION), so compile it as C with -x c into its own object.
+# Linking pulls in -lpthread -ldl -lm (added to LIBS in the top Makefile).
+$(OBJ_DIR)/miniaudio.o: vendor/miniaudio.c vendor/miniaudio.h
+	$(CC) -x c $(DEBUG_OPT) $(ALL_CFLAGS) -Ivendor -o $(OBJ_DIR)/miniaudio.o -c vendor/miniaudio.c
 
 
 

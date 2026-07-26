@@ -72,8 +72,13 @@ SoundRequest::operator=(const SoundRequest& req) {
 
 unsigned int SoundNames::lookup(SoundName name) {
 #if X11
-  // Avoid stupid compiler warnings.
-  name = name;
+  // On X11 the SoundName is itself the resource handle: the X11 SoundManager
+  // maps it to a file (see x11/sound.cpp SOUND_FILES[]).  Return the name for
+  // any valid, non-reserved SoundName so Locator::submitSoundRequest opens the
+  // local-play gate.  0 (reserved) and out-of-range map to 0 ("not found").
+  if (name > 0 && name < SOUND_MAX) {
+    return (unsigned int)name;
+  }
 #endif
 #if WIN32
   if (name >= 0 && name < SOUND_MAX) {

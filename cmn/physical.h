@@ -1393,7 +1393,7 @@ private:
 
   Boolean held;
   Id holderId; // Valid iff held.
-  Boolean dieMessage;
+  MESSAGE dieMessage;
 
   //  Timer canTake;
   // While excludedTimer is not ready(), excluded cannot take this.

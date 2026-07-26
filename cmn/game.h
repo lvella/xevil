@@ -379,14 +379,12 @@ private:
   static Boolean universal_team(LocatorP,PhysicalP,PhysicalP,void *);
   /* EFFECTS: Put all objects on the same team, used for demo. */
   
-#if WIN32
   void start_soundtrack();
   /* EFFECTS: Starts soundtrack, sets up soundManager.  Will stop
      current soundtrack first, before starting new one. */
 
   void stop_soundtrack();
-  /* EFFECTS: Stop current soundtrack. */  
-#endif
+  /* EFFECTS: Stop current soundtrack. */
 
   // public for GameObjects, probably we should give GameObjects a pointer to
   // a IPhysicalManager.

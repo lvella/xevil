@@ -1,3 +1,5 @@
 x11/REDHAT_LINUX/
+x11/DEBUG/
+x11/release/
 *.o
 core

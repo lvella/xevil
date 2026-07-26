@@ -39,7 +39,8 @@ ALL_OBJS = $(OBJ_DIR)/role.o $(OBJ_DIR)/game.o $(OBJ_DIR)/world.o \
 	$(OBJ_DIR)/streams.o \
 	$(OBJ_DIR)/xetp.o $(OBJ_DIR)/xetp_basic.o $(OBJ_DIR)/id.o \
 	$(OBJ_DIR)/sound_cmn.o $(OBJ_DIR)/panel.o $(OBJ_DIR)/l_agreement.o \
-	$(OBJ_DIR)/ui_cmn.o $(OBJ_DIR)/l_agreement_dlg.o $(OBJ_DIR)/viewport.o
+	$(OBJ_DIR)/ui_cmn.o $(OBJ_DIR)/l_agreement_dlg.o $(OBJ_DIR)/viewport.o \
+	$(OBJ_DIR)/sound.o $(OBJ_DIR)/miniaudio.o
 
 
 xevil: $(OBJ_DIR)/xevil
@@ -57,7 +58,7 @@ $(OBJ_DIR)/xevil::
 	fi; 
 	cd $(DEPTH)/cmn; $(MAKE)
 	cd $(DEPTH)/x11; $(MAKE)
-	$(CC) $(LINK_FLAGS) $(LINK_OPT) $(LIBS_DIRS) -o $(OBJ_DIR)/xevil $(ALL_OBJS) $(LIBS)
+	$(CC) $(LINK_FLAGS) $(LINK_OPT) $(LIBS_DIRS) -o $(OBJ_DIR)/xevil $(ALL_OBJS) $(LIBS) -lpthread -ldl
 #	$(STRIP) $(OBJ_DIR)/xevil
 
 # Could also include serverping in the distribution
@@ -94,9 +95,17 @@ workdir:
 	done
 
 ## Remove executables and all junk.
+# Remove the default OBJ_DIR plus every architecture-specific objdir that the
+# targets in config.mk can produce (x86_64 uses x11/REDHAT_LINUX, "make debug"
+# uses x11/DEBUG, etc.).  "rm -rf" never errors when a directory is absent.
 clean:
-	/bin/rm -f $(OBJ_DIR)/* core */core
-	rmdir $(OBJ_DIR)
+	/bin/rm -rf $(OBJ_DIR) \
+		$(DEPTH)/x11/release $(DEPTH)/x11/REDHAT_LINUX $(DEPTH)/x11/DEBUG \
+		$(DEPTH)/x11/LINUX $(DEPTH)/x11/OSF $(DEPTH)/x11/FREEBSD \
+		$(DEPTH)/x11/HPUX $(DEPTH)/x11/IRIX $(DEPTH)/x11/MACOS \
+		$(DEPTH)/x11/AIX $(DEPTH)/x11/SUN4 $(DEPTH)/x11/SOLARIS \
+		$(DEPTH)/x11/SOLX86 \
+		core */core
 #	/bin/rm -f $(TARGETS) $(OBJS) core test test.o xshow.o xshow
 
 tildaclean:

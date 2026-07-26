@@ -36,6 +36,7 @@ extern "C" {
 #endif
 #include <X11/Xos.h>
 #include <X11/keysym.h>
+#include <X11/XKBlib.h>
 #include <X11/cursorfont.h>
 #include <X11/Xatom.h>
 }
@@ -1181,8 +1182,8 @@ void Ui::learn_controls_CB(Panel* panel,void* value,void* closure) {
       << " player: The "
       << (ui->lControls[dpyNum].which ? "second" : "first") << " key for <" 
       << ui->keysNames[ui->lControls[dpyNum].key] << "> is "
-      << keysym_to_string(XKeycodeToKeysym(ui->xvars.dpy[dpyNum],
-					  event->xkey.keycode,0))
+      << keysym_to_string(XkbKeycodeToKeysym(ui->xvars.dpy[dpyNum],
+					  event->xkey.keycode,0,0))
       << "." << "\n" << "\n";
   ui->keycodes[dpyNum][ui->lControls[dpyNum].input]
     [ui->lControls[dpyNum].key][ui->lControls[dpyNum].which] =
@@ -1331,43 +1332,58 @@ void Ui::init_x() {
       
       // Get font.  Use user-specified font if given.
       // regular size font.
-      const char *theFont = fontName ? fontName : DEFAULT_FONT_NAME;
-      xvars.font[xvars.dpyMax] = 
-        XLoadQueryFont(xvars.dpy[xvars.dpyMax],theFont);
-      if (!xvars.font[xvars.dpyMax]) {
-        cerr << "Could not load font " << theFont << " trying backup font "
-             << BACKUP_FONT_NAME << endl;
-        // Try backup font, should always be there.
-        xvars.font[xvars.dpyMax] = 
-          XLoadQueryFont(xvars.dpy[xvars.dpyMax],BACKUP_FONT_NAME);
+      // Walk a fallback chain so a missing legacy core font does not kill
+      // startup on modern X servers (Xwayland/WSLg).  "fixed" is guaranteed
+      // present on every X server, and the trailing XLFD is a last-resort
+      // wildcard match for any ~13-pixel font.
+      const char *regularFonts[4];
+      int regularFontsNum = 0;
+      regularFonts[regularFontsNum++] = fontName ? fontName : DEFAULT_FONT_NAME;
+      regularFonts[regularFontsNum++] = BACKUP_FONT_NAME;
+      regularFonts[regularFontsNum++] = "fixed";
+      regularFonts[regularFontsNum++] = "-*-*-*-*-*-*-13-*-*-*-*-*-*-*";
+
+      xvars.font[xvars.dpyMax] = NULL;
+      for (int fc = 0;
+           fc < regularFontsNum && !xvars.font[xvars.dpyMax]; fc++) {
+        xvars.font[xvars.dpyMax] =
+          XLoadQueryFont(xvars.dpy[xvars.dpyMax],regularFonts[fc]);
+        if (!xvars.font[xvars.dpyMax])
+          cerr << "Could not load font " << regularFonts[fc] << endl;
       }
       if (!xvars.font[xvars.dpyMax]) {
-        // Really failed.
-        cerr << "Could not load " << BACKUP_FONT_NAME;
+        // Really failed: nothing in the fallback chain loaded.
+        cerr << "Could not load any font (tried";
+        for (int fc = 0; fc < regularFontsNum; fc++)
+          cerr << " " << regularFonts[fc];
+        cerr << ")";
         if (strlen(displayNames[vNum]))
           cerr << " on " << displayNames[vNum];
         cerr << endl;
         exit (1);
       }
-      
-      // BigFont
-      theFont = DEFAULT_BIG_FONT_NAME;
-      xvars.bigFont[xvars.dpyMax] = 
-        XLoadQueryFont(xvars.dpy[xvars.dpyMax],theFont);
-      if (!xvars.bigFont[xvars.dpyMax]) {
-        cerr << "Could not load font " << theFont << " trying backup font "
-         << BACKUP_FONT_NAME << endl;
-        // Try backup font, should always be there.
-        xvars.bigFont[xvars.dpyMax] = 
-          XLoadQueryFont(xvars.dpy[xvars.dpyMax],BACKUP_FONT_NAME);
+
+      // BigFont.  Fall back to the backup core font, then to the regular
+      // font we just loaded, rather than aborting.  (Fonts are never freed,
+      // so aliasing bigFont to font is safe -- see grep for XFreeFont.)
+      const char *bigFonts[2];
+      int bigFontsNum = 0;
+      bigFonts[bigFontsNum++] = DEFAULT_BIG_FONT_NAME;
+      bigFonts[bigFontsNum++] = BACKUP_FONT_NAME;
+
+      xvars.bigFont[xvars.dpyMax] = NULL;
+      for (int fc = 0;
+           fc < bigFontsNum && !xvars.bigFont[xvars.dpyMax]; fc++) {
+        xvars.bigFont[xvars.dpyMax] =
+          XLoadQueryFont(xvars.dpy[xvars.dpyMax],bigFonts[fc]);
+        if (!xvars.bigFont[xvars.dpyMax])
+          cerr << "Could not load font " << bigFonts[fc] << endl;
       }
       if (!xvars.bigFont[xvars.dpyMax]) {
-        // Really failed.
-        cerr << "Could not load " << BACKUP_FONT_NAME;
-        if (strlen(displayNames[vNum]))
-          cerr << " on " << displayNames[vNum];
-        cerr << endl;
-        exit (1);
+        // Nothing loaded; reuse the regular font instead of failing.
+        cerr << "Could not load a big font, using the regular font instead."
+             << endl;
+        xvars.bigFont[xvars.dpyMax] = xvars.font[xvars.dpyMax];
       }
       
       // For convenience, compute sizes of fonts.
@@ -1597,8 +1613,8 @@ void Ui::controls_redraw(int dpyNum) {
       for (int which = 0; which < 2; which++) {
         for (int i = 0; i < 2; i++) {
           unsigned int keycode = keycodes[dpyNum][input][nn][which];
-          keymaps[input][nn][which][i] = 
-            XKeycodeToKeysym(xvars.dpy[dpyNum],keycode,i);
+          keymaps[input][nn][which][i] =
+            XkbKeycodeToKeysym(xvars.dpy[dpyNum],keycode,0,i);
         }
       }
     }

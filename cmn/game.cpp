@@ -1063,9 +1063,7 @@ Game::Game(int *arg_c,char **arg_v)
 
   levelTitleStored = NULL;
 
-#if WIN32
   start_soundtrack();
-#endif
 }
 
 
@@ -1434,12 +1432,11 @@ void Game::ui_settings_check(RestartEnd &restartEnd) {
       // main quits the game before next clock
       quit();
     }
-#if WIN32
     if (mask & UItrackvol) {
-	    soundManager.setTrackVolume(settings.trackvol);
+      soundManager.setTrackVolume(settings.trackvol);
     }
     if (mask & UIsoundvol) {
-	    soundManager.setEffectsVolume(settings.soundvol);
+      soundManager.setEffectsVolume(settings.soundvol);
     }
     if (mask & UIsound) {
       soundManager.turnOnoff(settings.sound);
@@ -1450,6 +1447,8 @@ void Game::ui_settings_check(RestartEnd &restartEnd) {
         stop_soundtrack();
       }
     }
+#if WIN32
+    // musictype (CD / MIDI / WAV / none) is a Windows-only concept.
     if (mask & UImusictype) {
       stop_soundtrack();
       musictype = settings.musictype;
@@ -1987,9 +1986,7 @@ void Game::new_level() {
                    lStr,lTitleStr,
                    (IPhysicalManagerP)this,role->get_humans_num());
 
-#if WIN32
   start_soundtrack();
-#endif
 
   // Must be after style set to new_level.
   gameObjects.level_reset(world.get_dim(),style);
@@ -2523,6 +2520,17 @@ void Game::parse_args(int *argc,char **argv) {
       musictype = UIsettings::NONE;
     }
 #endif
+    else if (!strcmp("-no_sound",argv[n])) {
+      soundManager.disable();
+    }
+    else if (!strcmp("-sound_volume",argv[n]) && (n + 1 < *argc)) {
+      n++;
+      soundManager.setEffectsVolume(atoi(argv[n]));
+    }
+    else if (!strcmp("-music_volume",argv[n]) && (n + 1 < *argc)) {
+      n++;
+      soundManager.setTrackVolume(atoi(argv[n]));
+    }
     else if (!strcmp("-h",argv[n])
              || !strcmp("-help",argv[n])) {
       cout 
@@ -2545,6 +2553,12 @@ void Game::parse_args(int *argc,char **argv) {
         << "    print version info" << endl
         << "-world <worldfile>" << endl
         << "    use the worldfile to specify the map" << endl
+        << "-no_sound" << endl
+        << "    disable all sound and music" << endl
+        << "-sound_volume <0-100>" << endl
+        << "    set sound-effects volume (default 70)" << endl
+        << "-music_volume <0-100>" << endl
+        << "    set soundtrack volume (default 50)" << endl
         << endl
         << "-connect <servername> {serverport}" << endl
         << "    connect as a client to an XEvil server, serverport is optional" << endl
@@ -2842,9 +2856,11 @@ char **Game::display_names(int *argc,char **argv) {
   for (n = 0; n < *argc - 1 ; n++) {
     // Set display name for all viewports.
     if (!strcmp(argv[n],"-display") || !strcmp(argv[n],"-d")) {
-      assert(strlen(argv[n+1]) < Xvars::DISPLAY_NAME_LENGTH);
+      // Bounded copy: truncate safely rather than overflow the fixed buffer
+      // (the old assert vanished under -DNDEBUG, leaving a raw strcpy).
       for (int vNum = 0; vNum < UI_VIEWPORTS_MAX; vNum++) {
-        strcpy(displayNames[vNum],argv[n+1]);
+        strncpy(displayNames[vNum],argv[n+1],Xvars::DISPLAY_NAME_LENGTH - 1);
+        displayNames[vNum][Xvars::DISPLAY_NAME_LENGTH - 1] = '\0';
       }
     }
       
@@ -2852,8 +2868,9 @@ char **Game::display_names(int *argc,char **argv) {
     for (int m = 0; m < UI_VIEWPORTS_MAX; m++) {
       for (int which = 0; which < 2; which++) {
         if (!strcmp(argv[n],dashDisplay[m][which].str())) {
-          assert(strlen(argv[n+1]) < Xvars::DISPLAY_NAME_LENGTH);
-          strcpy(displayNames[m],argv[n+1]);
+          // Bounded copy: truncate safely rather than overflow the buffer.
+          strncpy(displayNames[m],argv[n+1],Xvars::DISPLAY_NAME_LENGTH - 1);
+          displayNames[m][Xvars::DISPLAY_NAME_LENGTH - 1] = '\0';
         }
       }
     }
@@ -3207,9 +3224,7 @@ void Game::world_changed() {
   if (ui) {
     ui->set_redraw_arena();
   }
-#if WIN32
   start_soundtrack();
-#endif
 }
 
 
@@ -3833,6 +3848,54 @@ Game::play_sounds()
 			}
   }
 #endif
+
+#if X11
+  if (!soundManager.isSoundOn()) {
+    return;
+  }
+
+  // On X11 the viewport/key-position setter lives in the UI (win32 does this in
+  // UiPlayer), so drive the listener positions from the local humans' current
+  // world positions here.  One listener -> positional pan/volume; zero or
+  // several (split screen) -> non-positional, matching the win32 model.
+  short numKeys = 0;
+  int humansNum = locator.humans_registered();
+  for (int h = 0; h < humansNum && numKeys < SOUND_KEYPOS_MAX; h++) {
+    HumanP human = locator.get_human(h);
+    if (human) {
+      PhysicalP p = locator.lookup(human->get_id());
+      if (p) {
+        soundManager.setKeyPosition(numKeys,p->get_area().get_middle());
+        numKeys++;
+      }
+    }
+  }
+  soundManager.setNumKeyPositions(numKeys);
+
+  Pos t_pos = soundManager.getKeyPosition(0);
+  for (int i = 0; i < SOUND_CHANNELS_MAX; i++) {
+    SoundEvent t_req = soundManager.getEvent(i);
+    if (t_req.m_init == True) {
+      if (numKeys != 1) {
+        // No single local listener: play flat (no pan, full effects volume).
+        soundManager.playSoundById(t_req.soundid,0,0,False);
+      }
+      else {
+        int t_pan = (int)(((float)t_req.position.x - (float)t_pos.x) /
+                    (float)(((float)W_ROOM_COL_MAX / 2) * (float)WSQUARE_WIDTH) *
+                    (float)10000);
+        if (t_pan > 10000) t_pan = 10000;
+        if (t_pan < -10000) t_pan = -10000;
+        if (t_pan > 2000) t_pan = 10000;
+        if (t_pan < -2000) t_pan = -10000;
+        int t_vol = (int)(-1000 * (t_req.position.distance(t_pos)) /
+                    (((float)W_ACROSS_MAX_MAX * 2) * (float)WSQUARE_WIDTH));
+        if (t_vol > 0) t_vol = 0;
+        soundManager.playSoundById(t_req.soundid,t_pan,t_vol,False);
+      }
+    }
+  }
+#endif
 }
 
 
@@ -3889,10 +3952,30 @@ void Game::stop_soundtrack() {
     case UIsettings::WAV :  
       soundManager.stopSound(currentSoundName);
       break;
-    case UIsettings::MIDI : 
+    case UIsettings::MIDI :
       soundManager.stopMIDI();
       break;
   }
+}
+#endif
+
+
+#if X11
+void
+Game::start_soundtrack() {
+  // X11 always uses the streaming (MIDI-derived) soundtracks.  The game style
+  // chooses the track; SOUND_RANDOM lets the SoundManager pick one.
+  if (style) {
+    currentSoundName = style->get_midisoundtrack();
+    soundManager.playMidi(currentSoundName,True,0);
+  }
+}
+
+
+
+void
+Game::stop_soundtrack() {
+  soundManager.stopMIDI();
 }
 #endif
 

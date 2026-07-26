@@ -678,6 +678,7 @@ Dir Area::dir_to(const Pos &other) const {
     case 1:
       return CO_DN_R;
     };
+    break;  // xdir/ydir are always {-1,0,1}; fall to the assert otherwise.
   case 0:
     switch (ydir) {
     case -1:
@@ -687,6 +688,7 @@ Dir Area::dir_to(const Pos &other) const {
     case 1:
       return CO_DN;
     };
+    break;
   case -1:
     switch (ydir) {
     case -1:
@@ -696,6 +698,7 @@ Dir Area::dir_to(const Pos &other) const {
     case 1:
       return CO_DN_L;
     };
+    break;
   };
 
   assert(0);
@@ -734,6 +737,7 @@ Dir Area::dir_to(const Area &other) const
     case 1:
       return CO_DN_R;
     };
+    break;  // xdir/ydir are always {-1,0,1}; fall to the assert otherwise.
   case 0:
     switch (ydir) {
     case -1:
@@ -743,6 +747,7 @@ Dir Area::dir_to(const Area &other) const
     case 1:
       return CO_DN;
     };
+    break;
   case -1:
     switch (ydir) {
     case -1:
@@ -752,6 +757,7 @@ Dir Area::dir_to(const Area &other) const
     case 1:
       return CO_DN_L;
     };
+    break;
   };
 
   assert(0);

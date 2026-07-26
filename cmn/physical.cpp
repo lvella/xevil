@@ -6402,8 +6402,8 @@ int User::next_coolest_weapon() {
 
   // Look for weapon of maximum coolness less than currentCoolness.
   Boolean found = False;
-  int maxx;
-  int index;
+  int maxx = 0;
+  int index = 0;
   int n;
   for (n = 0; n < weaponsNum; n++) {
     WeaponP weapon = (WeaponP)locator->lookup(weapons[n]);
@@ -6459,8 +6459,8 @@ int User::next_coolest_item() {
 
   // Look for item of maximum coolness less than currentCoolness.
   Boolean found = False;
-  int maxx;
-  int index;
+  int maxx = 0;
+  int index = 0;
   int n;
   for (n = 0; n < itemsNum; n++) {
     ItemP item = (ItemP)locator->lookup(items[n]);

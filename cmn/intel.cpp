@@ -388,8 +388,12 @@ Boolean Intel::is_playing() {
 
 void Intel::set_name(char *newName) {
   assert(newName && (strlen(newName) < IT_STRING_LENGTH));
-  strcpy(intelStatus.name,newName);
-  
+  // Bounded copy: newName can arrive from the network (a remote client's
+  // human name), so never overrun intelStatus.name even if the assert is
+  // compiled out with -DNDEBUG.  Always leave room for the terminator.
+  strncpy(intelStatus.name,newName,IT_STRING_LENGTH - 1);
+  intelStatus.name[IT_STRING_LENGTH - 1] = '\0';
+
   intelStatusChanged = True;
 }
 

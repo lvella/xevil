@@ -80,23 +80,36 @@ STRIP		=	strip
 
 
 
-#### Attempt to guesss the host architecture using the HOSTYPE and hostype
-# variables.  Then call self with the architecture name.
+#### Determine the host architecture and re-invoke make with the matching
+# architecture target from the section below.  Selection order:
+#   1. The ARCH make variable, if set.  This is how a specific configuration
+#      (e.g. "debug") is threaded down into the cmn/ and x11/ sub-makes, which
+#      re-enter this rule via "cd cmn; make" with no target.
+#   2. The HOSTTYPE / hosttype environment variables, if set (manual override).
+#   3. "uname -m", mapped to one of the architecture targets.  An unrecognized
+#      machine falls back to x86_64 with a warning.
+ARCH =
+
 default:
-	@if [ $${HOSTTYPE-bob} != bob ] ; then \
+	@if [ -n "$(ARCH)" ] ; then \
+		archit=$(ARCH) ; \
+	elif [ $${HOSTTYPE-bob} != bob ] ; then \
 		archit=$$HOSTTYPE ; \
 	elif [ $${hosttype-bob} != bob ] ; then \
 		archit=$$hosttype ; \
-	else  \
-		archit=unknown ; \
-	fi ; \
-	if [ $$archit != unknown ] ; then \
-		echo Making for $$archit ; \
-		$(MAKE) $$archit ; \
 	else \
-		echo "Could not figure out host architecture." ; \
-		echo "Set the HOSTTYPE environment variable to be one of the entries in config.mk" ; \
-	fi ;
+		machine=`uname -m` ; \
+		case "$$machine" in \
+			x86_64|amd64) archit=x86_64 ;; \
+			i386|i486|i586|i686) archit=i386 ;; \
+			arm*|aarch64) archit=arm ;; \
+			ppc*|powerpc*) archit=powerpc ;; \
+			*) archit=x86_64 ; \
+			   echo "Warning: unknown host architecture '$$machine', defaulting to x86_64." ;; \
+		esac ; \
+	fi ; \
+	echo Making for $$archit ; \
+	$(MAKE) $$archit ;
 
 
 
@@ -279,6 +292,20 @@ INCL_DIRS="-I/usr/X11R6/include" \
 LIBS_DIRS="" \
 LIBS="-lXpm -lX11 -lm" \
 OBJ_DIR=$(DEPTH)/x11/REDHAT_LINUX PCKG_NAME="redhatlinux" \
+$(TARGETS)
+
+# Debug build: the x86_64 configuration compiled with -O0 -g and written to a
+# separate OBJ_DIR (x11/DEBUG) so debug and release objects never mix.  ARCH=debug
+# threads this target through the cmn/ and x11/ sub-makes (see the default rule).
+debug:
+	@$(MAKE) CC="g++" \
+CFLAGS="-DUSE_RANDOM -DXEVIL_KEYSET=UIlinux -DUSE_UINT_NET_LENGTH -m64 -O0 -g" \
+LINK_FLAGS="-m64" \
+INCL_DIRS="-I/usr/X11R6/include" \
+LIBS_DIRS="" \
+LIBS="-lXpm -lX11 -lm" \
+OBJ_DIR=$(DEPTH)/x11/DEBUG PCKG_NAME="redhatlinux" \
+ARCH=debug \
 $(TARGETS)
 
 i386-sco:
