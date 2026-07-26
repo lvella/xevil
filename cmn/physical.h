@@ -2069,6 +2069,12 @@ public:
   virtual void heal();
   /* NOTE: Just for informing the abilities. */
 
+  virtual void melee_hit_hook(PhysicalP victim);
+  /* EFFECTS: Called by Fighter::collide() whenever this Creature's melee
+     attack lands a hit on victim.  Default implementation does nothing.
+     Overridden by Vampire to steal health from the blow. */
+  /* MODIFIES: this (subclasses may change healthNext). */
+
   virtual void set_mapped_next(Boolean val);
   /* NOTE: Just for informing the abilities. */
 

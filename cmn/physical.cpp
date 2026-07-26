@@ -4118,6 +4118,12 @@ void Creature::heal() {
 
 
 
+void Creature::melee_hit_hook(PhysicalP) {
+  // Default: do nothing.  Overridden by Vampire to steal health.
+}
+
+
+
 void Creature::set_mapped_next(Boolean val) {
   for (int n = 0; n < AB_MAX; n++) {
     if (abilities[n]) {
@@ -7299,6 +7305,11 @@ Boolean Fighter::collide(PhysicalP other) {
         damage = cre->apply_modifiers(Modifier::DAMAGE,damage,
                                       FIGHTER_DAMAGE_MAX);
         other->corporeal_attack(cre,damage);
+
+        // Let the attacker react to landing a melee hit (Vampire steals
+        // health).
+        cre->melee_hit_hook(other);
+
         attackNext = attackNone;
         return True;
       }
@@ -7510,6 +7521,8 @@ const FighterContext *Fighter::lookup_context(ClassId cId) {
       return &Mutt::fighterContext;
     case A_Chicken:
       return &Chicken::fighterContext;
+    case A_Vampire:
+      return &Vampire::fighterContext;
     default:
       assert(0);
   }

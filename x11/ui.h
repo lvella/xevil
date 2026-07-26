@@ -166,7 +166,8 @@ class Ui: public IDifficultyCallback,
   // Do nothing, only place holders for Windows version.
   void set_track_volume(int) {}
   void set_sound_volume(int) {}
-  void set_sound_onoff(Boolean){}
+  void set_sound_onoff(Boolean);
+  /* EFFECTS: Update the "Sound" menu toggle to reflect the given state. */
   void set_world_rooms(const Rooms &){}
   void set_role_type(RoleType r)
   {assert(0);}
@@ -277,8 +278,11 @@ class Ui: public IDifficultyCallback,
   static void menu_duel_CB(void*,Viewport*,void*);
   static void menu_extended_CB(void*,Viewport*,void*);
   static void menu_training_CB(void*,Viewport*,void*);
+  static void menu_survival_CB(void*,Viewport*,void*);
+  static void menu_bossrush_CB(void*,Viewport*,void*);
   static void menu_quanta_CB(void*,Viewport*,void*);
   static void menu_cooperative_CB(void*,Viewport*,void*);
+  static void menu_sound_CB(void*,Viewport*,void*);
   static void menu_help_CB(void*,Viewport*,void*);
   static void status_weapon_CB(void*,Viewport*,void*);
   static void status_item_CB(void*,Viewport*,void*);
@@ -300,7 +304,12 @@ class Ui: public IDifficultyCallback,
   static void set_smooth_scroll(Boolean val) {smoothScroll = val;}
   /* EFFECTS: Sets the initial value for smooth scroll.  Can be
      overridden by the user in the License Agreement dialog. */
- 
+
+  static Boolean get_large_viewport() {return largeViewport;}
+  static Boolean get_smooth_scroll() {return smoothScroll;}
+  /* EFFECTS: Current (possibly dialog-overridden) render options, for
+     persisting to the config file. */
+
 
  private:
   void set_message(const char *message);

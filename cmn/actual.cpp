@@ -66,6 +66,8 @@
 #include "bitmaps/fireball/fireball.bitmaps"
 #include "bitmaps/missile/missile.bitmaps"
 #include "bitmaps/star/star.bitmaps"
+#include "bitmaps/rail/rail.bitmaps"
+#include "bitmaps/ice_bolt/ice_bolt.bitmaps"
 #include "bitmaps/blood/blood.bitmaps"
 #include "bitmaps/green_blood/green_blood.bitmaps"
 #include "bitmaps/oil_droplet/oil_droplet.bitmaps"
@@ -75,6 +77,7 @@
 #include "bitmaps/home/home.bitmaps"
 #include "bitmaps/grenade/grenade.bitmaps"
 #include "bitmaps/napalm/napalm.bitmaps"
+#include "bitmaps/gravity_well/gravity_well.bitmaps"
 #include "bitmaps/egg/egg.bitmaps"
 #include "bitmaps/xit/xit.bitmaps"
 #include "bitmaps/flag/flag.bitmaps"
@@ -92,6 +95,7 @@
 #include "bitmaps/n_shield/n_shield.bitmaps"
 #include "bitmaps/t_shield/t_shield.bitmaps"
 #include "bitmaps/bomb/bomb.bitmaps"
+#include "bitmaps/mine/mine.bitmaps"
 
 #include "bitmaps/chainsaw/chainsaw.bitmaps"
 #include "bitmaps/pistol/pistol.bitmaps"
@@ -107,6 +111,10 @@
 #include "bitmaps/frog_gun/frog_gun.bitmaps"
 #include "bitmaps/dog_whistle/dog_whistle.bitmaps"
 #include "bitmaps/demon_summoner/demon_summoner.bitmaps"
+#include "bitmaps/shotgun/shotgun.bitmaps"
+#include "bitmaps/railgun/railgun.bitmaps"
+#include "bitmaps/cryo_ray/cryo_ray.bitmaps"
+#include "bitmaps/singularity/singularity.bitmaps"
 
 #include "bitmaps/enforcer/enforcer.bitmaps"
 #include "bitmaps/frog/frog.bitmaps"
@@ -123,6 +131,7 @@
 #include "bitmaps/dog/dog.bitmaps"
 #include "bitmaps/yeti/yeti.bitmaps"
 #include "bitmaps/chicken/chicken.bitmaps"
+#include "bitmaps/vampire/vampire.bitmaps"
 
 using namespace std;
 
@@ -2041,6 +2050,140 @@ Stats Bomb::stats;
 
 
 
+Mine::Mine(WorldP w,LocatorP l,const Pos &p) :
+Animated(context,xdata,w,l,p,MINE_FRAME)
+{
+  armTimer.set(MINE_ARM_TIME);
+  active = False;
+  armed = False;
+  defused = False;
+}
+
+
+
+CONSTRUCTOR_LEAF_IO(Mine,Animated) {
+  active = False;
+  armed = False;
+  defused = False;
+}
+
+
+
+DEFINE_CREATE_FROM_STREAM(Mine)
+
+
+
+void Mine::use(PhysicalP placerP) {
+  if (!active) {
+    active = True;
+    armTimer.set(MINE_ARM_TIME);
+  }
+  if (placerP) {
+    placer = placerP->get_id();
+    // Don't let the placer immediately re-collide with / re-take the mine.
+    set_dont_collide(placer);
+  }
+  set_cant_take();
+  Animated::use(placerP);
+}
+
+
+
+void Mine::act() {
+  // A mine left lying in the world (dropped, or spawned as loot) arms itself.
+  // A placer just runs the same timer, having recorded who they are in use().
+  // Once a free mine starts arming it can no longer be picked up -- it is a
+  // deployed proximity mine now.
+  if (!active && !is_held()) {
+    active = True;
+    armTimer.set(MINE_ARM_TIME);
+    set_cant_take();
+  }
+
+  if (active && !armed) {
+    armTimer.clock();
+    if (armTimer.ready()) {
+      armed = True;
+    }
+  }
+
+  // Once armed (and not being carried), detonate if any OTHER living
+  // Creature strays within trigger range.
+  if (armed && !is_held()) {
+    LocatorP locator = get_locator();
+    PhysicalP nearby[OL_NEARBY_MAX];
+    int nItems;
+    locator->get_nearby(nearby,nItems,this,MINE_TRIGGER_RADIUS);
+    for (int n = 0; n < nItems; n++) {
+      PhysicalP other = nearby[n];
+      if (other != (PhysicalP)this &&
+          other->is_creature() &&
+          other->alive() &&
+          !(placer == other->get_id())) {
+        kill_self();
+        break;
+      }
+    }
+  }
+
+  set_frame_next(MINE_FRAME);
+  Animated::act();
+}
+
+
+
+void Mine::collide(PhysicalP other) {
+  if (armed && !is_held() &&
+      other->is_creature() &&
+      other->alive() &&
+      !(placer == other->get_id())) {
+    kill_self();
+    return;
+  }
+  Animated::collide(other);
+}
+
+
+
+void Mine::set_quiet_death() {
+  defused = True;
+  Animated::set_quiet_death();
+}
+
+
+
+void Mine::die() {
+  if (!defused) {
+    stats.add_use();
+
+    WorldP world = get_world();
+    LocatorP locator = get_locator();
+    const Area area = get_area();
+
+    PhysicalP explosion =
+      new Explosion(world,locator,area.get_middle(),placer,
+                    MINE_EXPLOSION_RADIUS,MINE_EXPLOSION_DAMAGE_MAX);
+    assert (explosion);
+    locator->add(explosion);
+  }
+
+  Animated::die();
+}
+
+
+
+void Mine::init_x(Xvars &xvars,IXCommand command,void* arg) {
+  Moving::init_x(xvars,command,arg,
+                 context.itemContext.fallingContext.movingContext,
+                 xdata);
+}
+
+
+
+Stats Mine::stats;
+
+
+
 Trapdoor::Trapdoor(WorldP w,LocatorP l,const Pos &pos,const Id &home_id)
 : Moving(context,xdata,w,l,pos) {
   Timer nTimer(TRAPDOOR_TIME);
@@ -2688,6 +2831,113 @@ Stats Star::stats;
 
 
 
+Rail::Rail(WorldP w,LocatorP l,const Pos &p,const Id &shooter,Dir d)
+: Shot(context,xdata,w,l,p,shooter,d,d)
+{
+  stats.add_creation();
+}
+
+
+
+CONSTRUCTOR_LEAF_IO(Rail,Shot) {
+}
+
+
+
+DEFINE_CREATE_FROM_STREAM(Rail)
+
+
+
+Dir Rail::compute_weapon_dir(ITcommand command)
+{
+  // Kind of a hack, same 8-way firing as the Laser.
+  return Lance::compute_weapon_dir(command);
+}
+
+
+
+void Rail::collide(PhysicalP other)
+{
+  if (other->is_shot()) {
+    return;
+  }
+
+  // Damage whatever we hit, but do NOT kill_self() -- the Rail pierces and
+  // keeps flying.  Shot::act() still kills it when it hits a wall.
+  LocatorP locator = get_locator();
+  PhysicalP p = locator->lookup(get_shooter());
+  // p may be NULL.
+  other->corporeal_attack(p,get_damage());
+}
+
+
+
+void Rail::init_x(Xvars &xvars,IXCommand command,void* arg) {
+  Moving::init_x(xvars,command,arg,context.movingContext,xdata);
+}
+
+
+
+Stats Rail::stats;
+
+
+
+IceBolt::IceBolt(WorldP w,LocatorP l,const Pos &p,const Id &shooter,Dir d)
+: Shot(context,xdata,w,l,p,shooter,d,d)
+{
+  stats.add_creation();
+}
+
+
+
+CONSTRUCTOR_LEAF_IO(IceBolt,Shot) {
+}
+
+
+
+DEFINE_CREATE_FROM_STREAM(IceBolt)
+
+
+
+Dir IceBolt::compute_weapon_dir(ITcommand command)
+{
+  // Kind of a hack, same 8-way firing as the Laser.
+  return Lance::compute_weapon_dir(command);
+}
+
+
+
+void IceBolt::collide(PhysicalP other)
+{
+  if (other->is_shot()) {
+    return;
+  }
+
+  LocatorP locator = get_locator();
+  PhysicalP p = locator->lookup(get_shooter());
+  // p may be NULL.
+  other->corporeal_attack(p,get_damage());
+
+  // Freeze living creatures in their tracks for a good while.
+  if (other->is_creature() && other->alive()) {
+    ((CreatureP)other)->stun_next(ICE_BOLT_STUN_TIME);
+  }
+
+  kill_self();
+}
+
+
+
+void IceBolt::init_x(Xvars &xvars,IXCommand command,void* arg) {
+  Moving::init_x(xvars,command,arg,context.movingContext,xdata);
+}
+
+
+
+Stats IceBolt::stats;
+
+
+
 Blood::Blood(WorldP w,LocatorP l,const Pos &pos)
 	 : Droplet(context,xdata,w,l,pos) {
 }
@@ -2944,6 +3194,131 @@ void Napalm::init_x(Xvars &xvars,IXCommand command,void* arg) {
 
 
 Stats Napalm::stats;
+
+
+
+GravityWell::GravityWell(WorldP w,LocatorP l,const Pos &pos,const Id &sh,
+                         const Vel &vel)
+  : Falling(context,xdata,w,l,pos,CO_air)
+{
+  stats.add_creation();
+
+  set_vel(vel);
+  set_vel_next(vel);
+  timer.set(GRAVITY_WELL_FUSE_TIME);
+  shooter = sh;
+  collapsing = False;
+  collapseTurns = 0;
+  defused = False;
+}
+
+
+
+CONSTRUCTOR_LEAF_IO(GravityWell,Falling) {
+  collapsing = False;
+  collapseTurns = 0;
+  defused = False;
+}
+
+
+
+DEFINE_CREATE_FROM_STREAM(GravityWell)
+
+
+
+Boolean GravityWell::collidable()
+{
+  return False;
+}
+
+
+
+void GravityWell::set_quiet_death()
+{
+  defused = True;
+  Falling::set_quiet_death();
+}
+
+
+
+void GravityWell::act()
+{
+  LocatorP locator = get_locator();
+
+  if (!collapsing) {
+    // Falling / fusing.
+    if (timer.ready()) {
+      // COLLAPSE.
+      collapsing = True;
+      collapseTurns = GRAVITY_WELL_COLLAPSE_TIME;
+      // Anchor in place while it pulls.
+      set_vel(0);
+      set_vel_next(0);
+      // The long-orphaned WOOB finally gets a job.
+      SoundRequest req(SoundNames::WOOB,get_area());
+      locator->submitSoundRequest(req);
+    }
+    timer.clock();
+  }
+  else {
+    // Collapsing: drag every nearby Moving toward our center.
+    PhysicalP nearby[OL_NEARBY_MAX];
+    int nItems;
+    locator->get_nearby(nearby,nItems,this,GRAVITY_WELL_RADIUS);
+    Pos center = get_area().get_middle();
+    for (int n = 0; n < nItems; n++) {
+      PhysicalP other = nearby[n];
+      if (other != (PhysicalP)this && other->is_moving()) {
+        Pos op = other->get_area().get_middle();
+        float ddx = (float)(center.x - op.x);
+        float ddy = (float)(center.y - op.y);
+        float dist = (float)sqrt((double)(ddx * ddx + ddy * ddy));
+        if (dist > 1.0f) {
+          Vel pull(GRAVITY_WELL_PULL * ddx / dist,
+                   GRAVITY_WELL_PULL * ddy / dist);
+          ((MovingP)other)->set_extra_vel_next(pull);
+        }
+      }
+    }
+
+    collapseTurns--;
+    if (collapseTurns <= 0) {
+      kill_self();
+    }
+  }
+
+  Falling::act();
+}
+
+
+
+void GravityWell::die()
+{
+  if (!defused) {
+    WorldP world = get_world();
+    LocatorP locator = get_locator();
+    const Area area = get_area();
+
+    PhysicalP explosion =
+      new Explosion(world,locator,area.get_middle(),shooter,
+                    GRAVITY_WELL_EXPLOSION_RADIUS,
+                    GRAVITY_WELL_EXPLOSION_DAMAGE_MAX);
+    assert (explosion);
+    locator->add(explosion);
+  }
+  Falling::die();
+}
+
+
+
+void GravityWell::init_x(Xvars &xvars,IXCommand command,void* arg) {
+  Moving::init_x(xvars,command,arg,context.movingContext,
+                 xdata);
+}
+
+
+
+Stats GravityWell::stats;
 
 
 
@@ -3758,6 +4133,208 @@ void Stars::init_x(Xvars &xvars,IXCommand command,void* arg) {
 
 
 
+Shotgun::Shotgun(WorldP w,LocatorP l,const Pos &p)
+: Gun(context,xdata,w,l,p)
+{}
+
+
+
+CONSTRUCTOR_LEAF_IO(Shotgun,Gun) {
+}
+
+
+
+DEFINE_CREATE_FROM_STREAM(Shotgun)
+
+
+
+void Shotgun::fire(const Id &shooterId,ITcommand command)
+{
+  LocatorP locator = get_locator();
+  PhysicalP shooter = locator->lookup(shooterId);
+  if (shooter)
+  {
+    // Fire the center shot plus one to each adjacent pure direction -- a
+    // three-Shell spread.  (Same dir-wrapping trick as Stars::fire.)
+    Dir center = Intel::command_weapon_to_dir_8(command);
+    if (center != CO_air)
+      for (Dir baseDir = center - 1; baseDir <= center + 1; baseDir++)
+    {
+      Dir dir;
+      if (baseDir >= CO_DIR_MAX)
+        dir = baseDir - CO_DIR_PURE;
+      else if (baseDir < CO_DIR_MAX - CO_DIR_PURE)
+        dir = baseDir + CO_DIR_PURE;
+      else
+        dir = baseDir;
+
+      // Only the last pellet costs ammo and sets the shot timer, so one
+      // trigger pull == one unit of ammo == three Shells.
+      Boolean lastOne = (baseDir == center + 1);
+      Gun::_fire(shooterId,dir,lastOne,lastOne);
+    }
+  }
+}
+
+
+
+void Shotgun::init_x(Xvars &xvars,IXCommand command,void* arg) {
+  Moving::init_x(xvars,command,arg,context.weaponContext.itemContext.fallingContext.movingContext,
+                 xdata);
+}
+
+
+
+Railgun::Railgun(WorldP w,LocatorP l,const Pos &p)
+: Gun(context,xdata,w,l,p)
+{}
+
+
+
+CONSTRUCTOR_LEAF_IO(Railgun,Gun) {
+}
+
+
+
+DEFINE_CREATE_FROM_STREAM(Railgun)
+
+
+
+Size Railgun::get_shot_size(Dir dir)
+{
+  return Rail::get_size(dir);
+}
+
+
+
+Dir Railgun::compute_weapon_dir(ITcommand command)
+{
+  return Rail::compute_weapon_dir(command);
+}
+
+
+
+PhysicalP Railgun::create_shot(PhysicalP shooter,WorldP world,
+                               LocatorP locator,const Pos &pos,Dir dir)
+{
+  PhysicalP shot = new Rail(world,locator,pos,shooter->get_id(),dir);
+  assert (shot);
+  return shot;
+}
+
+
+
+void Railgun::init_x(Xvars &xvars,IXCommand command,void* arg) {
+  Moving::init_x(xvars,command,arg,context.weaponContext.itemContext.fallingContext.movingContext,
+                 xdata);
+}
+
+
+
+CryoRay::CryoRay(WorldP w,LocatorP l,const Pos &p)
+: Gun(context,xdata,w,l,p)
+{}
+
+
+
+CONSTRUCTOR_LEAF_IO(CryoRay,Gun) {
+}
+
+
+
+DEFINE_CREATE_FROM_STREAM(CryoRay)
+
+
+
+Size CryoRay::get_shot_size(Dir dir)
+{
+  return IceBolt::get_size(dir);
+}
+
+
+
+Dir CryoRay::compute_weapon_dir(ITcommand command)
+{
+  return IceBolt::compute_weapon_dir(command);
+}
+
+
+
+PhysicalP CryoRay::create_shot(PhysicalP shooter,WorldP world,
+                               LocatorP locator,const Pos &pos,Dir dir)
+{
+  PhysicalP shot = new IceBolt(world,locator,pos,shooter->get_id(),dir);
+  assert (shot);
+  return shot;
+}
+
+
+
+void CryoRay::init_x(Xvars &xvars,IXCommand command,void* arg) {
+  Moving::init_x(xvars,command,arg,context.weaponContext.itemContext.fallingContext.movingContext,
+                 xdata);
+}
+
+
+
+Singularity::Singularity(WorldP w,LocatorP l,const Pos &p)
+: Gun(context,xdata,w,l,p)
+{}
+
+
+
+CONSTRUCTOR_LEAF_IO(Singularity,Gun) {
+}
+
+
+
+DEFINE_CREATE_FROM_STREAM(Singularity)
+
+
+
+Size Singularity::get_shot_size(Dir dir)
+{
+  return GravityWell::get_size(dir);
+}
+
+
+
+// Lobbed just like a Grenade (copied from Grenades::create_shot).
+PhysicalP Singularity::create_shot(PhysicalP shooter,WorldP world,
+                                   LocatorP locator,const Pos &pos,Dir dir)
+{
+  Speed speed;
+  if (dir == CO_UP_L || dir == CO_UP || dir == CO_UP_R) {
+    speed = GRENADES_TOSS_SPEED;
+  }
+  else if (dir == CO_R || dir == CO_DN_R || dir == CO_DN_L || dir == CO_L) {
+    speed = GRENADES_ROLL_SPEED;
+  }
+  else if (dir == CO_DN) {
+    speed = 0;
+  }
+  else {
+    assert(0);
+  }
+
+  assert(shooter->is_moving());
+  const Vel *unitVels = get_unit_vels();
+  Vel vel = ((MovingP)shooter)->get_vel() + (float)speed * unitVels[dir];
+
+  PhysicalP shot = new GravityWell(world,locator,pos,shooter->get_id(),vel);
+  assert (shot);
+  return shot;
+}
+
+
+
+void Singularity::init_x(Xvars &xvars,IXCommand command,void* arg) {
+  Moving::init_x(xvars,command,arg,context.weaponContext.itemContext.fallingContext.movingContext,
+                 xdata);
+}
+
+
+
 DEFINE_CREATURE_CTORS_3(Enforcer,Grounded,grounded,Suicide,suicide,Prickly,prickly)
 
 
@@ -4108,3 +4685,40 @@ void Chicken::init_x(Xvars &xvars,IXCommand command,void* arg) {
 
 
 Stats Chicken::stats;
+
+
+
+// XEvil 2.5:  the Vampire.  Walking + Fighter + Healing, plus a health steal
+// on every melee hit that lands (see melee_hit_hook below).
+#define VAMPIRE_HEALTH_STEAL 8
+
+DEFINE_CREATURE_CTORS_3(Vampire,Fighter,fighter,Walking,walking,Healing,healing)
+
+
+
+DEFINE_CREATE_FROM_STREAM(Vampire)
+
+
+
+void Vampire::init_x(Xvars &xvars,IXCommand command,void* arg) {
+  Moving::init_x(xvars,command,arg,creatureContext.movingContext,creatureXdata);
+}
+
+
+
+void Vampire::melee_hit_hook(PhysicalP) {
+  // Signature vampiric health steal: recover a bit of health on every melee
+  // hit that lands, capped at our maximum.
+  if (alive() && alive_next()) {
+    Health h = get_health_next() + VAMPIRE_HEALTH_STEAL;
+    Health hMax = get_health_max();
+    if (h > hMax) {
+      h = hMax;
+    }
+    set_health_next(h);
+  }
+}
+
+
+
+Stats Vampire::stats;

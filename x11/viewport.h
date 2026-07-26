@@ -54,12 +54,13 @@ enum {
   menuControls,menuLearnControls, // These two MUST be first.
   menuQuit,menuNewGame,menuHumansNum,menuEnemiesNum,menuEnemiesRefill,
   menuStyle,menuScenarios,menuLevels,menuKill,menuDuel,menuExtended,
-  menuTraining,menuQuanta,menuCooperative,menuHelp,
+  menuTraining,menuSurvival,menuBossRush,menuQuanta,menuCooperative,
+  menuSound,menuHelp,
   stWeapon,stItem,
   stChat, // Bad naming convention.
   VIEWPORT_CB_NUM, // Must be last.
 };
-#define VW_MENUS_PRIMARY_NUM 17
+#define VW_MENUS_PRIMARY_NUM 20
 #define VW_MENUS_SECONDARY_NUM 2
 // Not 9, because ammo is with weapon.
 #define VW_STATUSES_NUM 8  
@@ -167,7 +168,13 @@ public:
   void set_menu_enemies_num(int);
 
   void set_menu_help(Boolean val);
-  
+
+  void set_menu_sound(Boolean val);
+
+  void pause_message(Boolean on);
+  /* EFFECTS: When on, freeze the current frame with a centered "PAUSED"
+     message.  When off, clear the pause message.  Used by Ui::set_pause. */
+
   void set_enemies_refill(Boolean);
 
   void set_style_and_role_type(GameStyleType style,RoleType);

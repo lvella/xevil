@@ -372,22 +372,25 @@ void Ui::set_pause(Boolean val) {
     // Turn pause on.
     if (val) {
       XClearWindow(xvars.dpy[dpyNum],xdata.controls[dpyNum]);
-      
+
       learnControls[dpyNum]->clear();
-      
+
       for (int v = 0; v < vIndexNum[dpyNum]; v++) {
         Viewport* vPort = (Viewport*)viewports.get(vIndex[dpyNum][v]);
         vPort->clear_all();
+        // Show a visible "PAUSED" message on the (frozen) arena.
+        vPort->pause_message(True);
       }
     }
     // Turn pause off.
     else {
       controls_redraw(dpyNum);
-      
+
       learnControls[dpyNum]->redraw();
-      
+
       for (int v = 0; v < vIndexNum[dpyNum]; v++) {
         Viewport* vPort = (Viewport*)viewports.get(vIndex[dpyNum][v]);
+        vPort->pause_message(False);
         vPort->unclear_all();
       }
     }
@@ -567,6 +570,16 @@ void Ui::set_cooperative(Boolean val) {
 
   settings.cooperative = val;
   vPort->set_cooperative(val);
+}
+
+
+
+void Ui::set_sound_onoff(Boolean val) {
+  // Only set for viewport 0 (the only one with the menu bar).
+  Viewport* vPort = (Viewport*)viewports.get(0);
+
+  settings.sound = val;
+  vPort->set_menu_sound(val);
 }
 
 
@@ -1068,6 +1081,28 @@ void Ui::menu_training_CB(void* value,Viewport*,void* closure) {
 
 
 
+void Ui::menu_survival_CB(void* value,Viewport*,void* closure) {
+  UiP ui = (UiP)closure;
+  Boolean val = (Boolean)(intptr_t)value;
+  if (val) {
+    ui->settingsChanges |= UIstyle;
+    ui->settings.style = SURVIVAL;
+  }
+}
+
+
+
+void Ui::menu_bossrush_CB(void* value,Viewport*,void* closure) {
+  UiP ui = (UiP)closure;
+  Boolean val = (Boolean)(intptr_t)value;
+  if (val) {
+    ui->settingsChanges |= UIstyle;
+    ui->settings.style = BOSS_RUSH;
+  }
+}
+
+
+
 void Ui::menu_quanta_CB(void* value,Viewport*,void* closure) {
   UiP ui = (UiP)closure;
   ui->settingsChanges |= UIquanta;
@@ -1082,6 +1117,15 @@ void Ui::menu_cooperative_CB(void* value,Viewport*,void* closure) {
   ui->settingsChanges |= UIcooperative;
   Boolean val = (Boolean)(intptr_t)value;
   ui->settings.cooperative = val;
+}
+
+
+
+void Ui::menu_sound_CB(void* value,Viewport*,void* closure) {
+  UiP ui = (UiP)closure;
+  ui->settingsChanges |= UIsound;
+  Boolean val = (Boolean)(intptr_t)value;
+  ui->settings.sound = val;
 }
 
 
@@ -1752,32 +1796,36 @@ Boolean Ui::smoothScroll = False;
 
 
 
+// ORDER MUST MATCH the enum in viewport.h (menuControls .. stChat).
 ViewportCallback Ui::viewportCallbacks[VIEWPORT_CB_NUM] = {
-  menu_controls_CB,
-  menu_learn_controls_CB,
-  menu_quit_CB,
-  menu_new_game_CB,
-  menu_humans_num_CB,
-  menu_enemies_num_CB,
-  menu_enemies_refill_CB,
-  NULL,
-  menu_scenarios_CB,
-  menu_levels_CB,
-  menu_kill_CB,
-  menu_duel_CB,
-  menu_extended_CB,
-  menu_training_CB,
-  menu_quanta_CB,
-  menu_cooperative_CB,
-  menu_help_CB,
-  status_weapon_CB,
-  status_item_CB,
-  chat_CB,
+  menu_controls_CB,       // menuControls
+  menu_learn_controls_CB, // menuLearnControls
+  menu_quit_CB,           // menuQuit
+  menu_new_game_CB,       // menuNewGame
+  menu_humans_num_CB,     // menuHumansNum
+  menu_enemies_num_CB,    // menuEnemiesNum
+  menu_enemies_refill_CB, // menuEnemiesRefill
+  NULL,                   // menuStyle (just a text label)
+  menu_scenarios_CB,      // menuScenarios
+  menu_levels_CB,         // menuLevels
+  menu_kill_CB,           // menuKill
+  menu_duel_CB,           // menuDuel
+  menu_extended_CB,       // menuExtended
+  menu_training_CB,       // menuTraining
+  menu_survival_CB,       // menuSurvival
+  menu_bossrush_CB,       // menuBossRush
+  menu_quanta_CB,         // menuQuanta
+  menu_cooperative_CB,    // menuCooperative
+  menu_sound_CB,          // menuSound
+  menu_help_CB,           // menuHelp
+  status_weapon_CB,       // stWeapon
+  status_item_CB,         // stItem
+  chat_CB,                // stChat
 };
 
 
 
-char* Ui::helpMessage = 
+char* Ui::helpMessage =
 "For full instructions, including NETWORK PLAY, see "
 "http://www.xevil.com/docs/instructions.html\n"
 "\n"
@@ -1785,6 +1833,11 @@ char* Ui::helpMessage =
 "\n"
 "Use the \"Set Controls\" and \"Show Controls\" buttons to configure the "
 "keyboard.\n"
+"\n"
+"Press F1 to pause the game.  Press any key to resume.\n"
+"\n"
+"Use the \"Sound\" toggle in the menu bar to turn sound on or off.  Your "
+"settings are remembered in ~/.xevilrc between sessions.\n"
 "\n"
 "XEvil(TM) Copyright(C) 1994,1999  Steve Hardt and Michael Judge\n"
 "http://www.xevil.com   satan@xevil.com"

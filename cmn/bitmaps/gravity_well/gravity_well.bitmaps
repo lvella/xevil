@@ -1,0 +1,124 @@
+/*
+ * XEvil(TM) Copyright (C) 1994,2000 Steve Hardt and Michael Judge
+ * http://www.xevil.com
+ * satan@xevil.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program, the file "gpl.txt"; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA, or visit http://www.gnu.org.
+ */
+
+
+// "gravity_well.bitmaps"  The lobbed orb fired by the Singularity gun.  It
+// falls like a grenade, sits for a fuse, then COLLAPSES: for a spell it drags
+// every nearby Moving toward its center (accompanied by the long-orphaned WOOB
+// sound) before detonating in an Explosion.  See GravityWell in actual.cpp.
+
+
+#if X11
+#include "gen_xpm/gravity_well/gravity_well_4.xpm"
+#endif
+
+
+
+#define GRAVITY_WELL_FUSE_TIME 35
+#define GRAVITY_WELL_COLLAPSE_TIME 25
+#define GRAVITY_WELL_RADIUS 150
+#define GRAVITY_WELL_PULL 4.5f
+#define GRAVITY_WELL_EXPLOSION_RADIUS 90
+#define GRAVITY_WELL_EXPLOSION_DAMAGE_MAX 260
+
+
+
+Size GravityWell::get_size(Dir) {
+  return context.movingContext.sizes[CO_air];
+}
+
+
+
+Size GravityWell::get_size_max() {
+  return context.movingContext.sizes[CO_air];
+}
+
+
+
+PhysicalP GravityWell::create(void *,WorldP,LocatorP,const Pos &) {
+  assert(0);
+  return NULL;
+}
+
+
+
+FallingXdata GravityWell::xdata;
+
+
+
+const FallingContext GravityWell::context =
+{/** FallingContext **/
+  {/** MovingContext **/
+#if X11
+    "purple",False,
+    "black",True,
+#endif
+#if WIN32
+    RGB(112,16,176)/*"purple"*/,False,
+    RGB(0,0,0)/*"black"*/,True,
+#endif
+
+    /* animMax */
+    {0,0,0,0,1},
+
+    /* sizes */
+    {{0,0},{0,0},{0,0},{0,0},{14,14},},
+
+    /* offsets */
+    {{0}},
+
+    /* pixmapBits */
+    {{0},{0},{0},{0},{CMN_ID(gravity_well_4,IDB_GRAVITY_WELL)}},
+
+    /* maskBits */
+    {{0}},
+
+    {/* PhysicalContext */
+      1, /* health */
+      5, /* mass */
+      A_GravityWell, /* classId */
+      "gravity-well", /* clas */
+
+      False, /* transmogifyTarget */
+      False, /* doppelUser */
+      False, /* potentialHuman */
+      False, /* potentialEnemy */
+      0, /* enemyWeight */
+      False, /* potentialWeapon */
+      False, /* potentialOtherItem */
+      0.0f, /* objectWorldPercent */
+      0, /* levelMaxTimes */
+      {14,14}, /* sizeMax */
+      GravityWell::create, /* create */
+      True, /* statsCreations */
+      False, /* statsUses */
+      False, /* statsDeaths */
+      GravityWell::get_stats, /* get_stats */
+      NULL, /* arg */
+      GravityWell::init_x, /* init_x */
+      GravityWell::create_from_stream, /* create_from_stream */
+    },
+    True, /* hiRes */
+    0, /* offsetGenerator */
+    0, /* transformOverride */
+    True, /* useXPM */
+  },
+};

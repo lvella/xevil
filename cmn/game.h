@@ -309,7 +309,28 @@ private:
   char *choose_ranking(int kills);
   /* EFFECTS: Choose a rank for the player at the end of game based on the
      number of kills. */
-  
+
+#if X11
+  void config_load();
+  /* EFFECTS: Read persisted settings from ~/.xevilrc (v2 key=value format).
+     A missing or garbage file is silently ignored.  Called before parse_args
+     so command-line arguments take precedence. */
+
+  void config_save();
+  /* EFFECTS: Write current settings to ~/.xevilrc, keeping line 1 (the license
+     marker) exactly as old builds expect for backward compatibility. */
+
+  int high_score_record(int adjustedKills,const char* rankTitle,
+                        const char* playerName);
+  /* EFFECTS: If adjustedKills qualifies for the top-10 table in
+     ~/.xevil_scores, insert it (and persist).  Returns the 1-based position,
+     or 0 if it did not make the table.  Robust to a missing/corrupt file. */
+
+  int high_score_best();
+  /* EFFECTS: Return the current best (highest) adjusted kills in the table, or
+     0 if the table is empty/unreadable. */
+#endif
+
   void end_game(Boolean showMessages);
   /* EFFECTS: End the game immediately. showMessages specifies whether to 
      report ranking/kills/etc. */

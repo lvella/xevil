@@ -209,8 +209,8 @@ const CreatureContext Dog::creatureContext =
       True, /* transmogifyTarget */
       True, /* doppelUser */
       False, /* potentialHuman */
-      False, /* potentialEnemy */
-      20, /* enemyWeight */
+      True, /* potentialEnemy */
+      8, /* enemyWeight */
       False, /* potentialWeapon */
       False, /* potentialOtherItem */
       0.0f, /* objectWorldPercent */
@@ -442,8 +442,8 @@ const CreatureContext Mutt::creatureContext =
       True, /* transmogifyTarget */
       True, /* doppelUser */
       False, /* potentialHuman */
-      False, /* potentialEnemy */
-      20, /* enemyWeight */
+      True, /* potentialEnemy */
+      5, /* enemyWeight */
       False, /* potentialWeapon */
       False, /* potentialOtherItem */
       0.0f, /* objectWorldPercent */

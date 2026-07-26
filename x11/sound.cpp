@@ -91,6 +91,7 @@ static const char *const SOUND_FILES[] = {
   "sweetdark.mp3",    // 36 SWEETDARK_SOUNDTRACK
   "terraexm.mp3",     // 37 TERRAEXM_SOUNDTRACK  (restored in 2.5)
   "newsong.mp3",      // 38 NEWSONG_SOUNDTRACK
+  "woob.wav",         // 39 WOOB  (GravityWell collapse; orphaned since 1997)
 };
 
 #define SOUND_FILES_NUM ((int)(sizeof(SOUND_FILES) / sizeof(SOUND_FILES[0])))
@@ -192,6 +193,9 @@ void SoundManager::warn_once(const char *msg) {
 void SoundManager::disable() {
   // Hard, permanent disable (-no_sound / XEVIL_NO_SOUND).
   m_disabled = True;
+  // A hard-disabled manager is definitively "not on"; keep isSoundOn() honest
+  // so callers (e.g. the network sound-relay request) see the real state.
+  m_soundOn = False;
   if (m_impl && m_engineOk) {
     if (m_impl->musicActive) {
       ma_sound_uninit(&m_impl->music);
@@ -305,14 +309,19 @@ Boolean SoundManager::submitRequest(SoundRequest p_req) {
   }
 
   Pos pos = p_req.get_pos();
-  if (m_debug) {
-    // Proves end-to-end flow even with no audio device (but not for -no_sound).
-    fprintf(stderr,"XEVIL-SOUND: %d at %d,%d\n",(int)name,pos.x,pos.y);
-  }
 
+  // Respect the on/off toggle before anything else observable, so that turning
+  // sound off (menu toggle or persisted config) genuinely silences the engine.
   if (!m_soundOn) {
     return False;
   }
+
+  if (m_debug) {
+    // Proves end-to-end flow even with no audio device (but not when sound is
+    // off, whether via -no_sound or the on/off toggle).
+    fprintf(stderr,"XEVIL-SOUND: %d at %d,%d\n",(int)name,pos.x,pos.y);
+  }
+
   ensure_init();
   if (!m_engineOk || !m_haveAssets) {
     return False;

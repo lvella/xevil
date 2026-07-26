@@ -774,7 +774,55 @@ class Bomb: public Animated {
   Timer timer;
   Boolean active;
   Id bomber; // Only valid if active.
-  Frame frame; 
+  Frame frame;
+  Boolean defused;
+  static Stats stats;
+};
+
+
+
+// A Proximity Mine.  An Animated item that is placed with use(), arms after a
+// short delay, and detonates when any OTHER living Creature comes near.
+class Mine: public Animated {
+ public:
+  Mine(WorldP w,LocatorP l,const Pos &pos);
+
+  DECLARE_NULL_LEAF_IO(Mine);
+
+  static Size get_size_max();
+  static PhysicalP create(void *,WorldP,LocatorP,const Pos &);
+
+  virtual void use(PhysicalP p);
+  /* NOTE: p can be NULL.  Places and starts arming the mine. */
+
+  virtual void act();
+
+  virtual void collide(PhysicalP other);
+  /* EFFECTS: An armed mine detonates the instant a living Creature (other than
+     the placer) touches it -- catches fast movers that skip between the
+     per-turn proximity samples. */
+
+  virtual void set_quiet_death();
+
+  virtual void die();
+  /* EFFECTS: Create an explosion. */
+
+  static Stats &get_stats(void *) {return stats;}
+
+  const static AnimatedContext context;
+  /* NOTE: Making this public is a bit of a hack.  Locator::register_contexts()
+     needs to get to it and I don't want to have to make a separate accessor
+     function for every class. */
+
+
+ private:
+  static void init_x(Xvars&,IXCommand command,void* arg);
+
+  static AnimatedXdata xdata;
+  Timer armTimer;
+  Boolean active;
+  Boolean armed;
+  Id placer; // Only valid if placed via use().
   Boolean defused;
   static Stats stats;
 };
@@ -1042,6 +1090,81 @@ class Star: public Shot {
 
 
 
+// The piercing slug fired by the Railgun.  Does not die when it hits a
+// Creature -- it punches straight through and keeps flying until it hits a
+// wall.
+class Rail: public Shot {
+ public:
+  Rail(WorldP w,LocatorP l,const Pos &pos,
+       const Id &shooter,
+       Dir dir);
+  static Size get_size(Dir);
+
+  DECLARE_NULL_LEAF_IO(Rail);
+
+  static Size get_size_max();
+  static PhysicalP create(void *,WorldP,LocatorP,const Pos &);
+
+  static Dir compute_weapon_dir(ITcommand);
+  /* EFFECTS: The Railgun shoots diagonal shots like the Laser. */
+
+  virtual void collide(PhysicalP other);
+  /* NOTE: Damages other but does NOT kill_self -- Rail pierces.  Does not call
+     up the tree. */
+
+  static Stats &get_stats(void *) {return stats;}
+
+  const static ShotContext context;
+  /* NOTE: Making this public is a bit of a hack.  Locator::register_contexts()
+     needs to get to it and I don't want to have to make a separate accessor
+     function for every class. */
+
+
+ private:
+  static void init_x(Xvars&,IXCommand command,void* arg);
+
+  static ShotXdata xdata;
+  static Stats stats;
+};
+
+
+
+// The bolt fired by the Cryo Ray.  Stuns the Creature it hits.
+class IceBolt: public Shot {
+ public:
+  IceBolt(WorldP w,LocatorP l,const Pos &pos,
+          const Id &shooter,
+          Dir dir);
+  static Size get_size(Dir);
+
+  DECLARE_NULL_LEAF_IO(IceBolt);
+
+  static Size get_size_max();
+  static PhysicalP create(void *,WorldP,LocatorP,const Pos &);
+
+  static Dir compute_weapon_dir(ITcommand);
+  /* EFFECTS: The Cryo Ray shoots diagonal shots like the Laser. */
+
+  virtual void collide(PhysicalP other);
+  /* NOTE: Does light damage and stuns.  Does not call up the tree. */
+
+  static Stats &get_stats(void *) {return stats;}
+
+  const static ShotContext context;
+  /* NOTE: Making this public is a bit of a hack.  Locator::register_contexts()
+     needs to get to it and I don't want to have to make a separate accessor
+     function for every class. */
+
+
+ private:
+  static void init_x(Xvars&,IXCommand command,void* arg);
+
+  static ShotXdata xdata;
+  static Stats stats;
+};
+
+
+
 class Blood: public Droplet {
 public:
   DECLARE_NULL_LEAF_IO(Blood);
@@ -1289,7 +1412,52 @@ public:
   Timer timer;
   Id shooter;
   Boolean defused;
- 
+
+  static FallingXdata xdata;
+  static Stats stats;
+};
+
+
+
+// Lobbed by the Singularity gun.  After a fuse it collapses, dragging every
+// nearby Moving toward its center for a while, then detonates.
+class GravityWell: public Falling {
+public:
+  GravityWell(WorldP,LocatorP,const Pos &,const Id &,const Vel &);
+
+  DECLARE_NULL_LEAF_IO(GravityWell);
+
+  static Size get_size(Dir dir);
+  static Size get_size_max();
+  static PhysicalP create(void *,WorldP,LocatorP,const Pos &);
+
+  virtual Boolean collidable();
+  /* NOTE: A collapsing singularity can't be shot -- it passes through
+     everything and reliably survives its fuse to collapse. */
+
+  virtual void set_quiet_death();
+
+  virtual void act();
+
+  virtual void die();
+
+  static Stats &get_stats(void *) {return stats;}
+
+  const static FallingContext context;
+  /* NOTE: Making this public is a bit of a hack.  Locator::register_contexts()
+     needs to get to it and I don't want to have to make a separate accessor
+     function for every class. */
+
+
+ private:
+  static void init_x(Xvars&,IXCommand command,void* arg);
+
+  Timer timer;
+  Id shooter;
+  Boolean collapsing;
+  int collapseTurns;
+  Boolean defused;
+
   static FallingXdata xdata;
   static Stats stats;
 };
@@ -1635,6 +1803,115 @@ class Stars: public Gun {
   virtual PhysicalP create_shot(PhysicalP,WorldP,LocatorP,const Pos &,Dir dir);
   
   virtual void fire(const Id &id,ITcommand command);
+
+  static void init_x(Xvars&,IXCommand command,void* arg);
+
+  static GunXdata xdata;
+};
+
+
+
+// Sawed-off shotgun.  Fires a spread of three Shells per trigger pull.
+class Shotgun: public Gun {
+ public:
+  Shotgun(WorldP w,LocatorP l,const Pos &pos);
+
+  DECLARE_NULL_LEAF_IO(Shotgun);
+
+  static Size get_size_max();
+  static PhysicalP create(void *,WorldP,LocatorP,const Pos &);
+
+  const static GunContext context;
+  /* NOTE: Making this public is a bit of a hack.  Locator::register_contexts()
+     needs to get to it and I don't want to have to make a separate accessor
+     function for every class. */
+
+
+ private:
+  virtual void fire(const Id &id,ITcommand command);
+
+  static void init_x(Xvars&,IXCommand command,void* arg);
+
+  static GunXdata xdata;
+};
+
+
+
+// Railgun.  Fires a single fast, piercing Rail.
+class Railgun: public Gun {
+ public:
+  Railgun(WorldP w,LocatorP l,const Pos &pos);
+
+  DECLARE_NULL_LEAF_IO(Railgun);
+
+  static Size get_size_max();
+  static PhysicalP create(void *,WorldP,LocatorP,const Pos &);
+
+  const static GunContext context;
+  /* NOTE: Making this public is a bit of a hack.  Locator::register_contexts()
+     needs to get to it and I don't want to have to make a separate accessor
+     function for every class. */
+
+
+ private:
+  virtual Size get_shot_size(Dir);
+  virtual Dir compute_weapon_dir(ITcommand);
+  virtual PhysicalP create_shot(PhysicalP,WorldP,LocatorP,const Pos &,Dir dir);
+
+  static void init_x(Xvars&,IXCommand command,void* arg);
+
+  static GunXdata xdata;
+};
+
+
+
+// Cryo Ray.  Fires an IceBolt that stuns.
+class CryoRay: public Gun {
+ public:
+  CryoRay(WorldP w,LocatorP l,const Pos &pos);
+
+  DECLARE_NULL_LEAF_IO(CryoRay);
+
+  static Size get_size_max();
+  static PhysicalP create(void *,WorldP,LocatorP,const Pos &);
+
+  const static GunContext context;
+  /* NOTE: Making this public is a bit of a hack.  Locator::register_contexts()
+     needs to get to it and I don't want to have to make a separate accessor
+     function for every class. */
+
+
+ private:
+  virtual Size get_shot_size(Dir);
+  virtual Dir compute_weapon_dir(ITcommand);
+  virtual PhysicalP create_shot(PhysicalP,WorldP,LocatorP,const Pos &,Dir dir);
+
+  static void init_x(Xvars&,IXCommand command,void* arg);
+
+  static GunXdata xdata;
+};
+
+
+
+// Singularity gun.  Lobs a GravityWell like the Grenades gun lobs a Grenade.
+class Singularity: public Gun {
+ public:
+  Singularity(WorldP w,LocatorP l,const Pos &pos);
+
+  DECLARE_NULL_LEAF_IO(Singularity);
+
+  static Size get_size_max();
+  static PhysicalP create(void *,WorldP,LocatorP,const Pos &);
+
+  const static GunContext context;
+  /* NOTE: Making this public is a bit of a hack.  Locator::register_contexts()
+     needs to get to it and I don't want to have to make a separate accessor
+     function for every class. */
+
+
+ private:
+  virtual Size get_shot_size(Dir);
+  virtual PhysicalP create_shot(PhysicalP,WorldP,LocatorP,const Pos &,Dir dir);
 
   static void init_x(Xvars&,IXCommand command,void* arg);
 
@@ -2359,7 +2636,49 @@ class Chicken: public Creature {
   static FighterXdata fighterXdata;
 
   const static FlyingContext flyingContext;
-  
+
+  static Stats stats;
+};
+
+
+
+// XEvil 2.5 addition.  A palette-swapped Hero (Walking + Fighter + Healing,
+// but no User) that steals health with every melee hit that lands.
+class Vampire: public Creature {
+// public Walking, public Fighter, public Healing
+ public:
+  Vampire(WorldP w,LocatorP l,const Pos &pos);
+
+  DECLARE_NULL_CREATURE_IO(Vampire);
+
+  static Size get_size_max();
+  static PhysicalP create(void *,WorldP,LocatorP,const Pos &);
+
+  virtual void melee_hit_hook(PhysicalP victim);
+  /* EFFECTS: Signature vampiric health steal on a landed melee hit.  See
+     Creature::melee_hit_hook(). */
+
+  static Stats &get_stats(void *) {return stats;}
+
+  const static CreatureContext creatureContext;
+  /* NOTE: Making this public is a bit of a hack.  Locator::register_contexts()
+     needs to get to it and I don't want to have to make a separate accessor
+     function for every class. */
+
+  static FighterXdata fighterXdata;
+  const static FighterContext fighterContext;
+  /* NOTE: Similar hack so that Fighter::lookup_context() can get these. */
+  const static HealingContext healingContext;
+
+
+private:
+  static void init_x(Xvars&,IXCommand command,void* arg);
+
+  static CreatureXdata creatureXdata;
+  static WalkingXdata walkingXdata;
+  static HealingXdata healingXdata;
+
+  const static WalkingContext walkingContext;
   static Stats stats;
 };
 #endif

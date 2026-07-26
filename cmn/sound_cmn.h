@@ -106,6 +106,10 @@ public:
     TERRAEXM_SOUNDTRACK,
     NEWSONG_SOUNDTRACK,
 
+    // XEvil 2.5: the collapse sound of the Singularity's GravityWell.  Wired
+    // up on X11 only (WOOB.WAV was orphaned in the Win32 resources).
+    WOOB,
+
     // Don't change the following.
     SOUND_MAX,
     SOUND_RANDOM = -1,

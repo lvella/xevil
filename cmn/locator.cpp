@@ -2107,7 +2107,24 @@ void Locator::register_contexts() {
   register_context(&Yeti::creatureContext.movingContext.physicalContext);
   register_context(&Chicken::creatureContext.movingContext.physicalContext);
   register_context(&PhysMover::context);
-  
+
+  // XEvil 2.5 additions.  Registered in the same order they were appended to
+  // the ClassId enum.
+  register_context(&Rail::context.movingContext.physicalContext);
+  register_context(&IceBolt::context.movingContext.physicalContext);
+  register_context(&GravityWell::context.movingContext.physicalContext);
+  register_context(&Shotgun::context.weaponContext.itemContext.fallingContext.
+		   movingContext.physicalContext);
+  register_context(&Railgun::context.weaponContext.itemContext.fallingContext.
+		   movingContext.physicalContext);
+  register_context(&CryoRay::context.weaponContext.itemContext.fallingContext.
+		   movingContext.physicalContext);
+  register_context(&Singularity::context.weaponContext.itemContext.fallingContext.
+		   movingContext.physicalContext);
+  register_context(&Mine::context.itemContext.fallingContext.
+		   movingContext.physicalContext);
+  register_context(&Vampire::creatureContext.movingContext.physicalContext);
+
 
   assert(contextCount <= A_CLASSES_NUM);
 
@@ -2187,4 +2204,10 @@ Locator::submitSoundRequest(SoundRequest req) {
   }
 
   return soundManager->submitRequest(req);
+}
+
+
+
+Boolean Locator::sound_enabled() {
+  return soundManager && soundManager->isSoundOn();
 }

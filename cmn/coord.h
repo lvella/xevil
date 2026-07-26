@@ -182,6 +182,17 @@ enum {
   // Misc
   A_PhysMover,
 
+  // XEvil 2.5 additions.  APPENDED here (never inserted mid-list) so the
+  // serialized ClassId values of every pre-existing class are unchanged.
+  // New shots / projectiles for the new weapons:
+  A_Rail,A_IceBolt,A_GravityWell,
+  // New weapons:
+  A_Shotgun,A_Railgun,A_CryoRay,A_Singularity,
+  // New item:
+  A_Mine,
+  // New creature:
+  A_Vampire,
+
   // The number of "real" classes.
   A_CLASSES_NUM,
 
@@ -631,6 +642,11 @@ public:
 // Difficulty levels.
 struct DifficultyLevel {
   int reflexes;  // For Machine intel
+  int smartness; // AI cleverness for Machine intel.  0 = classic (random
+                 // target, fire through walls, no leading, aimless wander).
+                 // >=1 adds distance-weighted target choice, line-of-sight
+                 // firing and hunting the nearest human.  >=2 also leads
+                 // moving targets.
   int enemiesInitial; // enemies on first level
   int enemiesIncr; // this many more enemies each level
   int enemiesMax; // maximum number of enemies (for levels)

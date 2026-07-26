@@ -66,11 +66,25 @@ using namespace std;
 #define SCENARIO_SEALS_NEED 15  // Used to be 20, make it easier.
 #define SCENARIO_ANTI_SEALS_MAX_SLIPPAGE 3  // number of Seals that can get away
 #define LOOK_OUT_INIT_VEL -10
+#define SCENARIO_YETI_YETIS 6
+#define SCENARIO_GRAVEYARD_ZOMBIES 25
+#define SCENARIO_HUGGER_NEST_EGGS 15
+#define SCENARIO_HUGGER_NEST_ALIENS 8
+#define SCENARIO_JUNKYARD_MUTTS 12
+#define SCENARIO_JUNKYARD_DOGS 6
 
 #define LEVEL_TIME 3000
 #define HUMAN_LIVES 4
 #define HUMAN_LIVES_SCENARIOS 7 //10
 #define NORMAL_SCENARIOS_FREQUENCY 5 // Every fifth level is a SCENARIO.
+
+// XEvil 2.5 game styles.
+#define SURVIVAL_WAVE_BASE 4         // enemies in wave 1
+#define SURVIVAL_WAVE_INCR 2         // extra enemies per wave
+#define SURVIVAL_WAVE_MAX 40         // cap on random enemies per wave
+#define SURVIVAL_BOSS_FREQUENCY 5    // every fifth wave adds a FireDemon
+#define SURVIVAL_LIVES 3
+#define BOSS_RUSH_LIVES 5
 
 
 
@@ -89,6 +103,10 @@ enum ScenarioType {
   JAPAN_TOWN,
   THE_COOP,
   LOOK_OUT,
+  KILL_THE_YETI,
+  GRAVEYARD,
+  HUGGER_NEST,
+  JUNKYARD,
   SCENARIO_NONE, // Must be last.
 };
 
@@ -665,6 +683,116 @@ private:
 
 
 
+// Melt a pack of heat-Sensitive Yetis.  Only fire weapons spawn.
+class KillTheYeti : public Scenario {
+public:
+  KillTheYeti();
+
+  virtual ScenarioType get_scenario_type() {return KILL_THE_YETI;}
+
+  virtual SoundName get_midisoundtrack(){return SoundNames::NIGHTSKY_SOUNDTRACK;}
+
+  virtual int new_level_check(int enemiesPlaying,WorldP,LocatorP,
+                              int level,Boolean &lStrChanged,ostrstream &levelStr,Timer &timer,
+                              IPhysicalManagerP);
+
+  virtual void setup_world(WorldP,LocatorP,const DifficultyLevel &);
+  virtual void new_level(int level,WorldP world,LocatorP locator,
+                         const DifficultyLevel &dLevel,
+                         ostrstream &lStr,ostrstream &lTitleStr,
+                         IPhysicalManagerP manager,int humansNum);
+
+  virtual void filter_weapons_and_other_items(LocatorP,int &weaponsNum,
+                                              const PhysicalContext *weapons[],
+                                              int &oItemsNum,
+                                              const PhysicalContext *oItems[]);
+
+  virtual Boolean award_bonus();
+  /* EFFECTS: Return True. */
+};
+
+
+
+// A horde of shambling Zombies in a big graveyard.
+class Graveyard : public Scenario {
+public:
+  Graveyard();
+
+  virtual ScenarioType get_scenario_type() {return GRAVEYARD;}
+
+  virtual SoundName get_midisoundtrack(){return SoundNames::SWEETDARK_SOUNDTRACK;}
+
+  virtual int new_level_check(int enemiesPlaying,WorldP,LocatorP,
+                              int level,Boolean &lStrChanged,ostrstream &levelStr,Timer &timer,
+                              IPhysicalManagerP);
+
+  virtual void setup_world(WorldP,LocatorP,const DifficultyLevel &);
+  virtual void new_level(int level,WorldP world,LocatorP locator,
+                         const DifficultyLevel &dLevel,
+                         ostrstream &lStr,ostrstream &lTitleStr,
+                         IPhysicalManagerP manager,int humansNum);
+
+  virtual void filter_weapons_and_other_items(LocatorP,int &weaponsNum,
+                                              const PhysicalContext *weapons[],
+                                              int &oItemsNum,
+                                              const PhysicalContext *oItems[]);
+};
+
+
+
+// Like Hive, but denser.  Find the exit while Huggers and Aliens swarm.
+class HuggerNest : public Scenario {
+public:
+  HuggerNest();
+
+  virtual ScenarioType get_scenario_type() {return HUGGER_NEST;}
+
+  virtual SoundName get_midisoundtrack(){return SoundNames::HIVE_SOUNDTRACK;}
+
+  virtual int new_level_check(int enemiesPlaying,WorldP,LocatorP,
+                              int level,Boolean &lStrChanged,ostrstream &levelStr,Timer &timer,
+                              IPhysicalManagerP);
+
+  virtual Boolean award_bonus();
+  /* EFFECTS: Return True. */
+
+  virtual void setup_world(WorldP,LocatorP,const DifficultyLevel &);
+  virtual void new_level(int level,WorldP world,LocatorP locator,
+                         const DifficultyLevel &dLevel,
+                         ostrstream &lStr,ostrstream &lTitleStr,
+                         IPhysicalManagerP manager,int humansNum);
+
+  virtual void refill_enemies(Boolean enemiesRefill,WorldP,LocatorP,IPhysicalManagerP);
+
+
+private:
+  Id xitId;
+};
+
+
+
+// A mixed pack of Mutts and Dogs in a junkyard.
+class Junkyard : public Scenario {
+public:
+  Junkyard();
+
+  virtual ScenarioType get_scenario_type() {return JUNKYARD;}
+
+  virtual SoundName get_midisoundtrack(){return SoundNames::ZEEPEEG_SOUNDTRACK;}
+
+  virtual int new_level_check(int enemiesPlaying,WorldP,LocatorP,
+                              int level,Boolean &lStrChanged,ostrstream &levelStr,Timer &timer,
+                              IPhysicalManagerP);
+
+  virtual void setup_world(WorldP,LocatorP,const DifficultyLevel &);
+  virtual void new_level(int level,WorldP world,LocatorP locator,
+                         const DifficultyLevel &dLevel,
+                         ostrstream &lStr,ostrstream &lTitleStr,
+                         IPhysicalManagerP manager,int humansNum);
+};
+
+
+
 GameStyle::GameStyle() {
 }
 
@@ -700,7 +828,13 @@ GameStyle *GameStyle::by_type(GameStyleType type) {
     case SCENARIOS:
       ret = new Scenarios();
       break;
-  }      
+    case SURVIVAL:
+      ret = new Survival();
+      break;
+    case BOSS_RUSH:
+      ret = new BossRush();
+      break;
+  }
   assert(ret);
 
   return ret;
@@ -1813,6 +1947,18 @@ void Scenarios::choose_scenario() {
 	  else if (!(strcmp("chicken-little",override))) {
       scenario = new LookOut();
     }
+	  else if (!(strcmp("yeti",override))) {
+      scenario = new KillTheYeti();
+    }
+	  else if (!(strcmp("graveyard",override))) {
+      scenario = new Graveyard();
+    }
+	  else if (!(strcmp("hugger-nest",override))) {
+      scenario = new HuggerNest();
+    }
+	  else if (!(strcmp("junkyard",override))) {
+      scenario = new Junkyard();
+    }
   }
 
   // We chose one from the override, so we are done.
@@ -1822,7 +1968,7 @@ void Scenarios::choose_scenario() {
 
   // Keep trying until we choose one that isn't the same as the last one.
   while (True) {
-    switch (Utils::choose(12)) {
+    switch (Utils::choose(16)) {
       case 0:
         scenario = new Bonus();
         break;
@@ -1858,6 +2004,18 @@ void Scenarios::choose_scenario() {
         break;
       case 11:
         scenario = new LookOut();
+        break;
+      case 12:
+        scenario = new KillTheYeti();
+        break;
+      case 13:
+        scenario = new Graveyard();
+        break;
+      case 14:
+        scenario = new HuggerNest();
+        break;
+      case 15:
+        scenario = new Junkyard();
         break;
       default:
         assert(0);
@@ -3220,4 +3378,528 @@ void LookOut::create_heavy(WorldP w,LocatorP l) {
 
   // Move to next spot.
   weightNext = (weightNext + 1) % WEIGHTS_MAX;
+}
+
+
+
+KillTheYeti::KillTheYeti() {
+}
+
+
+
+int KillTheYeti::new_level_check(int enemiesPlaying,WorldP,LocatorP locator,
+                                 int,Boolean &,ostrstream &,Timer &,
+                                 IPhysicalManagerP) {
+  if (enemiesPlaying == 0) {
+    locator->arena_message_enq(Utils::strdup("The Yetis have melted"));
+    return 1;
+  }
+  return -1;
+}
+
+
+
+void KillTheYeti::setup_world(WorldP world,LocatorP,const DifficultyLevel &) {
+  Rooms rooms(2,3);
+  world->set_rooms_next(rooms);
+}
+
+
+
+void KillTheYeti::new_level(int level,WorldP,LocatorP locator,
+                            const DifficultyLevel &,
+                            ostrstream &lStr,ostrstream &lTitleStr,
+                            IPhysicalManagerP manager,int) {
+  // All Yetis on one team, against everyone else.
+  locator->add_team(Scenarios::class_team,(void*)A_Yeti,NULL);
+
+  for (int n = 0; n < SCENARIO_YETI_YETIS; n++) {
+    manager->create_enemy(manager->enemy_physical(A_Yeti));
+  }
+
+  lTitleStr << "[" << level << "] Melt the Yetis" << ends;
+  lStr << "[" << level << "] Melt the Yetis" << ends;
+}
+
+
+
+void KillTheYeti::filter_weapons_and_other_items(LocatorP locator,
+                                                 int &weaponsNum,
+                                                 const PhysicalContext *weapons[],
+                                                 int &,
+                                                 const PhysicalContext *[]) {
+  // Yetis are heat-Sensitive, so only fire weapons spawn.
+  weapons[0] = locator->get_context(A_FThrower);
+  weapons[1] = locator->get_context(A_Napalms);
+  weapons[2] = locator->get_context(A_MGun);
+  weaponsNum = 3;
+  assert(weapons[0] && weapons[1] && weapons[2]);
+
+  // Leave items alone.
+}
+
+
+
+Boolean KillTheYeti::award_bonus() {
+  return True;
+}
+
+
+
+Graveyard::Graveyard() {
+}
+
+
+
+int Graveyard::new_level_check(int enemiesPlaying,WorldP,LocatorP locator,
+                               int,Boolean &,ostrstream &,Timer &,
+                               IPhysicalManagerP) {
+  if (enemiesPlaying == 0) {
+    locator->arena_message_enq(Utils::strdup("The dead rest quiet"));
+    return 1;
+  }
+  return -1;
+}
+
+
+
+void Graveyard::setup_world(WorldP world,LocatorP,const DifficultyLevel &) {
+  Rooms rooms(3,4);
+  world->set_rooms_next(rooms);
+}
+
+
+
+void Graveyard::new_level(int level,WorldP,LocatorP locator,
+                          const DifficultyLevel &,
+                          ostrstream &lStr,ostrstream &lTitleStr,
+                          IPhysicalManagerP manager,int) {
+  // All Zombies on one team, against everyone else.
+  locator->add_team(Scenarios::class_team,(void*)A_Zombie,NULL);
+
+  for (int n = 0; n < SCENARIO_GRAVEYARD_ZOMBIES; n++) {
+    manager->create_enemy(manager->enemy_physical(A_Zombie));
+  }
+
+  lTitleStr << "[" << level << "] The Graveyard Shift" << ends;
+  lStr << "[" << level << "] The Graveyard Shift" << ends;
+}
+
+
+
+void Graveyard::filter_weapons_and_other_items(LocatorP locator,
+                                               int &weaponsNum,
+                                               const PhysicalContext *weapons[],
+                                               int &,
+                                               const PhysicalContext *[]) {
+  // Close-quarters graveyard tools.
+  weapons[0] = locator->get_context(A_Chainsaw);
+  weapons[1] = locator->get_context(A_Pistol);
+  weapons[2] = locator->get_context(A_Shotgun);
+  weaponsNum = 3;
+  assert(weapons[0] && weapons[1] && weapons[2]);
+
+  // Leave items alone.
+}
+
+
+
+HuggerNest::HuggerNest() {
+}
+
+
+
+int HuggerNest::new_level_check(int,WorldP,LocatorP locator,
+                                int,Boolean &,ostrstream &,Timer &,
+                                IPhysicalManagerP) {
+  PhysicalP xit = locator->lookup(xitId);
+  assert(xit); // The Xit should never be destroyed.
+  if (((TouchableP)xit)->wasTouched()) {
+    return 0;
+  }
+  return -1;
+}
+
+
+
+Boolean HuggerNest::award_bonus() {
+  return True;
+}
+
+
+
+void HuggerNest::setup_world(WorldP world,LocatorP,const DifficultyLevel &) {
+  Rooms rooms(4,4);
+  world->set_rooms_next(rooms);
+}
+
+
+
+void HuggerNest::new_level(int level,WorldP world,LocatorP locator,
+                           const DifficultyLevel &,
+                           ostrstream &lStr,ostrstream &lTitleStr,
+                           IPhysicalManagerP manager,int) {
+  // Aliens are created in refill_enemies().
+
+  // Reuse Hive's team so Aliens and Huggers are friends.
+  locator->add_team(Hive::aliens_team,NULL,NULL);
+
+  // Create the Xit.
+  Pos pos = world->empty_accessible_rect(Xit::get_size_max());
+  PhysicalP p = new Xit(world,locator,pos);
+  assert(p);
+  locator->add(p);
+  xitId = p->get_id();
+
+  // Create a dense clutch of eggs.
+  IntelOptions eggOptions;
+  ITmask eggMask = manager->intel_options_for(eggOptions,A_Alien);
+
+  for (int n = 0; n < SCENARIO_HUGGER_NEST_EGGS; n++) {
+    Pos pos = world->empty_rect(Egg::get_size_max());
+    PhysicalP egg = new Egg(world,locator,pos,eggOptions,eggMask);
+    assert(egg);
+    locator->add(egg);
+  }
+
+  lTitleStr << "[" << level << "] The Nest" << ends;
+  lStr << "[" << level << "] The Nest.\nFind the exit." << ends;
+}
+
+
+
+void HuggerNest::refill_enemies(Boolean,WorldP,LocatorP locator,IPhysicalManagerP manager) {
+  int diff = SCENARIO_HUGGER_NEST_ALIENS - locator->enemies_alive();
+
+  // diff might be less than zero if some RedHuggers have come into existence.
+  //assert(diff >= 0);
+
+  for (int n = 0; n < diff; n++) {
+    manager->create_enemy(manager->enemy_physical(A_Alien));
+  }
+}
+
+
+
+Junkyard::Junkyard() {
+}
+
+
+
+int Junkyard::new_level_check(int enemiesPlaying,WorldP,LocatorP locator,
+                              int,Boolean &,ostrstream &,Timer &,
+                              IPhysicalManagerP) {
+  if (enemiesPlaying == 0) {
+    locator->arena_message_enq(Utils::strdup("The pack is silenced"));
+    return 1;
+  }
+  return -1;
+}
+
+
+
+void Junkyard::setup_world(WorldP world,LocatorP,const DifficultyLevel &) {
+  Rooms rooms(2,3);
+  world->set_rooms_next(rooms);
+}
+
+
+
+void Junkyard::new_level(int level,WorldP,LocatorP locator,
+                         const DifficultyLevel &,
+                         ostrstream &lStr,ostrstream &lTitleStr,
+                         IPhysicalManagerP manager,int) {
+  // Mutts and Dogs are each their own class team.
+  locator->add_team(Scenarios::class_team,(void*)A_Mutt,NULL);
+  locator->add_team(Scenarios::class_team,(void*)A_Dog,NULL);
+
+  for (int n = 0; n < SCENARIO_JUNKYARD_MUTTS; n++) {
+    manager->create_enemy(manager->enemy_physical(A_Mutt));
+  }
+  for (int n = 0; n < SCENARIO_JUNKYARD_DOGS; n++) {
+    manager->create_enemy(manager->enemy_physical(A_Dog));
+  }
+
+  lTitleStr << "[" << level << "] Junkyard Dogs" << ends;
+  lStr << "[" << level << "] Junkyard Dogs" << ends;
+}
+
+
+
+////////////////////////// Survival ////////////////////////////////////
+
+
+Survival::Survival() {
+}
+
+
+
+GameStyleP Survival::clone() {
+  GameStyleP ret = new Survival();
+  assert(ret);
+  return ret;
+}
+
+
+
+void Survival::describe(ostrstream &str) {
+  str << "Endless waves of enemies, each larger than the last." << "\n"
+      << "Clear each wave to advance.  Every fifth wave brings a boss."
+      << ends;
+}
+
+
+
+GameStyleType Survival::get_type() {
+  return SURVIVAL;
+}
+
+
+
+Boolean Survival::class_friends() {
+  // Machines brawl each other too -- survival chaos.
+  return False;
+}
+
+
+
+int Survival::human_initial_lives() {
+  return SURVIVAL_LIVES;
+}
+
+
+
+void Survival::reset(WorldP,LocatorP,const DifficultyLevel &,int) {
+  // Wave number is derived from the level counter, nothing to cache.
+}
+
+
+
+int Survival::new_level_check(int enemiesPlaying,WorldP,LocatorP locator,
+                              int,Boolean &,ostrstream &,Timer &,
+                              IPhysicalManagerP) {
+  // Clearing the wave is the objective.
+  if (enemiesPlaying == 0) {
+    locator->arena_message_enq(Utils::strdup("Wave cleared"));
+    return 1;
+  }
+  return -1;
+}
+
+
+
+void Survival::new_level(int level,WorldP world,LocatorP locator,
+                         const DifficultyLevel &,
+                         ostrstream &lStr,ostrstream &lTitleStr,
+                         IPhysicalManagerP manager,int) {
+  world->reset();
+
+  clean_physicals(False,world,locator,manager);
+
+  // Wave N (level) spawns SURVIVAL_WAVE_BASE + SURVIVAL_WAVE_INCR*(N-1)
+  // random enemies, capped at SURVIVAL_WAVE_MAX.
+  int wave = level;
+  int enemiesNum = SURVIVAL_WAVE_BASE + SURVIVAL_WAVE_INCR * (wave - 1);
+  enemiesNum = Utils::minimum(enemiesNum,SURVIVAL_WAVE_MAX);
+  for (int m = 0; m < enemiesNum; m++) {
+    manager->create_enemy(NULL);
+  }
+
+  // Every fifth wave adds a FireDemon mini-boss.
+  int machines = enemiesNum;
+  if (wave % SURVIVAL_BOSS_FREQUENCY == 0) {
+    manager->create_enemy(manager->enemy_physical(A_FireDemon));
+    machines++;
+  }
+
+  lTitleStr << "Wave " << wave << " - " << machines << " machines" << ends;
+  lStr << "Wave " << wave << " - " << machines << " machines" << ends;
+}
+
+
+
+void Survival::new_level_set_timer(Timer &)
+{}
+
+
+
+void Survival::refill_enemies(Boolean,WorldP,LocatorP,IPhysicalManagerP) {
+  // No refill -- clearing the wave is the objective.
+}
+
+
+
+////////////////////////// BossRush ////////////////////////////////////
+
+
+BossRush::BossRush() {
+  scenario = NULL;
+}
+
+
+
+BossRush::~BossRush() {
+  delete scenario;
+}
+
+
+
+GameStyleP BossRush::clone() {
+  GameStyleP ret = new BossRush();
+  assert(ret);
+  return ret;
+}
+
+
+
+void BossRush::describe(ostrstream &str) {
+  str << "Face XEvil's bosses one after another." << "\n"
+      << "Defeat each boss to summon the next." << ends;
+}
+
+
+
+GameStyleType BossRush::get_type() {
+  return BOSS_RUSH;
+}
+
+
+
+Boolean BossRush::class_friends() {
+  if (scenario) {
+    return scenario->class_friends();
+  }
+  return True;
+}
+
+
+
+int BossRush::human_initial_lives() {
+  return BOSS_RUSH_LIVES;
+}
+
+
+
+void BossRush::set_human_data(HumanP h,WorldP w,LocatorP l) {
+  assert(scenario);
+  scenario->set_human_data(h,w,l);
+}
+
+
+
+Pos BossRush::human_initial_pos(WorldP w,LocatorP l,const Size &s) {
+  assert(scenario);
+  return scenario->human_initial_pos(w,l,s);
+}
+
+
+
+Boolean BossRush::can_refill_game_objects() {
+  assert(scenario);
+  return scenario->can_refill_game_objects();
+}
+
+
+
+void BossRush::reset(WorldP,LocatorP,const DifficultyLevel &,int) {
+  delete scenario;
+  scenario = NULL;
+}
+
+
+
+int BossRush::new_level_check(int enemiesPlaying,WorldP w,LocatorP l,
+                              int level,Boolean &lStrChanged,
+                              ostrstream &levelStr,Timer &timer,
+                              IPhysicalManagerP manager) {
+  assert(scenario);
+  return scenario->new_level_check(enemiesPlaying,w,l,level,
+                                   lStrChanged,levelStr,timer,manager);
+}
+
+
+
+Boolean BossRush::advance_level() {
+  if (scenario) {
+    return scenario->advance_level();
+  }
+  // For first time.
+  return True;
+}
+
+
+
+Boolean BossRush::award_bonus() {
+  if (scenario) {
+    return scenario->award_bonus();
+  }
+  // For first time.
+  return False;
+}
+
+
+
+void BossRush::new_level(int level,WorldP world,LocatorP locator,
+                         const DifficultyLevel &dLevel,
+                         ostrstream &lStr,ostrstream &lTitleStr,
+                         IPhysicalManagerP manager,int humansNum) {
+  // Cycle through the boss scenarios by level number.
+  delete scenario;
+  scenario = NULL;
+  switch (level % 3) {
+    case 1:
+      scenario = new KillTheFireDemon();
+      break;
+    case 2:
+      scenario = new KillTheDragon();
+      break;
+    case 0:
+      scenario = new KillTheYeti();
+      break;
+  }
+  assert(scenario);
+
+  scenario->setup_world(world,locator,dLevel);
+
+  world->reset();
+
+  clean_physicals(False,world,locator,manager);
+
+  scenario->new_level(level,world,locator,dLevel,
+                      lStr,lTitleStr,manager,humansNum);
+}
+
+
+
+void BossRush::new_level_set_timer(Timer &timer) {
+  assert(scenario);
+  scenario->new_level_set_timer(timer);
+}
+
+
+
+void BossRush::refill_enemies(Boolean eRefill,WorldP w,LocatorP l,
+                              IPhysicalManagerP manager) {
+  assert(scenario);
+  scenario->refill_enemies(eRefill,w,l,manager);
+}
+
+
+
+unsigned int BossRush::get_soundtrack() {
+  // Needs to work before first new level.
+  if (scenario) {
+    return scenario->get_soundtrack();
+  }
+  return GameStyle::get_soundtrack();
+}
+
+
+
+SoundName BossRush::get_midisoundtrack() {
+  // Needs to work before first new level.
+  if (scenario) {
+    return scenario->get_midisoundtrack();
+  }
+  return GameStyle::get_midisoundtrack();
 }

@@ -33,12 +33,13 @@
 #include "xetp_basic.h"
 
 
-char *XETPBasic::versionStr = "XETP1.0X";
+char *XETPBasic::versionStr = "XETP2.5X";
 // 0.10 released with special RedHat version
 // 0.12 for 2.0b5
 // 0.15 for 2.0b6
 // 0.16 for 2.0b7
 // 1.00 for 2.0, 2.01, 2.02
+// 2.5X for 2.5 (new ClassIds + SoundNames change the wire content this wave)
 
 
 

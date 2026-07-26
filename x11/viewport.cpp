@@ -76,8 +76,11 @@ using namespace std;
 #define DUEL_LINE_LENGTH 4
 #define EXTENDED_LINE_LENGTH 13
 #define TRAINING_LINE_LENGTH 8
+#define SURVIVAL_LINE_LENGTH 8
+#define BOSS_RUSH_LINE_LENGTH 9
 #define QUANTA_LINE_LENGTH 13
 #define COOPERATIVE_LINE_LENGTH 11
+#define SOUND_LINE_LENGTH 5
 #define HELP_LINE_LENGTH 4
 
 
@@ -947,11 +950,13 @@ Viewport::Viewport(int arg_c,char** arg_v,
     assert(p);
     // Certain menu items must enforce radio-button behavior.
     if (n == menuScenarios ||
-        n == menuLevels || 
+        n == menuLevels ||
         n == menuKill ||
         n == menuDuel ||
         n == menuExtended ||
-        n == menuTraining) {
+        n == menuTraining ||
+        n == menuSurvival ||
+        n == menuBossRush) {
       p->radio = True;
     }
     else {
@@ -1100,6 +1105,8 @@ void Viewport::set_style_and_role_type(GameStyleType style,RoleType roleType) {
   ((TogglePanel *)menus[menuDuel])->set_value(style == DUEL);
   ((TogglePanel *)menus[menuExtended])->set_value(style == EXTENDED);
   ((TogglePanel *)menus[menuTraining])->set_value(style == TRAINING);
+  ((TogglePanel *)menus[menuSurvival])->set_value(style == SURVIVAL);
+  ((TogglePanel *)menus[menuBossRush])->set_value(style == BOSS_RUSH);
 
   // EnemiesNum
   menus[menuEnemiesNum]->
@@ -1119,6 +1126,8 @@ void Viewport::set_style_and_role_type(GameStyleType style,RoleType roleType) {
   menus[menuDuel]->set_sensitive(enabled);
   menus[menuExtended]->set_sensitive(enabled);
   menus[menuTraining]->set_sensitive(enabled);
+  menus[menuSurvival]->set_sensitive(enabled);
+  menus[menuBossRush]->set_sensitive(enabled);
   
   // HumansNum
   menus[menuHumansNum]->set_sensitive(Role::uses_humans_num(roleType));
@@ -1142,6 +1151,32 @@ void Viewport::set_quanta(Quanta quanta) {
 void Viewport::set_cooperative(Boolean val) {
   assert(menusNum > menuCooperative);
   ((TogglePanel *)menus[menuCooperative])->set_value(val);
+}
+
+
+
+void Viewport::set_menu_sound(Boolean val) {
+  // Only the primary viewport has the Sound toggle.
+  if (menusNum > menuSound) {
+    ((TogglePanel *)menus[menuSound])->set_value(val);
+  }
+}
+
+
+
+void Viewport::pause_message(Boolean on) {
+  if (on) {
+    // Freeze the current frame with a centered message.  Regular drawing is
+    // suspended while paused (Ui::pre_clock returns early), so draw once now.
+    set_arena_message("PAUSED -- any key resumes",UI_ARENA_MESSAGE_TIME);
+    draw();
+  }
+  else {
+    // Clear the pause message so it doesn't linger after resuming.
+    Utils::freeif(arenaMessage);
+    arenaMessage = NULL;
+    redrawArena = True;
+  }
 }
 
 
@@ -1793,13 +1828,13 @@ void Viewport::create_toplevel() {
   const char* title = NULL;
   switch (roleType) {
   case R_STAND_ALONE:
-    title = "XEvil";
+    title = "XEvil 2.5";
     break;
   case R_CLIENT:
-    title = "XEvil [Client]";
+    title = "XEvil 2.5 [Client]";
     break;
   case R_SERVER:
-    title = "XEvil [Server]";
+    title = "XEvil 2.5 [Server]";
     break;
   default:
     assert(0);
@@ -1904,13 +1939,19 @@ void Viewport::create_menus() {
   Size duelUnit = TogglePanel::get_unit(xvars.font[dpyNum],DUEL_LINE_LENGTH);
   Size extendedUnit = 
     TogglePanel::get_unit(xvars.font[dpyNum],EXTENDED_LINE_LENGTH);
-  Size trainingUnit = 
+  Size trainingUnit =
     TogglePanel::get_unit(xvars.font[dpyNum],TRAINING_LINE_LENGTH);
-  Size quantaUnit = 
+  Size survivalUnit =
+    TogglePanel::get_unit(xvars.font[dpyNum],SURVIVAL_LINE_LENGTH);
+  Size bossRushUnit =
+    TogglePanel::get_unit(xvars.font[dpyNum],BOSS_RUSH_LINE_LENGTH);
+  Size quantaUnit =
     WritePanel::get_unit(xvars.font[dpyNum],QUANTA_LINE_LENGTH);
-  Size cooperativeUnit = 
+  Size cooperativeUnit =
     WritePanel::get_unit(xvars.font[dpyNum],COOPERATIVE_LINE_LENGTH);
-  Size helpUnit = 
+  Size soundUnit =
+    TogglePanel::get_unit(xvars.font[dpyNum],SOUND_LINE_LENGTH);
+  Size helpUnit =
     TextPanel::get_unit(xvars.font[dpyNum],HELP_LINE_LENGTH);
 
 
@@ -2001,7 +2042,7 @@ void Viewport::create_menus() {
   
   // speed now in first row.
   if (menusNum == VW_MENUS_PRIMARY_NUM) {
-    p = menus[menuQuanta] = 
+    p = menus[menuQuanta] =
       new WritePanel(dpyNum,xvars,toplevel,
                      pos,quantaUnit,
                      Viewport::panel_callback,panelClosures.get(menuQuanta),
@@ -2009,6 +2050,16 @@ void Viewport::create_menus() {
     assert(p);
     p->set_background(menuBg,False);
     pos.x += quantaUnit.width;
+
+    // Sound on/off toggle.
+    p = menus[menuSound] =
+      new TogglePanel(dpyNum,xvars,toplevel,
+                      pos,soundUnit,
+                      Viewport::panel_callback,panelClosures.get(menuSound),
+                      "Sound");
+    assert(p);
+    p->set_background(menuBg,False);
+    pos.x += soundUnit.width;
   }
 
   
@@ -2079,7 +2130,7 @@ void Viewport::create_menus() {
     pos.x += extendedUnit.width;
     
     // Training game style.
-    p = menus[menuTraining] = 
+    p = menus[menuTraining] =
       new TogglePanel(dpyNum,xvars,toplevel,
                       pos,trainingUnit,
                       Viewport::panel_callback,
@@ -2088,7 +2139,29 @@ void Viewport::create_menus() {
     assert(p);
     p->set_background(menuBg,False);
     pos.x += trainingUnit.width;
-    
+
+    // Survival game style.
+    p = menus[menuSurvival] =
+      new TogglePanel(dpyNum,xvars,toplevel,
+                      pos,survivalUnit,
+                      Viewport::panel_callback,
+                      panelClosures.get(menuSurvival),
+                      "Survival");
+    assert(p);
+    p->set_background(menuBg,False);
+    pos.x += survivalUnit.width;
+
+    // Boss Rush game style.
+    p = menus[menuBossRush] =
+      new TogglePanel(dpyNum,xvars,toplevel,
+                      pos,bossRushUnit,
+                      Viewport::panel_callback,
+                      panelClosures.get(menuBossRush),
+                      "Boss Rush");
+    assert(p);
+    p->set_background(menuBg,False);
+    pos.x += bossRushUnit.width;
+
     // Cooperative mode.
     pos.x = viewportSize[dpyNum].width - cooperativeUnit.width 
       - helpUnit.width;

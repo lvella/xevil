@@ -77,6 +77,21 @@ using namespace std;
 // then become bored.
 #define BOREDOM_CYCLES 5
 
+// XEvil 2.5: difficulty-gated smart-AI tuning (see DifficultyLevel::smartness).
+// Representative shot speed (pixels/turn) used when leading a moving target.
+// Real shot speeds run ~10 (missile) to ~40 (lance/laser); the pistol/machine
+// gun Shell that most enemies fire is 13, so 13 is our stand-in.  The exact
+// value is not critical: aim is quantized to 8 directions and clamped by
+// SHOT_CUTOFF.
+#define SMART_SHOT_SPEED 13
+// Distance-weighting numerator for target selection; each candidate's weight
+// is SCALE/(1+dist), so a point-blank threat is chosen far more often than a
+// distant one.  Large enough for good resolution, small enough that the sum
+// over all candidates cannot overflow an int.
+#define SMART_DIST_WEIGHT_SCALE 100000
+// +- fuzz (pixels) applied when a smart enemy homes in on a human's position.
+#define HUNT_FUZZ 200
+
 
 
 // Don't change these defaults.
@@ -1018,9 +1033,25 @@ void Machine::clock(PhysicalP p) {
         choose_strategy(p);
       }
 
-      // Instead of just sitting there, go somewhere randomly.
+      // Instead of just sitting there, go somewhere.  Smart enemies hunt:
+      // they head for the nearest living human player (with some fuzz)
+      // rather than wandering aimlessly.  smartness 0 keeps the classic
+      // random wander, and everyone falls back to it when no human is alive.
       if (strategy == doNothing) {
-        if (strategy_to_random_pos(p)) {
+        Boolean strategySet = False;
+        if (Enemy::get_smartness() >= 1) {
+          Pos humanPos;
+          if (nearest_human_pos(p,humanPos)) {
+            humanPos.x += Utils::choose(2 * HUNT_FUZZ + 1) - HUNT_FUZZ;
+            humanPos.y += Utils::choose(2 * HUNT_FUZZ + 1) - HUNT_FUZZ;
+            set_toPos(humanPos);
+            strategySet = True;
+          }
+        }
+        if (!strategySet) {
+          strategySet = strategy_to_random_pos(p);
+        }
+        if (strategySet) {
           strategyChange.set(TO_POS_TIME);
         }
       }
@@ -1153,6 +1184,32 @@ Boolean Machine::strategy_to_random_pos(PhysicalP p) {
 
 
 
+Boolean Machine::nearest_human_pos(PhysicalP p,Pos &result) {
+  LocatorP locator = get_locator();
+  const Pos myMiddle = p->get_area().get_middle();
+  int humansNum = locator->humans_registered();
+  Boolean found = False;
+  int bestDist2 = 0;
+  for (int h = 0; h < humansNum; h++) {
+    HumanP human = locator->get_human(h);
+    if (human && human->alive()) {
+      PhysicalP body = locator->lookup(human->get_id());
+      if (body && body->is_creature()) {
+        Pos hisMiddle = body->get_area().get_middle();
+        int dist2 = myMiddle.distance_2(hisMiddle);
+        if (!found || dist2 < bestDist2) {
+          found = True;
+          bestDist2 = dist2;
+          result = hisMiddle;
+        }
+      }
+    }
+  }
+  return found;
+}
+
+
+
 // By default, try to kill others and get items.
 void Machine::choose_strategy(PhysicalP p) {
   LocatorP locator = get_locator();
@@ -1211,6 +1268,32 @@ Boolean Machine::filter_target(PhysicalP) {
 			
 
 
+// XEvil 2.5: line-of-sight test for smart enemies.  Steps from 'from' to 'to'
+// in WSQUARE increments and asks the world whether each intermediate point is
+// open, i.e. not a solid wall.  Ladders/doors/posters count as open, matching
+// the way shots fly through them (only walls stop a shot; see Shot::act /
+// World::open).  Returns True if nothing solid blocks the straight path.
+static Boolean line_of_sight_clear(WorldP world,const Pos &from,const Pos &to) {
+  int dist = from.distance(to);
+  int steps = dist / WSQUARE_WIDTH;
+  int dx = to.x - from.x;
+  int dy = to.y - from.y;
+  Size probeSize;
+  probeSize.set(1,1);
+  // Sample interior points only; the endpoints are the shooter and target.
+  for (int s = 1; s < steps; s++) {
+    Pos sample(from.x + (dx * s) / steps,
+               from.y + (dy * s) / steps);
+    Area probe(AR_RECT,sample,probeSize);
+    if (!world->open(probe)) {
+      return False;
+    }
+  }
+  return True;
+}
+
+
+
 Boolean Machine::attack_target(PhysicalP p,PhysicalP target) {
   // Fire a gun if available.
   HolderP holder = (HolderP)p->get_holder();
@@ -1225,7 +1308,17 @@ Boolean Machine::attack_target(PhysicalP p,PhysicalP target) {
         Pos pos = area.get_middle();
         const Area &targetArea = target->get_area();
         Pos targetPos = targetArea.get_middle();
-        
+        Pos targetMiddle = targetPos; // true position, for line-of-sight
+
+        // Smart enemies (bend-over) lead a moving target: aim where it's
+        // heading rather than where it is right now.
+        if (Enemy::get_smartness() >= 2) {
+          Vel targetVel = target->get_vel();
+          float lead = (float)pos.distance(targetPos) / (float)SMART_SHOT_SPEED;
+          targetPos.x += (int)(targetVel.dx * lead);
+          targetPos.y += (int)(targetVel.dy * lead);
+        }
+
         Size rel = targetPos - pos;
         Boolean distOk = True;
         
@@ -1240,8 +1333,12 @@ Boolean Machine::attack_target(PhysicalP p,PhysicalP target) {
           float z = rel.cross(unitVels[weaponDir]);
           
           if (fabs(z) <= SHOT_CUTOFF) {
-            p->set_command(dir_to_command_weapon(weaponDir));
-            return True;
+            // Smart enemies don't fire through walls.
+            if (Enemy::get_smartness() < 1 ||
+                line_of_sight_clear(p->get_intel()->get_world(),pos,targetMiddle)) {
+              p->set_command(dir_to_command_weapon(weaponDir));
+              return True;
+            }
           }
         }
       }
@@ -1282,15 +1379,28 @@ Boolean Machine::attack_target(PhysicalP p,PhysicalP target) {
         Pos pos = area.get_middle();
         const Area &targetArea = target->get_area();
         Pos targetPos = targetArea.get_middle();
-      
+        Pos targetMiddle = targetPos; // true position, for line-of-sight
+
+        // Smart enemies (bend-over) lead a moving target.
+        if (Enemy::get_smartness() >= 2) {
+          Vel targetVel = target->get_vel();
+          float lead = (float)pos.distance(targetPos) / (float)SMART_SHOT_SPEED;
+          targetPos.x += (int)(targetVel.dx * lead);
+          targetPos.y += (int)(targetVel.dy * lead);
+        }
+
         Size rel = targetPos - pos;
         Dir weaponDir = rel.get_dir();
         const Vel *unitVels = p->get_unit_vels();
         float z = rel.cross(unitVels[weaponDir]);
       
         if (fabs(z) <= SHOT_CUTOFF) {
-          p->set_command(dir_to_command_weapon(weaponDir));
-          return True;
+          // Smart enemies don't fire through walls.
+          if (Enemy::get_smartness() < 1 ||
+              line_of_sight_clear(p->get_intel()->get_world(),pos,targetMiddle)) {
+            p->set_command(dir_to_command_weapon(weaponDir));
+            return True;
+          }
         }
       }
     }
@@ -1756,7 +1866,24 @@ PhysicalP Machine::choose_target(Boolean &isEnemy,PhysicalP p,
   } // for
   
   if (enemiesNum) {
-    PhysicalP target = enemies[Utils::choose(enemiesNum)];
+    int pick;
+    // Smart enemies (hard+) prefer closer targets instead of picking a
+    // target uniformly at random.  Weight is ~ 1/(1+dist), so a point-blank
+    // threat is chosen far more often than a distant one.  smartness 0 keeps
+    // the classic uniform-random pick.  Item picks (below) stay uniform.
+    if (Enemy::get_smartness() >= 1) {
+      const Pos myMiddle = p->get_area().get_middle();
+      int weights[OL_NEARBY_MAX];
+      for (int e = 0; e < enemiesNum; e++) {
+        int dist = myMiddle.distance(enemies[e]->get_area().get_middle());
+        weights[e] = SMART_DIST_WEIGHT_SCALE / (1 + dist);
+      }
+      pick = Utils::weighted_choose(enemiesNum,weights);
+    }
+    else {
+      pick = Utils::choose(enemiesNum);
+    }
+    PhysicalP target = enemies[pick];
     isEnemy = True;
     return target;
   }
@@ -1909,6 +2036,10 @@ int Enemy::_get_reflexes_time()
 
 
 int Enemy::reflexesTime = DEFAULT_REFLEXES_TIME;
+
+
+
+int Enemy::smartness = 0;
 
 
 

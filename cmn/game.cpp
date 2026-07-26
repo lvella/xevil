@@ -75,9 +75,10 @@ extern "C" {
 using namespace std;
 
 // Defines
-#define VERSION "2.1 Beta 1"
+#define VERSION "2.5"
 // 2.0 Beta 4B is the RedHat Linux version.
 // 2.02 is GPL
+// 2.5 is the modernized Linux release (sound engine, QoL, new styles).
 
 #ifdef XEVIL_KEYSET
 #define KEYSET_DEFAULT XEVIL_KEYSET
@@ -357,11 +358,11 @@ char *Game::intelNames[Game::INTEL_NAMES_NUM] = {
 
 
 DifficultyLevel Game::difficultyLevels[DIFFICULTY_LEVELS_NUM] = {
-  /* reflexes, enemiesInitial, enemiesIncr, enemiesMax, rankMultiplier, name */
-  {  40,       2,              1,           10,         0.5f,           "trivial" },
-  {  6,        3,              2,           50,         1.0f,           "normal" },
-  {  4,        5,              5,           50,         1.5f,           "hard" },
-  {  0,        20,             10,          1000000,    2.0f,           "bend-over" },
+  /* reflexes, smartness, enemiesInitial, enemiesIncr, enemiesMax, rankMultiplier, name */
+  {  40,       0,         2,              1,           10,         0.5f,           "trivial" },
+  {  6,        0,         3,              2,           50,         1.0f,           "normal" },
+  {  4,        1,         5,              5,           50,         1.5f,           "hard" },
+  {  0,        2,         20,             10,          1000000,    2.0f,           "bend-over" },
 };
 
 
@@ -822,6 +823,7 @@ Game::Game(int *arg_c,char **arg_v)
 #endif
 
   Enemy::set_reflexes_time(difficultyLevels[difficulty].reflexes);
+  Enemy::set_smartness(difficultyLevels[difficulty].smartness);
 
   quitGame = False;
   currentSoundName = 0;
@@ -884,6 +886,11 @@ Game::Game(int *arg_c,char **arg_v)
   role = NULL;
 
   daemon = NULL;
+
+#if X11
+  // Load persisted settings BEFORE parse_args so command-line flags win.
+  config_load();
+#endif
 
 //------------------------------ PARSE_ARGS ------------------------------
   parse_args(argc,argv);
@@ -964,9 +971,14 @@ Game::Game(int *arg_c,char **arg_v)
     ui->set_enemies_num(enemiesNumNext);
     ui->set_enemies_refill(enemiesRefillNext);
     ui->set_cooperative(cooperativeNext);
-    ui->set_quanta(quanta);    
+    ui->set_quanta(quanta);
     ui->set_difficulty(difficultyNext);
 
+#if X11
+    // Sync the menu-bar "Sound" toggle with the initial sound state (from the
+    // config file and/or -no_sound).
+    ui->set_sound_onoff(soundManager.isSoundOn());
+#endif
 #if WIN32
     ui->set_role_type(role->get_type());
     ui->set_musictype(musictype);
@@ -1063,7 +1075,12 @@ Game::Game(int *arg_c,char **arg_v)
 
   levelTitleStored = NULL;
 
-  start_soundtrack();
+  // Only start the soundtrack if sound is actually on (it may have been turned
+  // off by -no_sound or a persisted config setting); on X11 the music path is
+  // gated by explicit start/stop rather than the on/off toggle.
+  if (soundManager.isSoundOn()) {
+    start_soundtrack();
+  }
 }
 
 
@@ -1429,6 +1446,10 @@ void Game::ui_settings_check(RestartEnd &restartEnd) {
     
     if (mask & UIquit) {
       print_stats();
+#if X11
+      // Persist settings on a normal quit.
+      config_save();
+#endif
       // main quits the game before next clock
       quit();
     }
@@ -1889,6 +1910,286 @@ char *Game::choose_ranking(int rawKills) {
 
 
 
+#if X11
+// --------------------- Config file / High scores (X11) ------------------- //
+
+// Line 1 of ~/.xevilrc.  Kept exactly so that pre-2.5 builds still recognize
+// the file.  The v2 settings follow as "key=value" lines.
+#define XEVIL_RC_MARKER "XEvil is your friend.  Trust XEvil."
+#define XEVIL_SCORES_MAX 10
+
+
+// Build "$HOME/<basename>" into out.  Returns False if HOME is unavailable.
+static Boolean xevil_home_path(char* out,int outLen,const char* basename) {
+  const char* home = getenv("HOME");
+  if (!home || !*home) {
+    return False;
+  }
+  const char* sep = (home[strlen(home) - 1] == '/') ? "" : "/";
+  snprintf(out,outLen,"%s%s%s",home,sep,basename);
+  return True;
+}
+
+
+
+struct XevilScore {
+  int kills;
+  char rank[64];
+  char name[64];
+  int style;
+  char date[24];
+};
+
+
+
+// Load up to XEVIL_SCORES_MAX entries from ~/.xevil_scores.  Returns the count.
+// A missing or corrupt file yields an empty (0-entry) table -- never crashes.
+static int xevil_scores_load(XevilScore scores[XEVIL_SCORES_MAX]) {
+  int count = 0;
+  char path[512];
+  if (!xevil_home_path(path,sizeof(path),".xevil_scores")) {
+    return 0;
+  }
+  FILE* fp = fopen(path,"r");
+  if (!fp) {
+    return 0;
+  }
+
+  char line[256];
+  while (count < XEVIL_SCORES_MAX && fgets(line,sizeof(line),fp)) {
+    // Strip trailing newline.
+    char* nl = strpbrk(line,"\r\n");
+    if (nl) {
+      *nl = '\0';
+    }
+
+    // Split on '|' into exactly 5 fields: kills|rank|name|style|date.
+    char* fields[5] = {NULL,NULL,NULL,NULL,NULL};
+    int nf = 0;
+    char* p = line;
+    fields[nf++] = p;
+    while (nf < 5 && (p = strchr(p,'|'))) {
+      *p = '\0';
+      p++;
+      fields[nf++] = p;
+    }
+    if (nf < 5) {
+      // Malformed line, skip it.
+      continue;
+    }
+
+    XevilScore& e = scores[count];
+    memset(&e,0,sizeof(e));
+    e.kills = atoi(fields[0]);
+    strncpy(e.rank,fields[1],sizeof(e.rank) - 1);
+    strncpy(e.name,fields[2],sizeof(e.name) - 1);
+    e.style = atoi(fields[3]);
+    strncpy(e.date,fields[4],sizeof(e.date) - 1);
+    count++;
+  }
+  fclose(fp);
+  return count;
+}
+
+
+
+static void xevil_scores_save(XevilScore scores[XEVIL_SCORES_MAX],int count) {
+  char path[512];
+  if (!xevil_home_path(path,sizeof(path),".xevil_scores")) {
+    return;
+  }
+  FILE* fp = fopen(path,"w");
+  if (!fp) {
+    return;
+  }
+  for (int i = 0; i < count; i++) {
+    fprintf(fp,"%d|%s|%s|%d|%s\n",
+            scores[i].kills,scores[i].rank,scores[i].name,
+            scores[i].style,scores[i].date);
+  }
+  fclose(fp);
+}
+
+
+
+int Game::high_score_record(int adjustedKills,const char* rankTitle,
+                            const char* playerName) {
+  XevilScore scores[XEVIL_SCORES_MAX];
+  int count = xevil_scores_load(scores);
+
+  // Find the insertion point (table is sorted descending by kills).
+  int pos = 0;
+  while (pos < count && scores[pos].kills >= adjustedKills) {
+    pos++;
+  }
+
+  // Didn't make the table.
+  if (pos >= XEVIL_SCORES_MAX) {
+    return 0;
+  }
+
+  // Build the new entry.
+  XevilScore e;
+  memset(&e,0,sizeof(e));
+  e.kills = adjustedKills;
+  strncpy(e.rank,rankTitle ? rankTitle : "",sizeof(e.rank) - 1);
+  strncpy(e.name,(playerName && *playerName) ? playerName : "Player",
+          sizeof(e.name) - 1);
+  e.style = style ? style->get_type() : 0;
+  time_t t = time(NULL);
+  struct tm* lt = localtime(&t);
+  if (lt) {
+    strftime(e.date,sizeof(e.date),"%Y-%m-%d",lt);
+  }
+  // '|' is our field separator; keep it out of free-text fields.
+  for (char* s = e.rank; *s; s++) {
+    if (*s == '|') *s = ' ';
+  }
+  for (char* s = e.name; *s; s++) {
+    if (*s == '|') *s = ' ';
+  }
+
+  // Shift lower entries down and insert.
+  int newCount = (count < XEVIL_SCORES_MAX) ? count + 1 : XEVIL_SCORES_MAX;
+  for (int i = newCount - 1; i > pos; i--) {
+    scores[i] = scores[i - 1];
+  }
+  scores[pos] = e;
+
+  xevil_scores_save(scores,newCount);
+  return pos + 1; // 1-based rank position.
+}
+
+
+
+int Game::high_score_best() {
+  XevilScore scores[XEVIL_SCORES_MAX];
+  int count = xevil_scores_load(scores);
+  int best = 0;
+  for (int i = 0; i < count; i++) {
+    if (scores[i].kills > best) {
+      best = scores[i].kills;
+    }
+  }
+  return best;
+}
+
+
+
+void Game::config_load() {
+  char path[512];
+  if (!xevil_home_path(path,sizeof(path),".xevilrc")) {
+    return;
+  }
+  FILE* fp = fopen(path,"r");
+  if (!fp) {
+    return; // No config yet, that's fine.
+  }
+
+  char line[256];
+  while (fgets(line,sizeof(line),fp)) {
+    // key=value lines only; the line-1 license marker (and blanks) have no '='.
+    char* eq = strchr(line,'=');
+    if (!eq) {
+      continue;
+    }
+    *eq = '\0';
+    char* key = line;
+    char* val = eq + 1;
+    char* nl = strpbrk(val,"\r\n");
+    if (nl) {
+      *nl = '\0';
+    }
+    int ival = atoi(val);
+
+    if (!strcmp(key,"difficulty")) {
+      if (ival >= 0 && ival < DIFFICULTY_LEVELS_NUM) {
+        difficulty = difficultyNext = ival;
+      }
+    }
+    else if (!strcmp(key,"style")) {
+      if (ival >= SCENARIOS && ival <= BOSS_RUSH) {
+        delete style;
+        style = GameStyle::by_type((GameStyleType)ival);
+      }
+    }
+    else if (!strcmp(key,"humansNum")) {
+      humansNumNext = ival;
+    }
+    else if (!strcmp(key,"enemiesNum")) {
+      enemiesNumNext = ival;
+    }
+    else if (!strcmp(key,"enemiesRefill")) {
+      enemiesRefillNext = ival ? True : False;
+    }
+    else if (!strcmp(key,"cooperative")) {
+      cooperativeNext = ival ? True : False;
+    }
+    else if (!strcmp(key,"quanta")) {
+      quanta = ival;
+    }
+    else if (!strcmp(key,"soundVolume")) {
+      soundManager.setEffectsVolume(ival);
+    }
+    else if (!strcmp(key,"musicVolume")) {
+      soundManager.setTrackVolume(ival);
+    }
+    else if (!strcmp(key,"soundOn")) {
+      soundManager.turnOnoff(ival ? True : False);
+    }
+    else if (!strcmp(key,"largeViewport")) {
+      Ui::set_large_viewport(ival ? True : False);
+    }
+    else if (!strcmp(key,"smoothScroll")) {
+      Ui::set_smooth_scroll(ival ? True : False);
+    }
+    // Unknown keys are silently ignored (forward compatibility).
+  }
+  fclose(fp);
+}
+
+
+
+void Game::config_save() {
+  char path[512];
+  if (!xevil_home_path(path,sizeof(path),".xevilrc")) {
+    return;
+  }
+  FILE* fp = fopen(path,"w");
+  if (!fp) {
+    return;
+  }
+
+  // Line 1: the legacy license marker, exactly as pre-2.5 builds expect.
+  fprintf(fp,"%s\n",XEVIL_RC_MARKER);
+
+  // v2 settings.  Prefer the user's "next game" selections where they differ
+  // from the currently-running values.
+  GameStyleType styleType =
+    styleNext ? styleNext->get_type() : (style ? style->get_type() : LEVELS);
+
+  // Only persist a chosen difficulty (don't force-skip the first-run prompt).
+  if (difficultyNext != DIFF_NONE) {
+    fprintf(fp,"difficulty=%d\n",difficultyNext);
+  }
+  fprintf(fp,"style=%d\n",(int)styleType);
+  fprintf(fp,"humansNum=%d\n",humansNumNext);
+  fprintf(fp,"enemiesNum=%d\n",enemiesNumNext);
+  fprintf(fp,"enemiesRefill=%d\n",enemiesRefillNext ? 1 : 0);
+  fprintf(fp,"cooperative=%d\n",cooperativeNext ? 1 : 0);
+  fprintf(fp,"quanta=%d\n",(int)quanta);
+  fprintf(fp,"soundVolume=%d\n",soundManager.getEffectsVolume());
+  fprintf(fp,"musicVolume=%d\n",soundManager.getTrackVolume());
+  fprintf(fp,"soundOn=%d\n",soundManager.isSoundOn() ? 1 : 0);
+  fprintf(fp,"largeViewport=%d\n",Ui::get_large_viewport() ? 1 : 0);
+  fprintf(fp,"smoothScroll=%d\n",Ui::get_smooth_scroll() ? 1 : 0);
+
+  fclose(fp);
+}
+#endif // X11
+
+
+
 void Game::end_game(Boolean showMessages) {
   state = gameOver;
   timer.set(OTHER_INPUT_RESET);
@@ -1938,11 +2239,37 @@ void Game::end_game(Boolean showMessages) {
     }
     
     char *ranking = choose_ranking(totalKills);
-    msg << totalKills << (totalKills == 1 ? "Kill" : " Kills") 
-        << ", Rank: " << ranking << ends;
     IntelId humanIntelId = human->get_intel_id();
+
+#if X11
+    // Record the score in the high-score table.  "Adjusted kills" applies the
+    // same difficulty multiplier as choose_ranking().
+    int adjustedKills =
+      (int)(totalKills * difficultyLevels[difficulty].rankMultiplier);
+    int hsPos = high_score_record(adjustedKills,ranking,human->get_name());
+    int hsBest = high_score_best();
+#endif
+
+    msg << totalKills << (totalKills == 1 ? " Kill" : " Kills")
+        << ", Rank: " << ranking;
+#if X11
+    if (hsBest > 0) {
+      msg << "  (High: " << hsBest << ")";
+    }
+#endif
+    msg << ends;
     locator.arena_message_enq(msg.str(),&humanIntelId,
                               GAME_OVER_ARENA_MESSAGE_TIME);
+
+#if X11
+    // Announce a new high score last so it is the message that stays on screen.
+    if (hsPos > 0) {
+      ostrstream hs;
+      hs << "NEW HIGH SCORE: #" << hsPos << " -- " << ranking << ends;
+      locator.arena_message_enq(hs.str(),&humanIntelId,
+                                GAME_OVER_ARENA_MESSAGE_TIME);
+    }
+#endif
   }
 }
 
@@ -2244,6 +2571,7 @@ void Game::reset() {
 
   // Set the enemies reflexes according to the new level of difficulty.
   Enemy::set_reflexes_time(difficultyLevels[difficulty].reflexes);
+  Enemy::set_smartness(difficultyLevels[difficulty].smartness);
 
   // ui->reset() used to be after Locator::reset()
   if (ui) {
@@ -2283,6 +2611,11 @@ void Game::reset() {
 
   // Force Game::clock to set Ui::set_intels_playing().
   humansPlayingPrev = enemiesPlayingPrev = -1;  // Used to be 0.
+
+#if X11
+  // A new game just applied all the current settings; persist them.
+  config_save();
+#endif
 }
 
 
@@ -2553,12 +2886,30 @@ void Game::parse_args(int *argc,char **argv) {
         << "    print version info" << endl
         << "-world <worldfile>" << endl
         << "    use the worldfile to specify the map" << endl
+        << "-survival" << endl
+        << "    endless waves of enemies, each bigger than the last" << endl
+        << "-bossrush" << endl
+        << "    fight XEvil's bosses one after another" << endl
+        << "-scenarios" << endl
+        << "    play the scenario game style (random hand-crafted missions)" << endl
+        << "-scenario <name>" << endl
+        << "    force a specific scenario.  Names:" << endl
+        << "    exterminate, bonus, hive, flag, baby-seals, anti-baby-seals," << endl
+        << "    fire-demon, dragon, zig-zag, the-pound, japan-town, the-coop," << endl
+        << "    chicken-little, yeti, graveyard, hugger-nest, junkyard" << endl
+        << "-human_class <name>" << endl
+        << "    play as ANY creature (e.g. dragon, fire_demon, chicken, frog...)" << endl
+        << "-ability <name>" << endl
+        << "    give your player an extra ability: flying, on-fire, sticky, hopping" << endl
         << "-no_sound" << endl
         << "    disable all sound and music" << endl
         << "-sound_volume <0-100>" << endl
         << "    set sound-effects volume (default 70)" << endl
         << "-music_volume <0-100>" << endl
         << "    set soundtrack volume (default 50)" << endl
+        << endl
+        << "In-game: press F1 to pause (any key resumes).  The menu-bar \"Sound\"" << endl
+        << "toggle turns sound on/off.  Settings are saved to ~/.xevilrc." << endl
         << endl
         << "-connect <servername> {serverport}" << endl
         << "    connect as a client to an XEvil server, serverport is optional" << endl
@@ -2803,6 +3154,14 @@ void Game::parse_args(int *argc,char **argv) {
     else if (! strcmp("-training",argv[n])) {
       delete style;
       style = GameStyle::by_type(TRAINING);
+    }
+    else if (! strcmp("-survival",argv[n])) {
+      delete style;
+      style = GameStyle::by_type(SURVIVAL);
+    }
+    else if (! strcmp("-bossrush",argv[n])) {
+      delete style;
+      style = GameStyle::by_type(BOSS_RUSH);
     }
 #if X11
     else if (! strcmp("-use_averaging",argv[n])) {

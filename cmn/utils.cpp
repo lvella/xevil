@@ -428,6 +428,10 @@ const char* Utils::game_style_to_string(GameStyleType gsType) {
     return "Extended Duel";
   case TRAINING:
     return "Training";
+  case SURVIVAL:
+    return "Survival";
+  case BOSS_RUSH:
+    return "Boss Rush";
   default:
     return "Unknown";
   }

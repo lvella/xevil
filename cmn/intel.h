@@ -479,6 +479,12 @@ private:
      item to use and use it.  Weapons are used in attack_target().
      p is the Physical this is controlling. */
   /* MODIFIES: commandSet */
+
+  Boolean nearest_human_pos(PhysicalP p,Pos &result);
+  /* MODIFIES: result */
+  /* EFFECTS: Set result to the middle of the nearest living
+     human-controlled Physical and return True.  Return False if no
+     living human is found.  Used by smart enemies to hunt the player. */
   
 
   // Check to see if we're stuck in the same place for too long.
@@ -508,6 +514,16 @@ public:
   static int get_reflexes_time() {return reflexesTime;}
   /* EFFECTS: How fast machines react.  1 means every turn. 2 is 
   every other turn, etc. */
+
+  static void set_smartness(int level) {smartness = level;}
+  static int get_smartness() {return smartness;}
+  /* EFFECTS: How clever the AI is, gated by the difficulty level.  0 is
+  the classic behavior (random target, fire through walls, no leading,
+  aimless wander).  >=1 adds distance-weighted target selection,
+  line-of-sight firing and hunting the nearest living human.  >=2 also
+  leads moving targets.  Read by Machine's (static) firing/targeting
+  helpers, mirroring the reflexesTime static so no signature changes are
+  needed. */
 	  
   virtual Boolean is_enemy();
 
@@ -521,6 +537,7 @@ protected:
   
 private:
   static int reflexesTime;
+  static int smartness;
 };
 typedef Enemy *EnemyP;
 

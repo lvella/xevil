@@ -686,12 +686,11 @@ void Client::connect_server() {
     Boolean wantSounds = True;
 #endif
 #if X11
-    // X11 now has a real sound engine, so request the server's sound relay.
-    // Skip it only when sound was hard-disabled via the environment; a client
-    // whose sound is otherwise off will simply drop the relayed requests
-    // locally (SoundManager::submitRequest is a cheap no-op when disabled).
-    const char *noSoundEnv = getenv("XEVIL_NO_SOUND");
-    Boolean wantSounds = (noSoundEnv && !strcmp(noSoundEnv,"1")) ? False : True;
+    // X11 now has a real sound engine, so request the server's sound relay --
+    // but only when this client actually has sound enabled.  A client started
+    // with -no_sound (or XEVIL_NO_SOUND, or with the Sound toggle off) should
+    // not ask the server to relay sound it will only throw away.
+    Boolean wantSounds = errorLocator ? errorLocator->sound_enabled() : True;
 #endif
 
     // Note: This is the only time we use vInfo.

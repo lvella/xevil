@@ -152,7 +152,7 @@ typedef OutStream *OutStreamP;
 
 typedef int GameStyleType;
 // Possible values of GameStyleType.
-enum {SCENARIOS,LEVELS_ONLY,KILL,DUEL,EXTENDED,TRAINING,LEVELS};
+enum {SCENARIOS,LEVELS_ONLY,KILL,DUEL,EXTENDED,TRAINING,LEVELS,SURVIVAL,BOSS_RUSH};
 
 
 

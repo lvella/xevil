@@ -67,5 +67,6 @@ unsigned int SoundNames::names[SoundNames::SOUND_MAX] = {
     // Restored in XEvil 2.5; the "painful on cheap sound cards" era is over.
     IDM_TERRAEXMSOUNDTRACK,
     IDM_NEWSONGSOUNDTRACK,
+    0, // WOOB -- X11-only, no Win32 resource; keeps names[] aligned to SOUND_MAX.
 };
 #endif

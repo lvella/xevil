@@ -107,8 +107,12 @@ $(OBJ_DIR)/actual.o: actual.cpp utils.h coord.h area.h world.h id.h intel.h \
 	bitmaps/blood/blood.bitmaps bitmaps/green_blood/green_blood.bitmaps \
 	bitmaps/caffine/caffine.bitmaps \
 	bitmaps/oil_droplet/oil_droplet.bitmaps bitmaps/p_c_p/p_c_p.bitmaps \
-    bitmaps/seal/seal.bitmaps
-	$(CC) $(DEBUG_OPT) $(ALL_CFLAGS) $(ALL_INCL_DIRS) -o $(OBJ_DIR)/actual.o -c actual.cpp 
+	bitmaps/rail/rail.bitmaps bitmaps/ice_bolt/ice_bolt.bitmaps \
+	bitmaps/gravity_well/gravity_well.bitmaps bitmaps/mine/mine.bitmaps \
+	bitmaps/shotgun/shotgun.bitmaps bitmaps/railgun/railgun.bitmaps \
+	bitmaps/cryo_ray/cryo_ray.bitmaps bitmaps/singularity/singularity.bitmaps \
+    bitmaps/seal/seal.bitmaps bitmaps/vampire/vampire.bitmaps
+	$(CC) $(DEBUG_OPT) $(ALL_CFLAGS) $(ALL_INCL_DIRS) -o $(OBJ_DIR)/actual.o -c actual.cpp
 
 $(OBJ_DIR)/game.o: game.cpp utils.h coord.h area.h world.h id.h intel.h \
 	physical.h actual.h locator.h game_style.h role.h ../x11/ui.h game.h \

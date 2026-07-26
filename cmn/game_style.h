@@ -538,10 +538,95 @@ private:
   /* EFFECTS: Helper for class_team. */
 
   void choose_scenario();
-  /* EFFECTS: Delete old scenario and create a new one.  Works even if 
+  /* EFFECTS: Delete old scenario and create a new one.  Works even if
      scenario is NULL. */
 
   ScenarioP scenario;
   static char *override;
+};
+
+
+
+// Endless waves.  Each wave is bigger than the last, machines brawl each
+// other, and every fifth wave brings a FireDemon mini-boss.
+class Survival : public GameStyle {
+public:
+  Survival();
+
+  virtual GameStyleP clone();
+
+  virtual void describe(std::ostrstream &);
+
+  virtual GameStyleType get_type();
+
+  virtual Boolean class_friends();
+
+  virtual int human_initial_lives();
+
+  virtual void reset(WorldP,LocatorP,const DifficultyLevel &,int enemiesNumNext);
+
+  virtual int new_level_check(int enemiesPlaying,WorldP,LocatorP,
+                              int level,Boolean &lStrChanged,std::ostrstream &levelStr,Timer &timer,
+                              IPhysicalManagerP);
+
+  virtual void new_level(int level,WorldP,LocatorP,const DifficultyLevel &dLevel,
+                         std::ostrstream &levelStr,std::ostrstream &levelTitleStr,
+                         IPhysicalManagerP,int humansNum);
+
+  virtual void new_level_set_timer(Timer &timer);
+
+  virtual void refill_enemies(Boolean enemiesRefill,WorldP,LocatorP,IPhysicalManagerP);
+};
+
+
+
+// Fight XEvil's bosses back to back.  Delegates each level to one of the
+// boss scenarios, cycling FireDemon -> Dragon -> Yeti.
+class BossRush : public GameStyle {
+public:
+  BossRush();
+  virtual ~BossRush();
+
+  virtual GameStyleP clone();
+
+  virtual void describe(std::ostrstream &);
+
+  virtual GameStyleType get_type();
+
+  virtual Boolean class_friends();
+
+  virtual int human_initial_lives();
+
+  virtual void set_human_data(HumanP,WorldP,LocatorP);
+
+  virtual Pos human_initial_pos(WorldP,LocatorP,const Size &s);
+
+  virtual Boolean can_refill_game_objects();
+
+  virtual void reset(WorldP,LocatorP,const DifficultyLevel &,int enemiesNumNext);
+
+  virtual int new_level_check(int enemiesPlaying,WorldP,LocatorP,
+                              int level,Boolean &lStrChanged,std::ostrstream &levelStr,Timer &timer,
+                              IPhysicalManagerP);
+
+  virtual Boolean advance_level();
+
+  virtual Boolean award_bonus();
+
+  virtual void new_level(int level,WorldP,LocatorP,const DifficultyLevel &dLevel,
+                         std::ostrstream &levelStr,std::ostrstream &levelTitleStr,
+                         IPhysicalManagerP manager,int humansNum);
+
+  virtual void new_level_set_timer(Timer &timer);
+
+  virtual void refill_enemies(Boolean enemiesRefill,WorldP,LocatorP,IPhysicalManagerP);
+
+  virtual unsigned int get_soundtrack();
+
+  virtual SoundName get_midisoundtrack();
+
+
+private:
+  ScenarioP scenario;
 };
 #endif

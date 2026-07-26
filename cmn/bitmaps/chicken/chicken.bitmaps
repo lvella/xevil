@@ -181,8 +181,8 @@ const CreatureContext Chicken::creatureContext =
       True, /* transmogifyTarget */
       True, /* doppelUser */
       False, /* potentialHuman */
-      False, /* potentialEnemy */
-      8, /* enemyWeight */
+      True, /* potentialEnemy */
+      4, /* enemyWeight */
       False, /* potentialWeapon */
       False, /* potentialOtherItem */
       0.0f, /* objectWorldPercent */
