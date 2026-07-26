@@ -60,14 +60,14 @@ CMN_MODULES = actual area role utils streams xetp_basic xetp locator world \
               l_agreement
 CMN_OBJS    = $(patsubst %,$(CMN_OBJ_DIR)/%.o,$(CMN_MODULES))
 
-SDL_MODULES = xpm font xdata draw panel viewport ui main
+SDL_MODULES = xpm font xdata draw panel viewport dialog ui main
 SDL_OBJS    = $(patsubst %,$(OBJ_DIR)/%.o,$(SDL_MODULES))
 
 SOUND_OBJS  = $(OBJ_DIR)/sound.o $(OBJ_DIR)/miniaudio.o
 
 # Frontend headers -- touching any forces a rebuild of everything that could
 # include it (cmn objects included, since they consume xdata.h/ui.h/sound.h).
-SDL_HEADERS = xdata.h ui.h sound.h panel.h viewport.h font.h xpm.h
+SDL_HEADERS = xdata.h ui.h sound.h panel.h viewport.h font.h xpm.h dialog.h
 
 
 #### Default goal: the native SDL game.

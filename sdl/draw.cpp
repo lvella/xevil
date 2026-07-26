@@ -300,6 +300,7 @@ void Locator::init_x(Xvars &xvars,IXCommand command,void*) {
   assert(!xvars.is_valid(xValid));
 
   for (int dpyNum = 0; dpyNum < xvars.dpyMax; dpyNum++) {
+    xvars.set_active_display(dpyNum);   // target create_* on this window's renderer
     xdata.buffer[dpyNum] =
       xvars.create_target_pixmap(xvars.stretch_x(OL_GRID_COL_MAX * WSQUARE_WIDTH),
                                  xvars.stretch_y(OL_GRID_ROW_MAX * WSQUARE_HEIGHT));
@@ -543,6 +544,7 @@ void Moving::init_x(Xvars &xvars,IXCommand command,void*,
 
   // Auto-generate the PH_AUTO_GEN pixmaps by transforming a base direction.
   for (dpyNum = 0; dpyNum < xvars.dpyMax; dpyNum++) {
+    xvars.set_active_display(dpyNum);   // create_blank_pixmap on this renderer
     for (int n = 0; n < CO_DIR_MAX; n++) {
       if (mc.animMax[n] == 0 || mc.pixmapBits[n][0] != PH_AUTO_GEN) {
         continue;

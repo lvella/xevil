@@ -103,9 +103,15 @@ public:
   /* NOTE: Body of this function lives in l_agreement_dlg.cpp */
 #endif
 
-  static void comm_line_accepted() 
+  static void comm_line_accepted()
     {commLineAccepted = True;}
   /* EFFECTS: User accepted license agreement with the command line. */
+
+  static Boolean is_comm_line_accepted()
+    {return commLineAccepted;}
+  /* EFFECTS: Whether -accept_agreement was passed.  Used by the SDL front end
+     to bypass its modal License Agreement dialog (X11 reads commLineAccepted
+     directly in l_agreement_dlg.cpp, so this getter is inert there). */
 
   static const char *get_text();
   /* EFFECTS: Return the text of the license agreement.  Guaranteed to be 

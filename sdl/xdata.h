@@ -107,12 +107,51 @@ public:
 
   // ---- Window-system lifecycle (frontend-owned) ----
   Boolean open_display(const char *title,const Size &windowSize);
-  /* EFFECTS: Create the one SDL window+renderer of the given pixel size,
+  /* EFFECTS: Create SDL display 0 (window+renderer) of the given pixel size,
      resolve all named colors and fonts.  dpyMax becomes 1.  Nearest-neighbor
      scaling (crisp pixel art). */
 
+  int add_display(const char *title,const Size &windowSize);
+  /* EFFECTS: Create an additional SDL window+renderer (for local two-player;
+     each SDL window needs its OWN renderer, so each also gets its own copy of
+     the art textures, keyed by the returned display index).  Returns the new
+     display index, or -1 on failure.  dpyMax grows by one. */
+
+  void set_active_display(int dpyNum);
+  /* EFFECTS: Make display dpyNum the current target of `renderer`/`window` and
+     all the create/set_target/draw helpers.  Cheap; call it before touching a
+     given window's renderer (art load loops, per-viewport draw). */
+  int get_active_display() {return activeDpy;}
+
   void resize_window(const Size &windowSize);
-  /* EFFECTS: Resize the single window to the given pixel size. */
+  void resize_window(int dpyNum,const Size &windowSize);
+  /* EFFECTS: Resize a window to the given pixel size. */
+
+  void center_window(int dpyNum);
+  /* EFFECTS: Re-center a window on its display (SDL keeps the top-left fixed
+     across a resize, which would otherwise push a grown window off-screen). */
+
+  void position_window(int dpyNum,int x,int y);
+  /* EFFECTS: Move a window to an absolute screen position (used to offset the
+     second local-player window so both are visible). */
+
+  // ---- Fullscreen (SDL_WINDOW_FULLSCREEN_DESKTOP + logical letterbox) ----
+  void set_fullscreen(int dpyNum,Boolean on,const Size &logical);
+  /* EFFECTS: Toggle desktop-fullscreen for a window.  `logical` is the game's
+     native window size; SDL scales it up to the desktop with black bars
+     (RenderSetLogicalSize), so all the pixel-coordinate draw code is unchanged.
+     Off restores windowed mode at `logical` size. */
+  Boolean get_window_fullscreen(int dpyNum);
+
+  // ---- Window chrome ----
+  void set_window_title(int dpyNum,const char *title);
+  void set_window_icon(int dpyNum,char **xpmBits);
+  /* EFFECTS: Build an SDL_Surface from the compiled-in XPM and hand it to
+     SDL_SetWindowIcon (the window-manager/taskbar icon). */
+
+  Uint32 get_window_id(int dpyNum);
+  /* EFFECTS: SDL_GetWindowID, so the Ui can map an event's windowID to a
+     display/viewport. */
 
   void close_display();
 
@@ -177,11 +216,16 @@ public:
 
   int stretch;
 
-  // Total number of allocated displays (always 1 for the SDL port).
+  // Total number of allocated displays (1, or 2 for local two-player).
   int dpyMax;
 
+  // `window`/`renderer` always point at the ACTIVE display (set_active_display);
+  // the per-display handles live in the arrays.  All the ported draw code reads
+  // xvars.renderer, so switching the active display retargets it for free.
   SDL_Window *window;
   SDL_Renderer *renderer;
+  SDL_Window *windows[DISPLAYS_MAX];
+  SDL_Renderer *renderers[DISPLAYS_MAX];
 
   // Colors (indexed by display, mirroring the X11 layout so ported draw code
   // like xvars.black[dpyNum] is untouched).
@@ -209,7 +253,12 @@ private:
      (nearest-neighbor).  numer/denom == 1/1 full, 1/2 reduce, 3/2 or 2/1
      enlarge. */
 
-  Drawable currentTarget;
+  void resolve_colors_fonts(int dpyNum);
+  /* EFFECTS: Fill the color/font slots for a display (renderer-independent, so
+     new displays just get the same values as display 0). */
+
+  Drawable currentTarget[DISPLAYS_MAX];
+  int activeDpy;
   Boolean displayOpen;
 
   static Boolean useAveraging;

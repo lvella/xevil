@@ -51,10 +51,13 @@ Xvars::Xvars() {
   dpyMax = 0;
   window = 0;
   renderer = 0;
-  currentTarget = 0;
+  activeDpy = 0;
   displayOpen = False;
 
   for (int d = 0; d < DISPLAYS_MAX; d++) {
+    windows[d] = 0;
+    renderers[d] = 0;
+    currentTarget[d] = 0;
     white[d] = Pixel_rgb(255,255,255);
     black[d] = Pixel_rgb(0,0,0);
     red[d] = Pixel_rgb(255,0,0);
@@ -73,6 +76,29 @@ Xvars::Xvars() {
 
 
 
+void Xvars::resolve_colors_fonts(int d) {
+  // Colors are packed RGB ints and fonts are compiled-in glyph bitmaps -- both
+  // renderer-independent -- so every display resolves to the same values.
+  // (Names mirror x11/ui.cpp RED_COLOR/GREEN_COLOR/ARENA_TEXT.)
+  white[d] = alloc_named_color(d,"white");
+  black[d] = alloc_named_color(d,"black");
+  red[d] = alloc_named_color(d,"red2",black[d]);
+  green[d] = alloc_named_color(d,"green1",black[d]);
+  arenaTextColor[d] = alloc_named_color(d,"red2",white[d]);
+  windowBg[d] = alloc_named_color(d,Xvars_WINDOW_BG_COLOR);
+  windowBorder[d] = alloc_named_color(d,Xvars_WINDOW_BORDER_COLOR);
+  for (int m = 0; m < HUMAN_COLORS_NUM; m++)
+    humanColors[d][m] = alloc_named_color(d,humanColorNames[m],black[d]);
+
+  font[d] = &font::f6x13();
+  bigFont[d] = &font::f9x15();
+  fontSize[d].set(font::char_width(*font[d]),font::cell_height(*font[d]));
+  bigFontSize[d].set(font::char_width(*bigFont[d]),
+                     font::cell_height(*bigFont[d]));
+}
+
+
+
 Boolean Xvars::open_display(const char *title,const Size &windowSize) {
   if (SDL_Init(SDL_INIT_VIDEO) != 0) {
     cerr << "SDL_Init failed: " << SDL_GetError() << endl;
@@ -81,70 +107,181 @@ Boolean Xvars::open_display(const char *title,const Size &windowSize) {
   // Crisp nearest-neighbor scaling for the pixel art.
   SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
 
-  window = SDL_CreateWindow(title,SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,
-                            windowSize.width,windowSize.height,
-                            SDL_WINDOW_SHOWN);
-  if (!window) {
-    cerr << "SDL_CreateWindow failed: " << SDL_GetError() << endl;
+  dpyMax = 0;
+  int d = add_display(title,windowSize);
+  if (d < 0) {
     return False;
   }
-
-  // Prefer accelerated; fall back to software so headless Xvfb always works.
-  renderer = SDL_CreateRenderer(window,-1,SDL_RENDERER_ACCELERATED |
-                                SDL_RENDERER_TARGETTEXTURE);
-  if (!renderer)
-    renderer = SDL_CreateRenderer(window,-1,SDL_RENDERER_SOFTWARE |
-                                  SDL_RENDERER_TARGETTEXTURE);
-  if (!renderer) {
-    cerr << "SDL_CreateRenderer failed: " << SDL_GetError() << endl;
-    return False;
-  }
-  SDL_SetRenderDrawBlendMode(renderer,SDL_BLENDMODE_BLEND);
-
-  dpyMax = 1;
-  currentTarget = 0;
-
-  // Resolve colors (names mirror x11/ui.cpp RED_COLOR/GREEN_COLOR/ARENA_TEXT).
-  for (int d = 0; d < dpyMax; d++) {
-    white[d] = alloc_named_color(d,"white");
-    black[d] = alloc_named_color(d,"black");
-    red[d] = alloc_named_color(d,"red2",black[d]);
-    green[d] = alloc_named_color(d,"green1",black[d]);
-    arenaTextColor[d] = alloc_named_color(d,"red2",white[d]);
-    windowBg[d] = alloc_named_color(d,Xvars_WINDOW_BG_COLOR);
-    windowBorder[d] = alloc_named_color(d,Xvars_WINDOW_BORDER_COLOR);
-    for (int m = 0; m < HUMAN_COLORS_NUM; m++)
-      humanColors[d][m] = alloc_named_color(d,humanColorNames[m],black[d]);
-
-    font[d] = &font::f6x13();
-    bigFont[d] = &font::f9x15();
-    fontSize[d].set(font::char_width(*font[d]),font::cell_height(*font[d]));
-    bigFontSize[d].set(font::char_width(*bigFont[d]),
-                       font::cell_height(*bigFont[d]));
-  }
-
   displayOpen = True;
   return True;
 }
 
 
 
+int Xvars::add_display(const char *title,const Size &windowSize) {
+  if (dpyMax >= DISPLAYS_MAX) {
+    cerr << "Xvars::add_display: no free display slot." << endl;
+    return -1;
+  }
+  int d = dpyMax;
+
+  SDL_Window *win =
+    SDL_CreateWindow(title,SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,
+                     windowSize.width,windowSize.height,SDL_WINDOW_SHOWN);
+  if (!win) {
+    cerr << "SDL_CreateWindow failed: " << SDL_GetError() << endl;
+    return -1;
+  }
+
+  // Prefer accelerated; fall back to software so headless Xvfb always works.
+  SDL_Renderer *ren = SDL_CreateRenderer(win,-1,SDL_RENDERER_ACCELERATED |
+                                         SDL_RENDERER_TARGETTEXTURE);
+  if (!ren)
+    ren = SDL_CreateRenderer(win,-1,SDL_RENDERER_SOFTWARE |
+                             SDL_RENDERER_TARGETTEXTURE);
+  if (!ren) {
+    cerr << "SDL_CreateRenderer failed: " << SDL_GetError() << endl;
+    SDL_DestroyWindow(win);
+    return -1;
+  }
+  SDL_SetRenderDrawBlendMode(ren,SDL_BLENDMODE_BLEND);
+
+  windows[d] = win;
+  renderers[d] = ren;
+  currentTarget[d] = 0;
+  dpyMax = d + 1;
+
+  resolve_colors_fonts(d);
+  set_active_display(d);
+  return d;
+}
+
+
+
+void Xvars::set_active_display(int d) {
+  if (d < 0 || d >= dpyMax) {
+    return;
+  }
+  activeDpy = d;
+  window = windows[d];
+  renderer = renderers[d];
+}
+
+
+
 void Xvars::resize_window(const Size &windowSize) {
-  if (window)
-    SDL_SetWindowSize(window,windowSize.width,windowSize.height);
+  resize_window(activeDpy,windowSize);
+}
+
+void Xvars::resize_window(int d,const Size &windowSize) {
+  if (d >= 0 && d < dpyMax && windows[d])
+    SDL_SetWindowSize(windows[d],windowSize.width,windowSize.height);
+}
+
+void Xvars::center_window(int d) {
+  if (d >= 0 && d < dpyMax && windows[d])
+    SDL_SetWindowPosition(windows[d],SDL_WINDOWPOS_CENTERED,
+                          SDL_WINDOWPOS_CENTERED);
+}
+
+void Xvars::position_window(int d,int x,int y) {
+  if (d >= 0 && d < dpyMax && windows[d])
+    SDL_SetWindowPosition(windows[d],x,y);
+}
+
+
+
+void Xvars::set_fullscreen(int d,Boolean on,const Size &logical) {
+  if (d < 0 || d >= dpyMax || !windows[d]) {
+    return;
+  }
+  if (on) {
+    // The letterbox: SDL scales the native-size logical content up to the
+    // window with black bars, so every pixel-coordinate draw is unchanged.
+    SDL_RenderSetLogicalSize(renderers[d],logical.width,logical.height);
+    // Belt-and-suspenders so it also covers the screen on a bare X server with
+    // no window manager (headless Xvfb): make the window borderless and the
+    // size of the desktop before asking SDL for desktop-fullscreen.
+    SDL_DisplayMode dm;
+    int di = SDL_GetWindowDisplayIndex(windows[d]);
+    if (SDL_GetDesktopDisplayMode(di < 0 ? 0 : di,&dm) == 0) {
+      SDL_SetWindowBordered(windows[d],SDL_FALSE);
+      SDL_SetWindowSize(windows[d],dm.w,dm.h);
+      SDL_SetWindowPosition(windows[d],0,0);
+    }
+    SDL_SetWindowFullscreen(windows[d],SDL_WINDOW_FULLSCREEN_DESKTOP);
+  } else {
+    SDL_SetWindowFullscreen(windows[d],0);
+    SDL_RenderSetLogicalSize(renderers[d],0,0);
+    SDL_SetWindowBordered(windows[d],SDL_TRUE);
+    SDL_SetWindowSize(windows[d],logical.width,logical.height);
+    SDL_SetWindowPosition(windows[d],SDL_WINDOWPOS_CENTERED,
+                          SDL_WINDOWPOS_CENTERED);
+  }
+}
+
+Boolean Xvars::get_window_fullscreen(int d) {
+  if (d < 0 || d >= dpyMax || !windows[d]) {
+    return False;
+  }
+  return (SDL_GetWindowFlags(windows[d]) &
+          (SDL_WINDOW_FULLSCREEN | SDL_WINDOW_FULLSCREEN_DESKTOP)) ? True : False;
+}
+
+
+
+void Xvars::set_window_title(int d,const char *title) {
+  if (d >= 0 && d < dpyMax && windows[d])
+    SDL_SetWindowTitle(windows[d],title);
+}
+
+
+
+void Xvars::set_window_icon(int d,char **xpmBits) {
+  if (d < 0 || d >= dpyMax || !windows[d] || !xpmBits) {
+    return;
+  }
+  XpmImage img;
+  if (!xpm::parse((const char *const *)xpmBits,img)) {
+    return;
+  }
+  // Copy into a surface SDL owns (img.rgba is freed when img goes out of scope).
+  SDL_Surface *surf = SDL_CreateRGBSurfaceWithFormat(
+      0,img.width,img.height,32,SDL_PIXELFORMAT_RGBA32);
+  if (surf) {
+    for (int y = 0; y < img.height; y++) {
+      memcpy((Uint8 *)surf->pixels + (size_t)y * surf->pitch,
+             img.rgba + (size_t)y * img.width * 4,(size_t)img.width * 4);
+    }
+    SDL_SetWindowIcon(windows[d],surf);
+    SDL_FreeSurface(surf);
+  }
+}
+
+
+
+Uint32 Xvars::get_window_id(int d) {
+  if (d < 0 || d >= dpyMax || !windows[d]) {
+    return 0;
+  }
+  return SDL_GetWindowID(windows[d]);
 }
 
 
 
 void Xvars::close_display() {
-  if (renderer) {
-    SDL_DestroyRenderer(renderer);
-    renderer = 0;
+  for (int d = 0; d < dpyMax; d++) {
+    if (renderers[d]) {
+      SDL_DestroyRenderer(renderers[d]);
+      renderers[d] = 0;
+    }
+    if (windows[d]) {
+      SDL_DestroyWindow(windows[d]);
+      windows[d] = 0;
+    }
   }
-  if (window) {
-    SDL_DestroyWindow(window);
-    window = 0;
-  }
+  renderer = 0;
+  window = 0;
   if (displayOpen) {
     SDL_Quit();
     displayOpen = False;
@@ -166,11 +303,12 @@ Pixel Xvars::alloc_named_color(int,const char *name,Pixel def) const {
 
 
 void Xvars::set_target(Drawable d) {
-  if (d == currentTarget) {
+  // Target state is per-renderer, so memoize per active display.
+  if (d == currentTarget[activeDpy]) {
     return;
   }
   SDL_SetRenderTarget(renderer,d ? d->tex : NULL);
-  currentTarget = d;
+  currentTarget[activeDpy] = d;
 }
 
 
@@ -249,8 +387,13 @@ void Xvars::free_pixmap(Pixmap p) {
   if (!p) {
     return;
   }
-  if (p == currentTarget) {
-    set_target(0);
+  for (int d = 0; d < dpyMax; d++) {
+    if (p == currentTarget[d]) {
+      int save = activeDpy;
+      set_active_display(d);
+      set_target(0);
+      set_active_display(save);
+    }
   }
   if (p->tex) {
     SDL_DestroyTexture(p->tex);
@@ -325,19 +468,23 @@ Boolean Xvars::load_pixmap_scaled(Drawable *pixmap,Drawable *mask,
 
 
 Boolean Xvars::load_pixmap(Drawable *pixmap,Drawable *mask,
-                           int,char **xpmBits) {
+                           int dpyNum,char **xpmBits) {
+  // Textures belong to a single renderer, so create them on THIS display's
+  // renderer (two-player loads a full copy of the art per window).
+  set_active_display(dpyNum);
   // stretch==1 reduces the native-2x art by half; stretch==2 uses it as-is;
   // stretch>=3 enlarges it (nearest) to stretch/2 of native.
   if (stretch >= 3) {
     return load_pixmap_scaled(pixmap,mask,xpmBits,stretch,2);
   }
-  return load_pixmap(pixmap,mask,0,xpmBits,stretch == 2);
+  return load_pixmap(pixmap,mask,dpyNum,xpmBits,stretch == 2);
 }
 
 
 
 Boolean Xvars::load_pixmap(Drawable *pixmap,Drawable *mask,
-                           int,char **xpmBits,Boolean fullSize) {
+                           int dpyNum,char **xpmBits,Boolean fullSize) {
+  set_active_display(dpyNum);
   if (fullSize) {
     return load_pixmap_scaled(pixmap,mask,xpmBits,1,1);
   }
@@ -395,10 +542,12 @@ void Xvars::gen_pix_from_trans(Drawable dest,Drawable src,const Size &srcSize,
 
 
 
-void Xvars::generate_pixmap_from_transform(int,Drawable dest,Drawable src,
+void Xvars::generate_pixmap_from_transform(int dpyNum,Drawable dest,Drawable src,
                                            const Size &srcSize,Drawable,
                                            const TransformType *transforms,
                                            int tNum,int) {
+  // upload_pixmap (re)creates dest's texture on the active renderer.
+  set_active_display(dpyNum);
   assert(tNum <= 2);
   switch (tNum) {
   case 0:
