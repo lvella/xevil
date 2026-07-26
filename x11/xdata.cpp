@@ -193,7 +193,12 @@ void Xvars::generate_pixmap_from_transform(int dpyNum,
 
 Boolean Xvars::load_pixmap(Drawable* pixmap,Drawable* mask,
                            int dpyNum,char** xpmBits) {
-  return load_pixmap(pixmap,mask,dpyNum,xpmBits,is_stretched());
+  // stretch==1 reduces the native-2x art by half; stretch==2 uses it as-is;
+  // stretch>=3 enlarges it (nearest-neighbor) to fill the larger viewport.
+  if (stretch >= 3) {
+    return load_pixmap_enlarge(pixmap,mask,dpyNum,xpmBits,stretch);
+  }
+  return load_pixmap(pixmap,mask,dpyNum,xpmBits,stretch == 2);
 }
 
 
@@ -399,6 +404,23 @@ static void Xvars_unstretch_subsample(XImage* dest,XImage* src) {
 
 
 
+static void Xvars_stretch_resample(XImage* dest,XImage* src) {
+  // Nearest-neighbor enlarge, symmetric to Xvars_unstretch_subsample().
+  // dest is larger than src; each dest pixel samples the nearest src pixel:
+  //   src(x*srcW/dstW, y*srcH/dstH).
+  Pos destPos;
+  for (destPos.y = 0; destPos.y < dest->height; destPos.y++) {
+    int srcY = destPos.y * src->height / dest->height;
+    for (destPos.x = 0; destPos.x < dest->width; destPos.x++) {
+      int srcX = destPos.x * src->width / dest->width;
+      unsigned long pix = XGetPixel(src,srcX,srcY);
+      XPutPixel(dest,destPos.x,destPos.y,pix);
+    }
+  }
+}
+
+
+
 void Xvars::unstretch_image(int dpyNum,
                             XImage* dest,XImage* src,
                             Pixel* pixels,int pixelsNum) {
@@ -484,6 +506,113 @@ void Xvars::unstretch_image(int dpyNum,
 
   delete pixel2RGB;
   delete [] colors;
+}
+
+
+
+Boolean Xvars::load_pixmap_enlarge(Drawable* pixmap,Drawable* mask,
+                                   int dpyNum,char** xpmBits,int scale) {
+  assert(scale >= 3);
+
+  //// Load image and mask into memory, enlarge them by scale/2 and put them
+  //// up to the display server.  Symmetric to the reduce path in load_pixmap().
+
+  XImage* srcImage;
+  XImage* srcMask;
+  Size srcSize;
+
+  // Load in src image from supplied data.
+  XpmAttributes attr;
+  attr.valuemask = XpmReturnPixels | XpmCloseness;
+  attr.closeness = XPM_CLOSENESS;
+  attr.alloc_close_colors = True;
+
+  int val =
+    XpmCreateImageFromData(dpy[dpyNum],
+                           xpmBits,
+                           &srcImage,(mask ? &srcMask : (XImage**)NULL),
+                           &attr);
+  srcSize.width = attr.width;
+  srcSize.height = attr.height;
+  if (val != XpmSuccess) {
+    XpmFreeAttributes(&attr);
+    return False;
+  }
+  // Native art is authored at 2x, so it is even; scale/2 stays integral.
+  assert((srcSize.width % 2 == 0) &&
+         (srcSize.height % 2 == 0));
+  int depth = srcImage->depth;
+  int bitmap_pad = srcImage->bitmap_pad;
+
+  // Size of enlarged, destination image, i.e. scale/2 the native size.
+  Size destSize;
+  destSize.set(srcSize.width * scale / 2,srcSize.height * scale / 2);
+
+  // Create image for dest data.
+  char* destData =
+    new_bytes_for_image(destSize,depth,bitmap_pad);
+  XImage *destImage =
+    XCreateImage(dpy[dpyNum],visual[dpyNum],depth,ZPixmap,0,
+                 destData,destSize.width,destSize.height,
+                 bitmap_pad,0);
+  assert(destImage);
+
+  // Create dest mask if needed.
+  XImage *destMask;
+  if (mask) {
+    assert(srcMask->depth == 1);
+    char* destMaskData =
+      new_bytes_for_image(destSize,1,bitmap_pad);
+    destMask =
+      XCreateImage(dpy[dpyNum],visual[dpyNum],1,ZPixmap,0,
+                   destMaskData,destSize.width,destSize.height,
+                   bitmap_pad,0);
+    assert(destMask);
+  }
+
+  // Do the pixel enlargement.  Route the mask through the same path.
+  Xvars_stretch_resample(destImage,srcImage);
+  if (mask) {
+    Xvars_stretch_resample(destMask,srcMask);
+  }
+
+  // Kill src image and mask.
+  XpmFreeAttributes(&attr);
+  XDestroyImage(srcImage);
+  if (mask) {
+    XDestroyImage(srcMask);
+  }
+
+  // Create dest pixmap and mask.
+  *pixmap = XCreatePixmap(dpy[dpyNum],root[dpyNum],
+                          destSize.width,destSize.height,
+                          depth);
+  if (!*pixmap) {
+    // Should do more cleanup.
+    return False;
+  }
+  if (mask) {
+    *mask = XCreatePixmap(dpy[dpyNum],root[dpyNum],
+                          destSize.width,destSize.height,
+                          1);
+    if (!*mask) {
+      // Should do more cleanup.
+      return False;
+    }
+  }
+
+  // Put dest image and mask up to the display server.
+  put_image(dpyNum,*pixmap,destImage,destSize);
+  if (mask) {
+    put_image(dpyNum,*mask,destMask,destSize);
+  }
+
+  // Kill dest image and mask.
+  destroy_image(destImage);
+  if (mask) {
+    destroy_image(destMask);
+  }
+  return True;
 }
 
 

@@ -310,6 +310,16 @@ class Ui: public IDifficultyCallback,
   /* EFFECTS: Current (possibly dialog-overridden) render options, for
      persisting to the config file. */
 
+  static void set_scale(int val) {scale = val;}
+  /* EFFECTS: Set the integer display scale (1..4) from the -scale option.
+     0 (the default) means "unset": fall back to the large/small viewport
+     toggle, i.e. exactly the pre-2.5 behavior.  A non-zero scale wins over
+     the large/small toggle and the License Agreement dialog. */
+
+  static int get_scale() {return scale;}
+  /* EFFECTS: The resolved integer display scale, valid after the Ui is
+     constructed. */
+
 
  private:
   void set_message(const char *message);
@@ -407,6 +417,10 @@ class Ui: public IDifficultyCallback,
   static Boolean largeViewport;
 
   static Boolean smoothScroll;
+
+  // Integer display scale (1..4) from -scale.  0 means unset (use the
+  // large/small viewport toggle for pre-2.5 behavior).
+  static int scale;
 
   // The callbacks to export to the Viewport.
   static ViewportCallback viewportCallbacks[VIEWPORT_CB_NUM];

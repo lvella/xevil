@@ -150,10 +150,10 @@ public:
   
 
   // Stretch methods.
-  Boolean is_stretched() {return stretch == 2;}
-  /* EFFECTS:  If true, use the stretched coordinate system, and large 
-     pixmaps. Else, use unstretched coordinate system and small 
-     pixmaps. */
+  Boolean is_stretched() {return stretch >= 2;}
+  /* EFFECTS:  If true, use the stretched coordinate system, and large
+     pixmaps (native-2x art or bigger for stretch 3,4).  Else (stretch==1),
+     use the unstretched coordinate system and small pixmaps. */
 
   int stretch_x(int val) {return stretch * val;}
   int stretch_y(int val) {return stretch * val;}
@@ -215,9 +215,17 @@ private:
                        Pixel* pixels,int pixelsNum);
   /* REQUIRES: dest is an image exactly half the width and height of src.
      src != dest */
-  /* EFFECTS: Reduce size of src image, copying it to dest.  src is 
-     unchanged.  pixels is the list of pixels in src, has length nPixels. 
+  /* EFFECTS: Reduce size of src image, copying it to dest.  src is
+     unchanged.  pixels is the list of pixels in src, has length nPixels.
      Can pass in NULL,0 for pixels,nPixels for a mask. */
+
+  Boolean load_pixmap_enlarge(Drawable* pixmap,Drawable* mask,
+                              int dpyNum,char** xpmBits,int scale);
+  /* REQUIRES: scale >= 3. */
+  /* EFFECTS: Load an XPM and enlarge the native-2x art by scale/2 using
+     nearest-neighbor sampling (symmetric to unstretch_image), so a
+     stretch==3 viewport gets 1.5x art and stretch==4 gets 2x art.  Only
+     load mask if non-NULL; the mask goes through the same path. */
 
   int color_match(XColor* color,XColor* palette,int paletteNum);
   /* EFFECTS: Match RGB values in color to the list of colors in palette.

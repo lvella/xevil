@@ -39,9 +39,16 @@ These files were recovered from the original `xevil-windows.exe` (2.02,
 | froggun.wav | FROGGUN | IDW 888 |
 | lancer.wav | LANCER | IDW 889 |
 | swapper.wav | SWAPPER | IDW 890 |
+| woob.wav | WOOB | *(none)* — `win32/res/WOOB.WAV` |
 
 (IDW 824/830/831 wave soundtracks were already disabled in 2.02 and are not
 present in the exe.)
+
+**woob.wav** is the odd one out: the 5500-byte `WOOB.WAV` shipped in the
+original `win32/res/` directory but had **no resource ID and no code reference**
+— an orphaned sound file that never played in any release. XEvil 2.5 finally
+gives it a job as the collapse sound of the new **Singularity** weapon
+(`SoundNames::WOOB`, wired up on X11 only).
 
 ## Music (original MIDI + pre-rendered MP3)
 
@@ -60,5 +67,12 @@ authenticity.
 | sweetdark.mid/.mp3 | SWEETDARK_SOUNDTRACK | IDM 1637 | |
 | terraexm.mid/.mp3 | (was disabled) | IDM 1638 | "sounds really painful on cheap sound cards" — restored |
 | newsong.mid/.mp3 | NEWSONG_SOUNDTRACK | IDM 1639 | |
+
+There is a tenth soundtrack that got away: `win32/resource.h:1009` defines
+`IDM_DEATHMARCHSOUNDTRACK 1631` — the only surviving trace of a **"Death
+March"** track. No `.mid`, no `.mp3`, and no code reference exists; the resource
+is absent from the shipped exe, and the ID `1631` was even recycled for a wall
+bitmap (`IDB_MD4WALL`). Truly lost unless an older 1.x / 2.0-beta build ever
+surfaces. See `docs/archaeology.md`.
 
 XEvil is GPL v2; these assets ship with the official free distribution.

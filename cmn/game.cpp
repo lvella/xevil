@@ -2143,6 +2143,13 @@ void Game::config_load() {
     else if (!strcmp(key,"smoothScroll")) {
       Ui::set_smooth_scroll(ival ? True : False);
     }
+    else if (!strcmp(key,"scale")) {
+      // Integer display scale; a command-line -scale still wins (parsed
+      // after config_load).
+      if (ival >= 1 && ival <= 4) {
+        Ui::set_scale(ival);
+      }
+    }
     // Unknown keys are silently ignored (forward compatibility).
   }
   fclose(fp);
@@ -2183,6 +2190,11 @@ void Game::config_save() {
   fprintf(fp,"soundOn=%d\n",soundManager.isSoundOn() ? 1 : 0);
   fprintf(fp,"largeViewport=%d\n",Ui::get_large_viewport() ? 1 : 0);
   fprintf(fp,"smoothScroll=%d\n",Ui::get_smooth_scroll() ? 1 : 0);
+  // Only persist scale for the genuinely new 3x/4x sizes; 1x/2x continue to
+  // ride on the largeViewport flag above, so the pre-2.5 config is unchanged.
+  if (Ui::get_scale() >= 3) {
+    fprintf(fp,"scale=%d\n",Ui::get_scale());
+  }
 
   fclose(fp);
 }
@@ -2878,6 +2890,12 @@ void Game::parse_args(int *argc,char **argv) {
         << "    set the X display for a specific player, player number N, starts with '0'" << endl 
         << "-font <fontname> or -fn <fontname>" << endl
         << "    set the font" << endl
+#if X11
+        << "-scale <1-4>" << endl
+        << "    integer display scale for modern/HiDPI screens (1=small," << endl
+        << "    2=large/default, 3 and 4 enlarge everything).  Clamps down" << endl
+        << "    automatically if the window would not fit the screen." << endl
+#endif
         << "-h or -help" << endl
         << "    print help message" << endl
         << "-info" << endl
@@ -3002,6 +3020,20 @@ void Game::parse_args(int *argc,char **argv) {
 	}
     else if (!strcmp("-large_viewport",argv[n])) {
       Ui::set_large_viewport(True);
+    }
+    else if (!strcmp("-scale",argv[n]) && (n + 1 < *argc)) {
+      // Integer display scale for modern/HiDPI screens.  1=small, 2=large
+      // (the classic sizes), 3 and 4 enlarge the whole game.  Wins over the
+      // -large_viewport/-small_viewport toggle and the agreement dialog.
+      int s = atoi(argv[n+1]);
+      if (s < 1) {
+        s = 1;
+      }
+      if (s > 4) {
+        s = 4;
+      }
+      Ui::set_scale(s);
+      n++;
     }
 #endif // X11
     else if (!strcmp("-levels",argv[n])) {
@@ -3691,7 +3723,7 @@ GameStyleType Game::get_game_style_type() {
 
 void Game::demo_setup() {
   // Choose between different demos.
-  switch (Utils::choose(8)) {
+  switch (Utils::choose(11)) {
     case 0: { // A bunch of Heros and an Alien.
     	for (int n = 0; n < 10; n++) {
         ostrstream name;
@@ -3977,7 +4009,118 @@ void Game::demo_setup() {
           ModifierP ds = new DoubleSpeed();
           modifiers->append_unique(ds);
         }
-      }      
+      }
+    }
+    break;
+
+
+    case 8: { // Vampire hunt:  a pack of Heros against the Vampires.
+      int n;
+      // Default intel (classFriends True) so the Heros band up against
+      // the Vampires and the Vampires band up against the Heros.
+      for (n = 0; n < 4; n++) {
+        ostrstream name;
+        name << "Enemy-" << n << ends;
+        EnemyP enemy = new Enemy(&world,&locator,name.str(),NULL,ITnone);
+        assert(enemy);
+        delete name.str();
+        locator.register_enemy(enemy);
+
+        Pos pos = world.empty_rect(Hero::get_size_max());
+        PhysicalP obj = new Hero(&world,&locator,pos);
+        assert(obj);
+        locator.add(obj);
+        obj->set_intel(enemy);
+      }
+
+      for (n = 0; n < 2; n++) {
+        ostrstream name;
+        name << "Vampire-" << n << ends;
+        EnemyP enemy = new Enemy(&world,&locator,name.str(),NULL,ITnone);
+        assert(enemy);
+        delete name.str();
+        locator.register_enemy(enemy);
+
+        Pos pos = world.empty_rect(Vampire::get_size_max());
+        PhysicalP obj = new Vampire(&world,&locator,pos);
+        assert(obj);
+        locator.add(obj);
+        obj->set_intel(enemy);
+      }
+    }
+    break;
+
+
+    case 9: { // New arms expo:  Ninjas fight over the 2.5 arsenal.
+      int n;
+      for (n = 0; n < 6; n++) {
+        ostrstream name;
+        name << "Enemy-" << n << ends;
+        IntelOptions ops;
+        ops.classFriends = False;
+        EnemyP enemy = new Enemy(&world,&locator,name.str(),
+                                 &ops,ITclassFriends);
+        assert(enemy);
+        delete name.str();
+        locator.register_enemy(enemy);
+
+        Pos pos = world.empty_rect(Ninja::get_size_max());
+        PhysicalP obj = new Ninja(&world,&locator,pos);
+        assert(obj);
+        locator.add(obj);
+        obj->set_intel(enemy);
+      }
+
+      // Scatter the new weapons for the Ninjas to snatch up.
+      for (n = 0; n < 2; n++) {
+        Pos pos = world.empty_rect(Shotgun::get_size_max());
+        locator.add(new Shotgun(&world,&locator,pos));
+
+        pos = world.empty_rect(Railgun::get_size_max());
+        locator.add(new Railgun(&world,&locator,pos));
+
+        pos = world.empty_rect(CryoRay::get_size_max());
+        locator.add(new CryoRay(&world,&locator,pos));
+      }
+    }
+    break;
+
+
+    case 10: { // Singularity storm:  Heros duel with WOOB singularities.
+      int n;
+      for (n = 0; n < 5; n++) {
+        ostrstream name;
+        name << "Enemy-" << n << ends;
+        IntelOptions ops;
+        ops.classFriends = False;
+        ops.psychotic = True;
+        EnemyP enemy = new Enemy(&world,&locator,name.str(),
+                                 &ops,ITclassFriends|ITpsychotic);
+        assert(enemy);
+        delete name.str();
+        locator.register_enemy(enemy);
+
+        Pos pos = world.empty_rect(Hero::get_size_max());
+        PhysicalP obj = new Hero(&world,&locator,pos);
+        assert(obj);
+        locator.add(obj);
+        obj->set_intel(enemy);
+      }
+
+      // Several Singularities to pick up and lob.
+      for (n = 0; n < 4; n++) {
+        Pos pos = world.empty_rect(Singularity::get_size_max());
+        locator.add(new Singularity(&world,&locator,pos));
+      }
+
+      // A couple already collapsing mid-field (no shooter, at rest).
+      for (n = 0; n < 2; n++) {
+        Pos pos = world.empty_rect(GravityWell::get_size_max());
+        Vel vel(0,0);
+        PhysicalP obj = new GravityWell(&world,&locator,pos,Id(),vel);
+        assert(obj);
+        locator.add(obj);
+      }
     }
     break;
 

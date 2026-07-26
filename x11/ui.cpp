@@ -253,7 +253,18 @@ Ui::Ui(int *agc, char **agv, WorldP w, LocatorP l,char **d_names,
 
   // Ick, this should be in init_x(), but we need to call init_x() before
   // running the License Agreement to get this information.
-  xvars.stretch = (largeViewport ? 2 : 1);
+  //
+  // Resolve the integer display scale.  If -scale was not given (scale==0)
+  // fall back to the large/small viewport toggle, i.e. the exact pre-2.5
+  // behavior.  A -scale (possibly clamped by init_x() to fit the screen)
+  // wins over both the toggle and the License Agreement dialog.
+  if (scale < 1) {
+    scale = (largeViewport ? 2 : 1);
+  }
+  else {
+    largeViewport = (scale >= 2);
+  }
+  xvars.stretch = scale;
 
   // Must be called before the object returned from Ui::get_viewport_info()
   // is used.
@@ -1370,19 +1381,62 @@ void Ui::init_x() {
         DefaultColormap(xvars.dpy[xvars.dpyMax],xvars.scr_num[xvars.dpyMax]);
       xvars.white[xvars.dpyMax] = 
         WhitePixel(xvars.dpy[xvars.dpyMax],xvars.scr_num[xvars.dpyMax]);
-      xvars.black[xvars.dpyMax] = 
+      xvars.black[xvars.dpyMax] =
         BlackPixel(xvars.dpy[xvars.dpyMax],xvars.scr_num[xvars.dpyMax]);
-      
-      
+
+
+      // Window-fit safety for the integer scaler.  If an explicit -scale
+      // would make the top-level window larger than the screen, step it down
+      // one level at a time.  Only an explicitly-requested scale is clamped;
+      // when -scale is unset (scale==0) the largeViewport toggle drives the
+      // pre-2.5 behavior and no clamp is applied.  Fonts (chosen just below)
+      // then follow the clamped scale, so they stay proportional.
+      //
+      // The window size mirrors LargeViewport::init_sizes(): the arena is
+      // scale*(LG_COL_MAX+2*LG_EXTRA_COL)*WSQUARE wide (30*16 = 480) and
+      // scale*LG_ROW_MAX*WSQUARE tall (16*16 = 256), plus a 5px tick border
+      // on each side and six font-height rows of menu/status chrome.
+      if (xvars.dpyMax == 0 && scale >= 1) {
+        int screenW = WidthOfScreen(xvars.scr_ptr[xvars.dpyMax]);
+        int screenH = HeightOfScreen(xvars.scr_ptr[xvars.dpyMax]);
+        while (scale > 1) {
+          int fontH = (scale >= 3) ? 24 : 13;
+          int winW = scale * 480 + 2 * 5;
+          int winH = scale * 256 + 2 * 5 + 6 * (fontH + 6);
+          if (winW <= screenW && winH <= screenH) {
+            break;
+          }
+          scale--;
+          cerr << "XEvil: -scale window (" << winW << "x" << winH
+               << ") exceeds the " << screenW << "x" << screenH
+               << " screen; using -scale " << scale << "." << endl;
+        }
+      }
+
+
       // Get font.  Use user-specified font if given.
       // regular size font.
       // Walk a fallback chain so a missing legacy core font does not kill
       // startup on modern X servers (Xwayland/WSLg).  "fixed" is guaranteed
       // present on every X server, and the trailing XLFD is a last-resort
       // wildcard match for any ~13-pixel font.
-      const char *regularFonts[4];
+      // For scale 3-4 the arena is much larger, so prefer larger core fonts
+      // (all shipped in xfonts-base) so the panel/HUD/menu geometry -- which
+      // derives from the font metrics -- scales up with the arena.  Scale 1-2
+      // keeps exactly the pre-2.5 fonts.  A user -font is honored first.
+      const char *regularFonts[8];
       int regularFontsNum = 0;
-      regularFonts[regularFontsNum++] = fontName ? fontName : DEFAULT_FONT_NAME;
+      if (fontName) {
+        regularFonts[regularFontsNum++] = fontName;
+      }
+      if (scale >= 3) {
+        regularFonts[regularFontsNum++] = "12x24";
+        regularFonts[regularFontsNum++] = "10x20";
+        regularFonts[regularFontsNum++] = "9x15";
+      }
+      if (!fontName) {
+        regularFonts[regularFontsNum++] = DEFAULT_FONT_NAME;
+      }
       regularFonts[regularFontsNum++] = BACKUP_FONT_NAME;
       regularFonts[regularFontsNum++] = "fixed";
       regularFonts[regularFontsNum++] = "-*-*-*-*-*-*-13-*-*-*-*-*-*-*";
@@ -1410,8 +1464,13 @@ void Ui::init_x() {
       // BigFont.  Fall back to the backup core font, then to the regular
       // font we just loaded, rather than aborting.  (Fonts are never freed,
       // so aliasing bigFont to font is safe -- see grep for XFreeFont.)
-      const char *bigFonts[2];
+      const char *bigFonts[4];
       int bigFontsNum = 0;
+      if (scale >= 3) {
+        // Larger arena wants a larger centered-message font.
+        bigFonts[bigFontsNum++] = "-*-helvetica-*-r-*-*-34-*-*-*-*-*-*-*";
+        bigFonts[bigFontsNum++] = "-*-helvetica-*-r-*-*-25-*-*-*-*-*-*-*";
+      }
       bigFonts[bigFontsNum++] = DEFAULT_BIG_FONT_NAME;
       bigFonts[bigFontsNum++] = BACKUP_FONT_NAME;
 
@@ -1793,6 +1852,11 @@ Boolean Ui::largeViewport = True;
 
 
 Boolean Ui::smoothScroll = False;
+
+
+
+// 0 means unset: use the largeViewport toggle (pre-2.5 behavior).
+int Ui::scale = 0;
 
 
 
