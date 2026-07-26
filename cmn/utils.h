@@ -77,8 +77,23 @@ extern "C" {
 
 #if X11
 #include <sys/time.h> // for clock_t and gettimeofday().
+// The SDL frontend (-DSDL) is an "XPM-flavor" (X11=1) build that has NO real
+// Xlib backend, so it must NOT pull in <X11/*>.  The SDL frontend headers
+// (sdl/xdata.h) supply the handful of types cmn needs instead.  The plain X11
+// build leaves SDL undefined, so it includes Xlib exactly as before.
+#if !defined(SDL)
 #include <X11/X.h>
 #include <X11/Xlib.h>
+#else
+// The SDL build has no Xlib, which is where the Boolean constants True/False
+// (used pervasively in cmn) normally come from.  Provide them here.
+#ifndef True
+#define True 1
+#endif
+#ifndef False
+#define False 0
+#endif
+#endif
 #endif
 
 #if WIN32

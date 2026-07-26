@@ -164,8 +164,8 @@ class Game: public IPhysicalManager, public IGameManager {
   Boolean quit_game(){return quitGame;}
   /* NOTE: Role may instruct game to exit. */
 
-#if X11
-  Display *get_dpy(int dpyNum) 
+#if X11 && !defined(SDL)
+  Display *get_dpy(int dpyNum)
   {return ui ? ui->get_dpy(dpyNum) : (Display *)NULL;}
 #endif
 

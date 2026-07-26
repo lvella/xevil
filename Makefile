@@ -111,6 +111,17 @@ clean:
 tildaclean:
 	/bin/rm -f *~ */*~ */*/*~ */*/*/*~
 
+## Native SDL2 port (Wave A).  Builds the sdl/ frontend into its own objdir
+## (sdl/BUILD) via sdl/makefile; x11-independent, so it never touches the X11
+## build.  Produces sdl/BUILD/xevil-sdl -- the game compiled against the SDL
+## frontend headers (cmn objects go to sdl/BUILD/cmn, never shared with x11).
+## Needs libsdl2-dev.  (`make -C sdl test_foundation` still builds the A1
+## proof-of-pixels test app.)
+## .PHONY so the target name doesn't collide with the existing sdl/ directory.
+.PHONY: sdl
+sdl:
+	cd $(DEPTH)/sdl; $(MAKE)
+
 #.SUFFIXES: .C .o
 #.C.o: $*.C
 #	$(CC) $(DEBUG_OPT) $(CFLAGS) $(INCL_DIRS) -o $*.o -c $*.C 

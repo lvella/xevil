@@ -66,7 +66,9 @@ extern "C" {
 #include "resource.h"
 #endif
 
-#if X11
+// The SDL frontend (-DSDL) has no real Xlib, so it must not pull in the
+// X resource database header used by the X-app-defaults keyset path below.
+#if X11 && !defined(SDL)
 extern "C" {
 #include <X11/Xresource.h>
 }
@@ -2650,7 +2652,17 @@ void Game::process_x_resources(int *,char **)
   // Should have already checked for UI before coming here.
   assert(ui != NULL);
 
-#if X11
+  // The SDL frontend has no real Xlib / X resource database, so it can't read
+  // the app-defaults keysyms.  Just install the compiled-in default keyset
+  // (mirrors what the X11 path does when no resources are found).
+#if X11 && defined(SDL)
+  for (int dpyNum = 0; dpyNum < ui->get_dpy_max(); dpyNum++)
+    if (!ui->keyset_set(dpyNum)) {
+      ui->set_keyset(dpyNum,KEYSET_DEFAULT);
+    }
+#endif
+
+#if X11 && !defined(SDL)
   for (int dpyNum = 0; dpyNum < ui->get_dpy_max(); dpyNum++)
     if (!ui->keyset_set(dpyNum)) {
       const char* const *keysNames = ui->get_keys_names();
