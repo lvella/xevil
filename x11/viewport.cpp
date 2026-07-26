@@ -932,6 +932,10 @@ Viewport::Viewport(int arg_c,char** arg_v,
   redrawArena = True;
   promptDifficulty = False;
 
+  // Zero unless this turns out to be the fullscreen primary viewport, set in
+  // create_toplevel().
+  ox = oy = 0;
+
   keyState = new KeyState();
   keyDispatcher = new KeyDispatcher();
   assert(keyDispatcher);  
@@ -1840,9 +1844,30 @@ void Viewport::create_toplevel() {
     assert(0);
   }
   
-  toplevel = 
-    xvars.create_toplevel_window(argc,argv,dpyNum,viewportSize[dpyNum],
-                                 title,KeyPressMask | KeyReleaseMask);
+  // Fullscreen applies only to viewport 0 (the primary viewport, which is the
+  // one that owns all the menus).  Multi-viewport / two-player secondary
+  // viewports stay windowed.
+  Boolean fs = fullscreen && (menusNum == VW_MENUS_PRIMARY_NUM);
+  Size toplevelSize = viewportSize[dpyNum];
+  ox = oy = 0;
+  if (fs) {
+    int screenW = WidthOfScreen(xvars.scr_ptr[dpyNum]);
+    int screenH = HeightOfScreen(xvars.scr_ptr[dpyNum]);
+    toplevelSize.set(screenW,screenH);
+    // Center the (screen-fitting) game content inside the full-screen window.
+    ox = (screenW - viewportSize[dpyNum].width) / 2;
+    oy = (screenH - viewportSize[dpyNum].height) / 2;
+    if (ox < 0) {
+      ox = 0;
+    }
+    if (oy < 0) {
+      oy = 0;
+    }
+  }
+
+  toplevel =
+    xvars.create_toplevel_window(argc,argv,dpyNum,toplevelSize,
+                                 title,KeyPressMask | KeyReleaseMask,fs);
 
 #if 0
   toplevel = 
@@ -1956,8 +1981,8 @@ void Viewport::create_menus() {
 
 
   // Create actual menu panels.
-  // Menus created at (0,0) for Large and Small Viewports.
-  Pos pos(0,0);
+  // Menus created at the origin offset (0,0 unless fullscreen-centered).
+  Pos pos(ox,oy);
 
   if (menusNum == VW_MENUS_PRIMARY_NUM) {
     assert(dpyNum == 0);
@@ -2064,7 +2089,7 @@ void Viewport::create_menus() {
 
   
   // Second row.
-  pos.x = 0;
+  pos.x = ox;
   pos.y += quitUnit.height;
   
   if (menusNum == VW_MENUS_PRIMARY_NUM) {
@@ -2163,7 +2188,7 @@ void Viewport::create_menus() {
     pos.x += bossRushUnit.width;
 
     // Cooperative mode.
-    pos.x = viewportSize[dpyNum].width - cooperativeUnit.width 
+    pos.x = ox + viewportSize[dpyNum].width - cooperativeUnit.width
       - helpUnit.width;
     p = menus[menuCooperative] = 
       new TogglePanel(dpyNum,xvars,toplevel,
@@ -2175,7 +2200,7 @@ void Viewport::create_menus() {
     p->set_background(menuBg,False);
 
     // Help button.
-    pos.x = viewportSize[dpyNum].width - helpUnit.width;
+    pos.x = ox + viewportSize[dpyNum].width - helpUnit.width;
     p = menus[menuHelp] = 
       new TogglePanel(dpyNum,xvars,toplevel,
                       pos,helpUnit,
@@ -2194,7 +2219,7 @@ void Viewport::create_arena() {
   arenaBG =
     XCreateSimpleWindow(xvars.dpy[dpyNum],
                         toplevel,
-                        0,menusSize[dpyNum].height,
+                        ox,oy + menusSize[dpyNum].height,
                         arenaSize[dpyNum].width,
                         arenaSize[dpyNum].height,
                         0,
@@ -2229,6 +2254,8 @@ void Viewport::create_arena() {
 
 void Viewport::create_intels_playing() {
   Pos pos = intelsPlayingPos[dpyNum];
+  pos.x += ox;
+  pos.y += oy;
   Size oneIntelPlaying = intelsPlayingSize[dpyNum];
   oneIntelPlaying.height /= 2;
 
@@ -2247,8 +2274,11 @@ void Viewport::create_intels_playing() {
 
 
 void Viewport::create_message_bar() {
+  Pos pos = messageBarPos[dpyNum];
+  pos.x += ox;
+  pos.y += oy;
   messageBar = new ChatPanel(dpyNum,xvars,toplevel,
-                             messageBarPos[dpyNum],messageBarSize[dpyNum],
+                             pos,messageBarSize[dpyNum],
                              Viewport::panel_callback,
                              panelClosures.get(stChat));
   assert(messageBar);
@@ -2259,8 +2289,11 @@ void Viewport::create_message_bar() {
 // Need better name.  This refers to the status item that displays 
 // level-specific information.
 void Viewport::create_level() {
+  Pos pos = levelPos[dpyNum];
+  pos.x += ox;
+  pos.y += oy;
   level = new TextPanel(dpyNum,xvars,toplevel,
-                        levelPos[dpyNum],levelSize[dpyNum]);
+                        pos,levelSize[dpyNum]);
   assert(level);
 }
 
@@ -2410,6 +2443,10 @@ Boolean Viewport::useBuffer = True;
 
 
 
+Boolean Viewport::fullscreen = False;
+
+
+
 Boolean Viewport::sizeValid[Xvars::DISPLAYS_MAX] = {
   0,
   // Compiler will initialize the rest of the values to zero.
@@ -2547,7 +2584,7 @@ void SmallViewport::init_sizes(Xvars& xvars,int dpyNum,WorldP world) {
 
 
 void SmallViewport::create_statuses() {
-  Pos pos(arenaSize[dpyNum].width,menusSize[dpyNum].height);
+  Pos pos(ox + arenaSize[dpyNum].width,oy + menusSize[dpyNum].height);
   Size statusUnit;
 
   for (int n = 0; n < VW_STATUSES_NUM; n++) {
@@ -2717,7 +2754,7 @@ void LargeViewport::init_sizes(Xvars& xvars,int dpyNum,WorldP world) {
 
 
 void LargeViewport::create_statuses() {
-  Pos pos(0,menusSize[dpyNum].height + arenaSize[dpyNum].height);  
+  Pos pos(ox,oy + menusSize[dpyNum].height + arenaSize[dpyNum].height);
   Size statusUnit[4];
   int n;
   for (n = 0; n < 4; n++) {
@@ -2749,10 +2786,10 @@ void LargeViewport::create_statuses() {
                   pos,statusUnit[n]);
   pos.x += statusUnit[n++].width;
 
-  statuses[statusLivesHKills] = 
+  statuses[statusLivesHKills] =
     new TextPanel(dpyNum,xvars,toplevel,
                   pos,statusUnit[n]);
-  pos.x = 0;
+  pos.x = ox;
   n = 0;
   pos.y += statusUnit[n].height;
 

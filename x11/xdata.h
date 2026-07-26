@@ -94,14 +94,19 @@ public:
   Window create_toplevel_window(int argc,char** argv,
                                 int dpyNum,const Size&,
                                 const char* title,
-                                long eventMask);
-  /* EFFECTS: Create a new top-level window of given size 
+                                long eventMask,
+                                Boolean fullscreen = False);
+  /* EFFECTS: Create a new top-level window of given size
      (in window coordinates).  title will be
      displayed in the window manager decoration and when the window is
      iconified.  eventMask gives the set of events the window is interested
      in, NULL for no events.  New window will receive WM_DELETE_WINDOW
      client messages.  The new window will ask the window manager to
-     never be resized. */
+     never be resized.  If fullscreen, the window uses a black background
+     and is marked with the EWMH _NET_WM_STATE_FULLSCREEN and Motif
+     no-decorations hints, so a real window manager treats it as a true
+     borderless fullscreen window.  (Caller passes the screen size as the
+     size, positions at 0,0, so it also covers the screen without a WM.) */
   /* NOTE: Does not map window. */
 
   Pixel alloc_named_color(int displayNum,const char *name,
@@ -204,6 +209,14 @@ public:
 
 
 private:
+  void set_fullscreen_hints(int dpyNum,Window w);
+  /* EFFECTS: Mark w (before it is mapped) as a borderless fullscreen
+     window: set the EWMH _NET_WM_STATE property to
+     _NET_WM_STATE_FULLSCREEN and the Motif _MOTIF_WM_HINTS to
+     "no decorations".  A real window manager (WSLg/Weston/etc.) then makes
+     it true fullscreen and never decorates it; a bare X server (Xvfb, no
+     WM) ignores these but the window is already screen-sized at 0,0. */
+
   void gen_pix_from_trans(int dpyNum,Drawable dest,Drawable src,
                           const Size& srcSize,TransformType transform,
                           int depth);

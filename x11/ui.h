@@ -320,6 +320,15 @@ class Ui: public IDifficultyCallback,
   /* EFFECTS: The resolved integer display scale, valid after the Ui is
      constructed. */
 
+  static void set_fullscreen(Boolean val) {fullscreen = val;}
+  /* EFFECTS: Enable/disable fullscreen mode for viewport 0 (from -fullscreen
+     / -no_fullscreen or the config file).  With -fullscreen and no explicit
+     -scale, the largest scale (1..4) whose game window fits the screen is
+     chosen automatically.  Default is off (windowed), i.e. pre-2.5 behavior. */
+
+  static Boolean get_fullscreen() {return fullscreen;}
+  /* EFFECTS: Whether fullscreen mode is enabled, for persisting to config. */
+
 
  private:
   void set_message(const char *message);
@@ -421,6 +430,9 @@ class Ui: public IDifficultyCallback,
   // Integer display scale (1..4) from -scale.  0 means unset (use the
   // large/small viewport toggle for pre-2.5 behavior).
   static int scale;
+
+  // Fullscreen mode for viewport 0 (from -fullscreen / config).  Default off.
+  static Boolean fullscreen;
 
   // The callbacks to export to the Viewport.
   static ViewportCallback viewportCallbacks[VIEWPORT_CB_NUM];

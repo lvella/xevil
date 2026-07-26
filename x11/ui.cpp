@@ -266,6 +266,10 @@ Ui::Ui(int *agc, char **agv, WorldP w, LocatorP l,char **d_names,
   }
   xvars.stretch = scale;
 
+  // Tell the Viewport whether to go fullscreen.  Only viewport 0 (created
+  // just below) acts on it; secondary/two-player viewports stay windowed.
+  Viewport::set_fullscreen(fullscreen);
+
   // Must be called before the object returned from Ui::get_viewport_info()
   // is used.
   Viewport::init_viewport_info(largeViewport,smoothScroll);
@@ -1385,31 +1389,60 @@ void Ui::init_x() {
         BlackPixel(xvars.dpy[xvars.dpyMax],xvars.scr_num[xvars.dpyMax]);
 
 
-      // Window-fit safety for the integer scaler.  If an explicit -scale
-      // would make the top-level window larger than the screen, step it down
-      // one level at a time.  Only an explicitly-requested scale is clamped;
-      // when -scale is unset (scale==0) the largeViewport toggle drives the
-      // pre-2.5 behavior and no clamp is applied.  Fonts (chosen just below)
-      // then follow the clamped scale, so they stay proportional.
+      // Resolve the display scale against the screen size.  Two cases:
+      //  - -fullscreen with no explicit -scale: auto-pick the LARGEST scale
+      //    that fits (see below); the largeViewport toggle is not consulted.
+      //  - an explicit -scale (from -scale or the config file): clamp it down
+      //    one level at a time if its window would exceed the screen.
+      // When neither applies (windowed, scale unset) nothing is touched here
+      // and the largeViewport toggle drives the pre-2.5 behavior.  Fonts
+      // (chosen just below) then follow the resolved scale, so they stay
+      // proportional.
       //
       // The window size mirrors LargeViewport::init_sizes(): the arena is
       // scale*(LG_COL_MAX+2*LG_EXTRA_COL)*WSQUARE wide (30*16 = 480) and
       // scale*LG_ROW_MAX*WSQUARE tall (16*16 = 256), plus a 5px tick border
       // on each side and six font-height rows of menu/status chrome.
-      if (xvars.dpyMax == 0 && scale >= 1) {
+      if (xvars.dpyMax == 0) {
         int screenW = WidthOfScreen(xvars.scr_ptr[xvars.dpyMax]);
         int screenH = HeightOfScreen(xvars.scr_ptr[xvars.dpyMax]);
-        while (scale > 1) {
-          int fontH = (scale >= 3) ? 24 : 13;
-          int winW = scale * 480 + 2 * 5;
-          int winH = scale * 256 + 2 * 5 + 6 * (fontH + 6);
-          if (winW <= screenW && winH <= screenH) {
-            break;
+
+        // Fullscreen with no explicit -scale: auto-pick the LARGEST integer
+        // scale (1..4) whose game window still fits the screen, so the
+        // centered content fills as much of the fullscreen window as
+        // possible.  An explicit -scale (scale >= 1, from -scale or the
+        // config file) is honored and only clamped down in the else branch.
+        if (fullscreen && scale < 1) {
+          scale = 1;
+          for (int s = 4; s >= 1; s--) {
+            int fontH = (s >= 3) ? 24 : 13;
+            int winW = s * 480 + 2 * 5;
+            int winH = s * 256 + 2 * 5 + 6 * (fontH + 6);
+            if (winW <= screenW && winH <= screenH) {
+              scale = s;
+              break;
+            }
           }
-          scale--;
-          cerr << "XEvil: -scale window (" << winW << "x" << winH
-               << ") exceeds the " << screenW << "x" << screenH
-               << " screen; using -scale " << scale << "." << endl;
+          cerr << "XEvil: -fullscreen auto-selected -scale " << scale
+               << " for the " << screenW << "x" << screenH << " screen."
+               << endl;
+        }
+        // Window-fit safety for an explicitly requested scale: step it down
+        // one level at a time until the window fits.  (For fullscreen the
+        // auto-pick above already fits, so this loop is a no-op there.)
+        else if (scale >= 1) {
+          while (scale > 1) {
+            int fontH = (scale >= 3) ? 24 : 13;
+            int winW = scale * 480 + 2 * 5;
+            int winH = scale * 256 + 2 * 5 + 6 * (fontH + 6);
+            if (winW <= screenW && winH <= screenH) {
+              break;
+            }
+            scale--;
+            cerr << "XEvil: -scale window (" << winW << "x" << winH
+                 << ") exceeds the " << screenW << "x" << screenH
+                 << " screen; using -scale " << scale << "." << endl;
+          }
         }
       }
 
@@ -1857,6 +1890,10 @@ Boolean Ui::smoothScroll = False;
 
 // 0 means unset: use the largeViewport toggle (pre-2.5 behavior).
 int Ui::scale = 0;
+
+
+
+Boolean Ui::fullscreen = False;
 
 
 

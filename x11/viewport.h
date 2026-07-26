@@ -286,6 +286,14 @@ public:
 
   static void set_use_buffer(Boolean val) {useBuffer = val;}
 
+  static Boolean get_fullscreen() {return fullscreen;}
+
+  static void set_fullscreen(Boolean val) {fullscreen = val;}
+  /* EFFECTS: When set, viewport 0 (the primary viewport, i.e. the one with
+     all the menus on display 0) sizes its top-level window to the whole
+     screen, marks it fullscreen for the window manager, and centers the game
+     content with a black surround.  Other viewports stay windowed. */
+
 
 #ifndef PROTECTED_IS_PUBLIC
 protected:
@@ -435,6 +443,12 @@ protected:
 
   static Boolean reduceDraw;
   static Boolean useBuffer;
+  static Boolean fullscreen;
+
+  // Origin offset for this viewport's child windows.  Zero except on the
+  // fullscreen primary viewport, where it centers the (screen-sized) content
+  // inside the (larger) top-level window: (screenW-gameW)/2,(screenH-gameH)/2.
+  int ox,oy;
 
 
   /////////// All following sizes are in window coordinates. ////////////

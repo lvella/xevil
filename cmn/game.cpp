@@ -2150,6 +2150,11 @@ void Game::config_load() {
         Ui::set_scale(ival);
       }
     }
+    else if (!strcmp(key,"fullscreen")) {
+      // Persisted fullscreen preference; -fullscreen / -no_fullscreen on the
+      // command line (parsed after config_load) still wins.
+      Ui::set_fullscreen(ival ? True : False);
+    }
     // Unknown keys are silently ignored (forward compatibility).
   }
   fclose(fp);
@@ -2195,6 +2200,7 @@ void Game::config_save() {
   if (Ui::get_scale() >= 3) {
     fprintf(fp,"scale=%d\n",Ui::get_scale());
   }
+  fprintf(fp,"fullscreen=%d\n",Ui::get_fullscreen() ? 1 : 0);
 
   fclose(fp);
 }
@@ -2895,6 +2901,10 @@ void Game::parse_args(int *argc,char **argv) {
         << "    integer display scale for modern/HiDPI screens (1=small," << endl
         << "    2=large/default, 3 and 4 enlarge everything).  Clamps down" << endl
         << "    automatically if the window would not fit the screen." << endl
+        << "-fullscreen or -no_fullscreen" << endl
+        << "    fill the whole screen: the game is centered with a black" << endl
+        << "    surround.  With no -scale, auto-picks the largest scale that" << endl
+        << "    fits.  Saved to ~/.xevilrc." << endl
 #endif
         << "-h or -help" << endl
         << "    print help message" << endl
@@ -3034,6 +3044,16 @@ void Game::parse_args(int *argc,char **argv) {
       }
       Ui::set_scale(s);
       n++;
+    }
+    else if (!strcmp("-fullscreen",argv[n])) {
+      // Fill the whole screen (viewport 0), centered game with a black
+      // surround.  With no explicit -scale, the largest scale that fits the
+      // screen is auto-selected.  Overrides a persisted fullscreen=0.
+      Ui::set_fullscreen(True);
+    }
+    else if (!strcmp("-no_fullscreen",argv[n])) {
+      // Force windowed even if the config file persisted fullscreen=1.
+      Ui::set_fullscreen(False);
     }
 #endif // X11
     else if (!strcmp("-levels",argv[n])) {

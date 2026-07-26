@@ -53,13 +53,18 @@ using namespace std;
 Window Xvars::create_toplevel_window(int argc,char** argv,
                                      int dpyNum,const Size& size,
                                      const char* title,
-                                     long eventMask) {
+                                     long eventMask,
+                                     Boolean fullscreen) {
+  // Fullscreen windows paint their surround (the area around the centered
+  // game content) black; windowed uses the normal gray window background.
+  Pixel bg = fullscreen ? black[dpyNum] : windowBg[dpyNum];
+
   // Creates with 0 border width.
-  Window toplevel = 
+  Window toplevel =
     XCreateSimpleWindow(dpy[dpyNum],root[dpyNum],0,0,
                         size.width,size.height,
                         0,windowBorder[dpyNum],
-                        windowBg[dpyNum]);
+                        bg);
 
   XSizeHints size_hints;
   size_hints.flags = PPosition | PSize | PMinSize | PMaxSize;
@@ -112,7 +117,56 @@ Window Xvars::create_toplevel_window(int argc,char** argv,
                   (unsigned char *)&wmDeleteWindow[dpyNum],
                   1);
 
+  // Mark as fullscreen before the window is mapped (see NOTE in header).
+  if (fullscreen) {
+    set_fullscreen_hints(dpyNum,toplevel);
+  }
+
   return toplevel;
+}
+
+
+
+// Motif WM hints structure, just enough to turn decorations off.  This is
+// the classic layout every Motif-aware WM understands.
+struct Xvars_MwmHints {
+  unsigned long flags;
+  unsigned long functions;
+  unsigned long decorations;
+  long input_mode;
+  unsigned long status;
+};
+#define XVARS_MWM_HINTS_DECORATIONS (1L << 1)
+
+
+
+void Xvars::set_fullscreen_hints(int dpyNum,Window w) {
+  // EWMH: request true fullscreen from a compliant window manager.  Setting
+  // the _NET_WM_STATE property directly (rather than sending a client
+  // message) is the correct way to specify the initial state before the
+  // window is mapped.
+  Atom netWmState =
+    XInternAtom(dpy[dpyNum],"_NET_WM_STATE",False);
+  Atom netWmStateFullscreen =
+    XInternAtom(dpy[dpyNum],"_NET_WM_STATE_FULLSCREEN",False);
+  XChangeProperty(dpy[dpyNum],w,netWmState,XA_ATOM,32,
+                  PropModeReplace,
+                  (unsigned char *)&netWmStateFullscreen,1);
+
+  // Motif hints fallback: no title bar / border, so WMs that do not honor
+  // the EWMH fullscreen state still leave the window undecorated.
+  Atom mwmHintsAtom =
+    XInternAtom(dpy[dpyNum],"_MOTIF_WM_HINTS",False);
+  Xvars_MwmHints mwm;
+  mwm.flags = XVARS_MWM_HINTS_DECORATIONS;
+  mwm.functions = 0;
+  mwm.decorations = 0;  // No decorations.
+  mwm.input_mode = 0;
+  mwm.status = 0;
+  XChangeProperty(dpy[dpyNum],w,mwmHintsAtom,mwmHintsAtom,32,
+                  PropModeReplace,
+                  (unsigned char *)&mwm,
+                  sizeof(mwm) / sizeof(long));
 }
 
 
