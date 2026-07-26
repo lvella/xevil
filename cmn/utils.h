@@ -25,6 +25,35 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+// ----- Windows (mingw-w64) OS prologue --------------------------------------
+// The native Windows build is the "XPM-flavor" SDL frontend (-DX11=1 -DSDL=1)
+// cross-compiled with mingw-w64.  mingw predefines BOTH WIN32 (the codebase's
+// MFC/Visual-C++ "this is the MFC build" flag -- NOT wanted here) and _WIN32
+// (the genuine OS flag).  The makefile passes -UWIN32 so every "#if WIN32" MFC
+// arm stays dead and the "#if X11" arms stay live, exactly like on Linux;
+// genuine-OS differences are keyed on _WIN32 instead.
+//
+// winsock2.h MUST be included (a) before <windows.h> anywhere, and (b) before
+// the sockaddr typedefs below plus the by-value CMN_SOCKADDR_IN members in
+// role.h -- so it lives here, in the header "included by ALL files".  This is
+// a no-op on every non-Windows build.
+#if defined(_WIN32)
+  #ifndef WIN32_LEAN_AND_MEAN
+  #define WIN32_LEAN_AND_MEAN
+  #endif
+  #ifndef NOMINMAX
+  #define NOMINMAX
+  #endif
+  #include <winsock2.h>
+  #include <ws2tcpip.h>
+  #include <windows.h>
+  // Defensive: neutralize WIN32 again in case a legacy <windows.h> re-#defines
+  // it (mingw-w64 does not, but this guarantees the MFC arms stay dead).
+  #ifdef WIN32
+  #undef WIN32
+  #endif
+#endif // _WIN32
+
 #if X11
 	#ifndef NO_PRAGMAS
 	#pragma interface
@@ -134,7 +163,9 @@ typedef const char* constCharP;
 
 
 // Network stuff.
-#if X11
+// Genuine-OS: on Windows the socket handle is winsock's SOCKET (an unsigned
+// pointer-width handle -- NOT int), so key these on _WIN32, not the X11 flavor.
+#if X11 && !defined(_WIN32)
 #define CMN_SOCKET int
 #define CMN_PORT u_short
 #endif
@@ -142,10 +173,16 @@ typedef const char* constCharP;
 #define CMN_SOCKET SOCKET
 #define CMN_PORT USHORT
 #endif
+#if defined(_WIN32)
+#define CMN_SOCKET SOCKET
+#define CMN_PORT USHORT
+#endif
 
-#if X11
+#if X11 && !defined(_WIN32)
 #include <netinet/in.h>
 #endif
+// On Windows sockaddr / sockaddr_in come from winsock2.h (pulled in by the
+// prologue at the top of this header).
 typedef struct sockaddr CMN_SOCKADDR;
 typedef struct sockaddr_in CMN_SOCKADDR_IN;
 
@@ -317,15 +354,16 @@ class Utils {
      form "-name".  Check element n of argv against the supplied name. */
 
 // Make X11 versions of these when we need them.
-#if WIN32
+// Genuine-OS: needed on Windows (mingw) for the %APPDATA%\XEvil config dir.
+#if WIN32 || defined(_WIN32)
   static Boolean is_dir(const char* fName);
-  /* EFFECTS: Return True if fName exists on the filesystem and is a 
+  /* EFFECTS: Return True if fName exists on the filesystem and is a
      directory.  Will work whether fName ends in '\' or not. */
 
   static Boolean mkdir(const char* fName);
-  /* EFFECTS: Create a new directory.  Return whether successful.  Will only 
+  /* EFFECTS: Create a new directory.  Return whether successful.  Will only
      create the last component of fName as a new directory. */
-  /* NOTE: We could make a version that will make all the new directories 
+  /* NOTE: We could make a version that will make all the new directories
      necessary for fName. */
 #endif
 

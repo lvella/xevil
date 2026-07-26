@@ -42,6 +42,27 @@ WSL2+WSLg (the win32 DirectDraw frontend stays archival).
     lever + matched fonts) so the game is playable on 4K/HiDPI displays.
 11. Demo/attract mode showcases new content; final docs (README, CHANGELOG).
 
+## Wave 4 — Native Windows port (COMPLETE)
+12. **SDL2 front end** (`sdl/`): a portable, X11-independent frontend that the
+    `cmn/` engine renders through unchanged (opaque display/event types, no Xlib
+    leaking into shared headers). Ships the fully playable Linux `xevil-sdl`
+    (`make sdl`). The classic X11/Xlib build stays the default and untouched.
+13. **Single-file `xevil.exe`** cross-compiled with **mingw-w64** from the same
+    sources (`make windows`). One self-contained file: **static** SDL2 / libgcc
+    / libstdc++ and **all audio embedded** in the binary — no DLLs, no asset
+    folders. Genuine-OS differences keyed on `_WIN32` (winsock2 sockets,
+    `rand()` for `random()`, `SIGPIPE` guarded, `%APPDATA%\XEvil\` for
+    config/scores); the MFC `WIN32` flag neutralized with `-UWIN32` so the
+    X11-flavor arms stay live. Audio auto-selects WASAPI via miniaudio, same
+    graceful silent fallback.
+14. **Packaging & docs**: `make dist-windows` builds `dist/xevil.exe` and
+    `dist/XEvil-2.5-win64.zip` (exe + `README-WINDOWS.txt`). README gains a
+    native-Windows section (double-click to play); the exe alone is sufficient.
+    Verified end-to-end under Wine (license → New Game → difficulty → play →
+    F1 pause → Help → chat → death → game over + high-score write → restart →
+    clean quit) plus `-survival`, `-human_class dragon`, `-fullscreen`/F11 and
+    `-scale` clamping. The win32 DirectDraw MFC frontend remains archival.
+
 ## Ground rules for implementation
 - Branch `xevil-2.5`; orchestrator commits after each verified wave.
 - Every feature: implement → independent adversarial verify (build + headless

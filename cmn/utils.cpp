@@ -51,13 +51,15 @@
 #include <stdlib.h>
 #endif
 
-#ifdef WIN32
-// For file manipulation routines.
+#if defined(WIN32) || defined(_WIN32)
+// For file manipulation routines (_stat / _mkdir).  These are plain CRT
+// headers -- safe to include before utils.h.  <windows.h> (for GetVersionEx,
+// used far below in get_OS_info) is pulled in by utils.h's Windows prologue,
+// which orders winsock2.h before windows.h; do NOT include <windows.h> here or
+// it would drag in winsock1 ahead of that and clash.
 #include <direct.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-// For GetVersionEx
-#include <winbase.h>
 #endif
 
 #include "utils.h"
@@ -376,7 +378,7 @@ Boolean Utils::arg_name_check(int n,int argc,char** argv,
 
 
 
-#if WIN32
+#if WIN32 || defined(_WIN32)
 Boolean Utils::is_dir(const char* fName) {
   if (!fName || !fName[0]) {
     return False;
@@ -443,7 +445,7 @@ char* Utils::get_OS_info() {
   ostrstream ret;
 
 
-#ifdef WIN32
+#if defined(WIN32) || defined(_WIN32)
   OSVERSIONINFO osInfo;
   osInfo.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
   Boolean set = False;
@@ -499,7 +501,7 @@ char* Utils::get_OS_info() {
 #define UNAME_PATH "/bin/uname"
 #endif
 
-#ifdef X11
+#if defined(X11) && !defined(_WIN32)
   FILE* fp = popen(UNAME_PATH " -a","r");
   Boolean set = False;
   if (fp) {

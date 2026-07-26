@@ -30,7 +30,11 @@
 // Just used to get all the network headers.
 // Should only be included by .cpp files.
 
-#if X11
+// Genuine-OS: these are the POSIX/BSD-sockets headers.  On Windows (mingw) the
+// entire sockets API comes from <winsock2.h>/<ws2tcpip.h>, which utils.h has
+// already included via its Windows prologue -- so the POSIX set is gated OFF on
+// _WIN32 (it does not exist there) rather than on the X11 frontend flavor.
+#if X11 && !defined(_WIN32)
 #include <unistd.h>
 #include <sys/socket.h>
 #include <sys/uio.h>
@@ -71,7 +75,7 @@ extern "C" {
 #endif
 
 
-#if WIN32
+#if WIN32 || defined(_WIN32)
 #include <sys/utime.h>
 #include <signal.h>
 #endif
@@ -105,11 +109,11 @@ struct sockaddr_in {
 
 
 
-#if X11
-#define CLOSE_SOCKET(sck) close(sck)
-#endif
-#if WIN32
+// Genuine-OS: winsock sockets must be closed with closesocket(), not close().
+#if defined(_WIN32)
 #define CLOSE_SOCKET(sck) closesocket(sck)
+#elif X11
+#define CLOSE_SOCKET(sck) close(sck)
 #endif
 
 #endif

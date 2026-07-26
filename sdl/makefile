@@ -63,7 +63,11 @@ CMN_OBJS    = $(patsubst %,$(CMN_OBJ_DIR)/%.o,$(CMN_MODULES))
 SDL_MODULES = xpm font xdata draw panel viewport dialog ui main
 SDL_OBJS    = $(patsubst %,$(OBJ_DIR)/%.o,$(SDL_MODULES))
 
-SOUND_OBJS  = $(OBJ_DIR)/sound.o $(OBJ_DIR)/miniaudio.o
+# The reused miniaudio engine (sound.o), miniaudio's C implementation, and the
+# generated table of assets baked into the binary (embedded_audio.o).  The SDL
+# build embeds all audio so the game is a single self-contained executable.
+SOUND_OBJS  = $(OBJ_DIR)/sound.o $(OBJ_DIR)/miniaudio.o \
+              $(OBJ_DIR)/embedded_audio.o
 
 # Frontend headers -- touching any forces a rebuild of everything that could
 # include it (cmn objects included, since they consume xdata.h/ui.h/sound.h).
@@ -96,15 +100,32 @@ $(OBJ_DIR)/%.o: %.cpp $(SDL_HEADERS) | $(OBJ_DIR)
 
 
 #### Reused x11 sound engine (no X includes; verified by the port audit).
+#### -DXEVIL_EMBEDDED_AUDIO switches it to the compiled-in asset path; the
+#### manifest header resolves via -I$(DEPTH)/sdl (first in ALL_INCL_DIRS).
 $(OBJ_DIR)/sound.o: $(DEPTH)/x11/sound.cpp $(DEPTH)/x11/sound.h \
-                    $(DEPTH)/x11/vendor/miniaudio.h | $(OBJ_DIR)
-	$(CXX) $(CMN_CFLAGS) $(ALL_INCL_DIRS) -I$(DEPTH)/x11/vendor \
-		-o $@ -c $(DEPTH)/x11/sound.cpp
+                    $(DEPTH)/x11/vendor/miniaudio.h embedded_audio.h | $(OBJ_DIR)
+	$(CXX) $(CMN_CFLAGS) -DXEVIL_EMBEDDED_AUDIO $(ALL_INCL_DIRS) \
+		-I$(DEPTH)/x11/vendor -o $@ -c $(DEPTH)/x11/sound.cpp
 
 $(OBJ_DIR)/miniaudio.o: $(DEPTH)/x11/vendor/miniaudio.c \
                         $(DEPTH)/x11/vendor/miniaudio.h | $(OBJ_DIR)
 	$(CXX) -x c $(OPT) -I$(DEPTH)/x11/vendor -o $@ \
 		-c $(DEPTH)/x11/vendor/miniaudio.c
+
+
+#### Build-time embedded-audio table.  gen_audio.py turns sounds/*.wav +
+#### sounds/*.mp3 into C byte arrays + a {name,ptr,len} manifest; the ~118MB
+#### output lives ONLY under BUILD (see .gitignore) and is compiled as C (an
+#### unsigned-char array initialised from a string literal is valid C, not C++)
+#### with no optimisation (pure data -- keeps compile fast and the .o lean).
+SOUND_ASSETS = $(wildcard $(DEPTH)/sounds/*.wav) $(wildcard $(DEPTH)/sounds/*.mp3)
+
+$(OBJ_DIR)/embedded_audio_data.c: gen_audio.py $(SOUND_ASSETS) | $(OBJ_DIR)
+	python3 gen_audio.py $(DEPTH)/sounds $@
+
+$(OBJ_DIR)/embedded_audio.o: $(OBJ_DIR)/embedded_audio_data.c embedded_audio.h \
+                             | $(OBJ_DIR)
+	$(CXX) -x c -I$(DEPTH)/sdl -o $@ -c $<
 
 
 #### A1 foundation proof-of-pixels test app (still available).

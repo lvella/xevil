@@ -42,6 +42,21 @@ static Size mk_size_dlg(int w,int h) {
 
 
 static Boolean rc_path(char *out,int outLen) {
+#if defined(_WIN32)
+  // Match game.cpp's Windows config location: %APPDATA%\XEvil\.xevilrc.
+  const char *base = getenv("APPDATA");
+  if (!base || !*base) {
+    base = getenv("USERPROFILE");
+  }
+  if (!base || !*base) {
+    return False;
+  }
+  char dir[512];
+  const char *dsep = (base[strlen(base) - 1] == '\\') ? "" : "\\";
+  snprintf(dir,sizeof(dir),"%s%sXEvil",base,dsep);
+  snprintf(out,outLen,"%s\\%s",dir,".xevilrc");
+  return True;
+#else
   const char *home = getenv("HOME");
   if (!home || !*home) {
     return False;
@@ -49,6 +64,7 @@ static Boolean rc_path(char *out,int outLen) {
   const char *sep = (home[strlen(home) - 1] == '/') ? "" : "/";
   snprintf(out,outLen,"%s%s%s",home,sep,".xevilrc");
   return True;
+#endif
 }
 
 

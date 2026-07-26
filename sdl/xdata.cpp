@@ -19,7 +19,12 @@ extern "C" {
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/stat.h>
+// <sysexits.h> (EX_OK etc.) is POSIX-only; absent on mingw-w64.  The dedicated
+// -server -daemon mode that uses it is POSIX-only too (fork/setsid), stubbed
+// out for Windows in the Daemon methods below.
+#if !defined(_WIN32)
 #include <sysexits.h>
+#endif
 }
 
 #include "utils.h"
@@ -606,6 +611,10 @@ const char *Daemon::get_file_name() {
 }
 
 void Daemon::daemonize() {
+#if defined(_WIN32)
+  // fork()/setsid() do not exist on Windows; -daemon is a POSIX-only feature.
+  cerr << "Background daemon mode is not supported on Windows." << endl;
+#else
   pid_t new_pid = fork();
   if (new_pid < 0) {
     cerr << "Could not fork background process." << endl;
@@ -617,9 +626,13 @@ void Daemon::daemonize() {
     cout << "Started [pid " << new_pid << ']' << endl;
     exit(EX_OK);
   }
+#endif
 }
 
 void Daemon::go() {
+#if defined(_WIN32)
+  cerr << "Background daemon logging is not supported on Windows." << endl;
+#else
   int fDesc = ::open(fname,O_WRONLY | O_CREAT | O_APPEND,
                      S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP);
   if (fDesc == -1) {
@@ -637,4 +650,5 @@ void Daemon::go() {
     return;
   }
   fd = fDesc;
+#endif
 }

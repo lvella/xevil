@@ -1,0 +1,169 @@
+#
+# XEvil(TM) Copyright (C) 1994,2000 Steve Hardt and Michael Judge
+# http://www.xevil.com
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or (at
+# your option) any later version.  See gpl.txt.
+#
+
+# makefile.win  --  cross-compile the native Windows build of XEvil 2.5:
+# a SINGLE self-contained xevil.exe (no DLLs, no asset folders, all audio
+# embedded), produced with mingw-w64 from the SAME sources as the Linux SDL
+# build (sdl/makefile).  Invoke from the repo root via `make windows`.
+#
+# HOW IT DIFFERS FROM sdl/makefile:
+#   * toolchain  = x86_64-w64-mingw32-{g++,gcc,windres}.
+#   * SDL2       = the committed STATIC devel copy in vendor/SDL2-mingw
+#                  (libSDL2.a) -- no SDL2.dll at runtime.
+#   * macros     = -DX11=1 -DSDL=1 -UWIN32.  mingw predefines WIN32 (the
+#                  codebase's MFC flag) AND _WIN32 (the real OS flag); -UWIN32
+#                  kills the MFC arms so the X11 arms stay live exactly like on
+#                  Linux, while genuine-OS code keys on _WIN32.  -DUSE_RANDOM is
+#                  omitted (mingw has no random()/srandom(); cmn falls back to
+#                  rand()/srand()).
+#   * link       = fully static (-static -static-libgcc -static-libstdc++) so
+#                  no libgcc/libstdc++/libwinpthread/SDL2 DLL is needed, plus
+#                  the SDL2 static recipe (sdl2-config --static-libs) + winsock
+#                  (-lws2_32) + the embedded-audio object + the icon resource.
+#   * objdir     = BUILD-WIN (cmn objects in BUILD-WIN/cmn) -- never shared
+#                  with the Linux SDL (BUILD) or X11 (x11/REDHAT_LINUX) trees.
+
+DEPTH       = ..
+OBJ_DIR     = BUILD-WIN
+CMN_OBJ_DIR = BUILD-WIN/cmn
+
+CROSS   = x86_64-w64-mingw32-
+CXX     = $(CROSS)g++
+CC      = $(CROSS)gcc
+WINDRES = $(CROSS)windres
+
+# Vendored static SDL2 (committed; see vendor/SDL2-mingw/VERSION.txt).
+SDL_DIR := $(DEPTH)/sdl/vendor/SDL2-mingw
+SDL_INC := -I$(SDL_DIR)/include
+
+# The static-link recipe, straight from the vendored `sdl2-config --static-libs`
+# (with -lSDL2 resolving to libSDL2.a since only the .a is vendored), plus
+# -lws2_32 for winsock (cmn networking) -- miniaudio's WASAPI deps (-lole32
+# -lwinmm) are already in the list.  -mwindows selects the GUI subsystem.
+SDL_STATIC_LIBS := -L$(SDL_DIR)/lib -lmingw32 -lSDL2main -lSDL2 -mwindows \
+                   -Wl,--dynamicbase -Wl,--nxcompat -Wl,--high-entropy-va \
+                   -lm -ldinput8 -ldxguid -ldxerr8 -luser32 -lgdi32 -lwinmm \
+                   -limm32 -lole32 -loleaut32 -lshell32 -lsetupapi -lversion \
+                   -luuid -lws2_32
+
+# Genuine single-file: statically link the C/C++ runtimes AND winpthread so the
+# only DLLs the exe imports are Windows system ones.
+STATIC_LINK := -static -static-libgcc -static-libstdc++
+
+# -DX11=1 flavor, -DSDL=1 frontend, -UWIN32 to kill the MFC arms.  No USE_RANDOM
+# (mingw lacks random()).  No USE_UINT_NET_LENGTH: winsock's accept()/recvfrom()
+# take an `int*` addrlen (glibc uses socklen_t == unsigned int, hence that flag
+# on Linux), so cmn's default `typedef int CMN_NET_LENGTH` is the correct one.
+COMMON_DEFS = -DX11=1 -DSDL=1 -UWIN32 -DXEVIL_KEYSET=UIlinux
+OPT         = -O2
+
+# -I$(DEPTH)/sdl FIRST so the swappable frontend headers resolve to the SDL
+# versions (matches sdl/makefile); vendored SDL2 include last.
+ALL_INCL_DIRS = -I$(DEPTH)/sdl -I$(DEPTH)/cmn -I$(DEPTH)/x11 \
+                -I$(DEPTH)/x11/bitmaps $(SDL_INC)
+
+# -fpermissive downgrades the ONLY new-on-Windows errors to warnings: the
+# codebase stashes small `ClassId` (a `long`) values inside `void*` closures and
+# reads them back.  On 64-bit Windows (LLP64) `long` is 32-bit while `void*` is
+# 64-bit, so the round-trip cast "loses precision" -- benign here because the
+# stored values are tiny class ids that fit in 32 bits (on 64-bit Linux's LP64
+# `long` is 64-bit so it never fired).  -Wno-int-to-pointer-cast silences the
+# matching reverse cast; -Wno-trigraphs silences the "??x" sequences inside the
+# compiled-in XPM pixel strings.
+PORT_QUIET     = -fpermissive -Wno-int-to-pointer-cast -Wno-trigraphs
+CMN_CFLAGS     = $(COMMON_DEFS) $(OPT) -Wno-deprecated -Wno-write-strings \
+                 $(PORT_QUIET)
+SDL_CFLAGS_ALL = $(COMMON_DEFS) $(OPT) -Wno-deprecated -Wno-write-strings \
+                 -Wno-delete-non-virtual-dtor $(PORT_QUIET)
+
+
+# ---- object lists (identical set to sdl/makefile) ----
+CMN_MODULES = actual area role utils streams xetp_basic xetp locator world \
+              ui_cmn game physical intel coord game_style id sound_cmn \
+              l_agreement
+CMN_OBJS    = $(patsubst %,$(CMN_OBJ_DIR)/%.o,$(CMN_MODULES))
+
+SDL_MODULES = xpm font xdata draw panel viewport dialog ui main
+SDL_OBJS    = $(patsubst %,$(OBJ_DIR)/%.o,$(SDL_MODULES))
+
+SOUND_OBJS  = $(OBJ_DIR)/sound.o $(OBJ_DIR)/miniaudio.o \
+              $(OBJ_DIR)/embedded_audio.o
+
+ICON_OBJ    = $(OBJ_DIR)/xevil_res.o
+
+SDL_HEADERS = xdata.h ui.h sound.h panel.h viewport.h font.h xpm.h dialog.h
+
+
+#### Default goal: the single-file Windows executable.
+all: $(OBJ_DIR)/xevil.exe
+	@echo "Directory sdl finished: $(OBJ_DIR)/xevil.exe"
+
+.DEFAULT_GOAL := all
+
+
+$(OBJ_DIR) $(CMN_OBJ_DIR):
+	@mkdir -p $@
+
+
+$(OBJ_DIR)/xevil.exe: $(CMN_OBJS) $(SDL_OBJS) $(SOUND_OBJS) $(ICON_OBJ)
+	$(CXX) $(OPT) $(STATIC_LINK) -o $@ \
+		$(CMN_OBJS) $(SDL_OBJS) $(SOUND_OBJS) $(ICON_OBJ) \
+		$(SDL_STATIC_LIBS)
+
+
+#### cmn/*.cpp -> BUILD-WIN/cmn/*.o  (SDL frontend headers, mingw)
+$(CMN_OBJ_DIR)/%.o: $(DEPTH)/cmn/%.cpp $(SDL_HEADERS) | $(CMN_OBJ_DIR)
+	$(CXX) $(CMN_CFLAGS) $(ALL_INCL_DIRS) -o $@ -c $<
+
+
+#### sdl/*.cpp -> BUILD-WIN/*.o
+$(OBJ_DIR)/%.o: %.cpp $(SDL_HEADERS) | $(OBJ_DIR)
+	$(CXX) $(SDL_CFLAGS_ALL) $(ALL_INCL_DIRS) -o $@ -c $<
+
+
+#### Reused x11 sound engine (embedded-audio path, no X includes).
+$(OBJ_DIR)/sound.o: $(DEPTH)/x11/sound.cpp $(DEPTH)/x11/sound.h \
+                    $(DEPTH)/x11/vendor/miniaudio.h embedded_audio.h | $(OBJ_DIR)
+	$(CXX) $(CMN_CFLAGS) -DXEVIL_EMBEDDED_AUDIO $(ALL_INCL_DIRS) \
+		-I$(DEPTH)/x11/vendor -o $@ -c $(DEPTH)/x11/sound.cpp
+
+#### miniaudio C implementation (auto-selects WASAPI on Windows).
+$(OBJ_DIR)/miniaudio.o: $(DEPTH)/x11/vendor/miniaudio.c \
+                        $(DEPTH)/x11/vendor/miniaudio.h | $(OBJ_DIR)
+	$(CC) -x c $(OPT) -I$(DEPTH)/x11/vendor -o $@ \
+		-c $(DEPTH)/x11/vendor/miniaudio.c
+
+
+#### Build-time embedded-audio table (all sounds baked into the binary).
+SOUND_ASSETS = $(wildcard $(DEPTH)/sounds/*.wav) $(wildcard $(DEPTH)/sounds/*.mp3)
+
+$(OBJ_DIR)/embedded_audio_data.c: gen_audio.py $(SOUND_ASSETS) | $(OBJ_DIR)
+	python3 gen_audio.py $(DEPTH)/sounds $@
+
+$(OBJ_DIR)/embedded_audio.o: $(OBJ_DIR)/embedded_audio_data.c embedded_audio.h \
+                             | $(OBJ_DIR)
+	$(CC) -x c -I$(DEPTH)/sdl -o $@ -c $<
+
+
+#### Application icon + version info.  The multi-size .ico is generated from the
+#### compiled-in XPM art (icon_xpm.h, which is already valid XPM syntax) by
+#### ImageMagick, then embedded via windres (-I $(OBJ_DIR) locates xevil.ico).
+$(OBJ_DIR)/xevil.ico: icon_xpm.h | $(OBJ_DIR)
+	convert icon_xpm.h -filter point \
+		-define icon:auto-resize=256,128,64,48,32,16 $@
+
+$(ICON_OBJ): win/xevil.rc $(OBJ_DIR)/xevil.ico | $(OBJ_DIR)
+	$(WINDRES) -I$(OBJ_DIR) -O coff win/xevil.rc $@
+
+
+clean:
+	/bin/rm -rf $(OBJ_DIR)
+
+.PHONY: all clean

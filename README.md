@@ -157,9 +157,49 @@ list.
 
 ---
 
-## Windows (WSL2)
+## Windows
 
-XEvil 2.5 builds and runs on **Windows 11 under WSL2** with no extra setup —
+There are two ways to play on Windows. **Option A is the easy one** — a single
+native `xevil.exe` you double-click. Option B (WSL2) is for people who already
+live in a Linux shell.
+
+### Option A — native `xevil.exe` (recommended)
+
+XEvil 2.5 ships as a **single, self-contained `xevil.exe`** for 64-bit Windows.
+There are no DLLs to install and no asset folders to keep beside it: every
+sprite, sound effect and music track is baked into the one file. Download it
+(or build it — below), then **double-click `xevil.exe`**. Click **Accept** on
+the license screen, pick a **Game style** and press **New Game**.
+
+- Settings and high scores are saved under `%APPDATA%\XEvil\` (that's
+  `C:\Users\<you>\AppData\Roaming\XEvil\`) as `.xevilrc` and `.xevil_scores`.
+- **F1** pauses (with a *PAUSED* overlay), **F11** toggles fullscreen, **Esc**
+  closes an overlay. Movement is the numeric keypad (or the arrow keys / WASD);
+  see [Controls](#controls) above and **Set Controls** in the menu.
+- No sound card? The audio engine detects that and plays silently — the game
+  still runs.
+- Handy flags from a Command Prompt: `xevil.exe -survival`,
+  `xevil.exe -human_class dragon`, `xevil.exe -fullscreen`, `xevil.exe -scale 2`,
+  `xevil.exe -help`.
+
+**Building `xevil.exe` yourself** (cross-compiled from these same sources with
+mingw-w64, on Linux or WSL2):
+
+```
+sudo apt install g++-mingw-w64-x86-64 imagemagick python3
+make windows          # -> sdl/BUILD-WIN/xevil.exe
+make dist-windows     # -> dist/xevil.exe + dist/XEvil-2.5-win64.zip
+```
+
+`make windows` produces the single static `xevil.exe` (SDL2, libgcc, libstdc++
+and all audio linked in). `make dist-windows` also drops the bare exe at
+`dist/xevil.exe` and wraps it with a short `README-WINDOWS.txt` into
+`dist/XEvil-2.5-win64.zip`. The committed static SDL2 lives in
+`sdl/vendor/SDL2-mingw`, so the cross-compile is reproducible.
+
+### Option B — WSL2 + WSLg
+
+The X11 build also runs on **Windows 11 under WSL2** with no extra setup —
 **WSLg** provides both the X display and audio out of the box. In a WSL2
 Ubuntu shell:
 

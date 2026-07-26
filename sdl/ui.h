@@ -185,6 +185,12 @@ private:
   /* EFFECTS: Largest integer scale (1..4) whose game window fits the desktop,
      for -fullscreen with no explicit -scale (mirrors x11/ui.cpp). */
 
+  static void clamp_scale_to_desktop();
+  /* EFFECTS: For an explicitly-requested -scale whose game window would exceed
+     the desktop, step scale down one level at a time until it fits, printing a
+     one-line stderr note per step (the screen-fit clamp x11/ui.cpp performs and
+     -help promises).  No-op if the desktop size is unknown or scale==1. */
+
   void toggle_fullscreen(int dpyNum);
   /* EFFECTS: F11 runtime toggle of desktop-fullscreen for one window. */
 

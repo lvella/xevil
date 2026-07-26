@@ -113,6 +113,182 @@ static const SoundName SOUND_TRACKS[] = {
 #define SOUND_TRACKS_NUM ((int)(sizeof(SOUND_TRACKS) / sizeof(SOUND_TRACKS[0])))
 
 
+#ifdef XEVIL_EMBEDDED_AUDIO
+// ------------------------------------------------------------------------- //
+// Embedded-assets path (the "single-file build").
+//
+// When built with -DXEVIL_EMBEDDED_AUDIO, every asset is a byte array compiled
+// into the binary (see sdl/gen_audio.py and the generated
+// embedded_audio_data.c) and reached through the manifest in embedded_audio.h.
+// A tiny in-RAM miniaudio VFS below feeds those bytes to the engine, so the
+// existing ma_sound_init_from_file(...,"chainsaw.wav",...) calls decode straight
+// from memory -- no sounds/ directory, no DLLs, no side files.  When the macro
+// is undefined (the X11 build) none of this compiles and the engine loads from
+// the sounds/ directory exactly as before.
+// ------------------------------------------------------------------------- //
+#include "embedded_audio.h"
+
+// Resolve an asset name (matched on its basename, so a resolver that prepends a
+// directory still hits) to its compiled-in bytes.  Returns False if unknown.
+static Boolean embedded_audio_lookup(const char *name,
+                                     const unsigned char **data,
+                                     unsigned int *len) {
+  const char *base = name;
+  for (const char *p = name; *p; p++) {
+    if (*p == '/' || *p == '\\') {
+      base = p + 1;
+    }
+  }
+  for (int i = 0; i < xevil_embedded_audio_count; i++) {
+    if (!strcmp(xevil_embedded_audio[i].name, base)) {
+      *data = xevil_embedded_audio[i].data;
+      *len = xevil_embedded_audio[i].len;
+      return True;
+    }
+  }
+  return False;
+}
+
+// One open in-memory asset: a read-only cursor over a compiled-in byte array.
+struct EmbeddedFile {
+  const unsigned char *data;
+  size_t size;
+  size_t cursor;
+};
+
+// XEVIL_SOUND_DEBUG, cached.  Lets the VFS announce (once-cached lookup) that a
+// play request was actually served from the compiled-in bytes -- the runtime
+// proof that audio lives inside the binary, not in any sounds/ directory.
+static Boolean embedded_vfs_debug() {
+  static int v = -1;
+  if (v < 0) {
+    const char *e = getenv("XEVIL_SOUND_DEBUG");
+    v = (e && !strcmp(e,"1")) ? 1 : 0;
+  }
+  return v ? True : False;
+}
+
+static ma_result embedded_vfs_open(ma_vfs *pVFS,const char *pFilePath,
+                                   ma_uint32 openMode,ma_vfs_file *pFile) {
+  (void)pVFS;
+  if (openMode & MA_OPEN_MODE_WRITE) {
+    return MA_INVALID_OPERATION;    // the embedded store is read-only
+  }
+  const unsigned char *data;
+  unsigned int len;
+  if (!embedded_audio_lookup(pFilePath,&data,&len)) {
+    return MA_DOES_NOT_EXIST;
+  }
+  if (embedded_vfs_debug()) {
+    fprintf(stderr,"XEVIL-SOUND: VFS serving embedded '%s' (%u bytes) from binary\n",
+            pFilePath,len);
+  }
+  EmbeddedFile *h = (EmbeddedFile *)malloc(sizeof(EmbeddedFile));
+  if (!h) {
+    return MA_OUT_OF_MEMORY;
+  }
+  h->data = data;
+  h->size = (size_t)len;
+  h->cursor = 0;
+  *pFile = (ma_vfs_file)h;
+  return MA_SUCCESS;
+}
+
+// Windows resource-manager paths may arrive wide; our asset names are pure
+// ASCII, so narrow each code unit and reuse the open above.  (Never taken on
+// the Linux build, but keeps the future mingw build working regardless of which
+// path miniaudio chooses.)
+static ma_result embedded_vfs_open_w(ma_vfs *pVFS,const wchar_t *pFilePath,
+                                     ma_uint32 openMode,ma_vfs_file *pFile) {
+  char narrow[SOUND_PATH_MAX];
+  size_t i = 0;
+  for (; pFilePath[i] && i < sizeof(narrow) - 1; i++) {
+    narrow[i] = (char)pFilePath[i];
+  }
+  narrow[i] = '\0';
+  return embedded_vfs_open(pVFS,narrow,openMode,pFile);
+}
+
+static ma_result embedded_vfs_close(ma_vfs *pVFS,ma_vfs_file file) {
+  (void)pVFS;
+  free((void *)file);
+  return MA_SUCCESS;
+}
+
+static ma_result embedded_vfs_read(ma_vfs *pVFS,ma_vfs_file file,void *pDst,
+                                   size_t sizeInBytes,size_t *pBytesRead) {
+  (void)pVFS;
+  EmbeddedFile *h = (EmbeddedFile *)file;
+  size_t remaining = h->size - h->cursor;
+  size_t toRead = (sizeInBytes < remaining) ? sizeInBytes : remaining;
+  if (toRead > 0) {
+    memcpy(pDst,h->data + h->cursor,toRead);
+    h->cursor += toRead;
+  }
+  if (pBytesRead) {
+    *pBytesRead = toRead;
+  }
+  // Mirror ma_default_vfs: end-of-file only when nothing at all could be read.
+  if (toRead == 0 && sizeInBytes > 0) {
+    return MA_AT_END;
+  }
+  return MA_SUCCESS;
+}
+
+static ma_result embedded_vfs_write(ma_vfs *pVFS,ma_vfs_file file,
+                                    const void *pSrc,size_t sizeInBytes,
+                                    size_t *pBytesWritten) {
+  (void)pVFS;
+  (void)file;
+  (void)pSrc;
+  (void)sizeInBytes;
+  if (pBytesWritten) {
+    *pBytesWritten = 0;
+  }
+  return MA_NOT_IMPLEMENTED;         // assets are read-only
+}
+
+static ma_result embedded_vfs_seek(ma_vfs *pVFS,ma_vfs_file file,
+                                   ma_int64 offset,ma_seek_origin origin) {
+  (void)pVFS;
+  EmbeddedFile *h = (EmbeddedFile *)file;
+  ma_int64 base;
+  if (origin == ma_seek_origin_current) {
+    base = (ma_int64)h->cursor;
+  } else if (origin == ma_seek_origin_end) {
+    base = (ma_int64)h->size;
+  } else {
+    base = 0;                        // ma_seek_origin_start
+  }
+  ma_int64 target = base + offset;
+  if (target < 0) {
+    return MA_BAD_SEEK;
+  }
+  if (target > (ma_int64)h->size) {
+    target = (ma_int64)h->size;
+  }
+  h->cursor = (size_t)target;
+  return MA_SUCCESS;
+}
+
+static ma_result embedded_vfs_tell(ma_vfs *pVFS,ma_vfs_file file,
+                                   ma_int64 *pCursor) {
+  (void)pVFS;
+  EmbeddedFile *h = (EmbeddedFile *)file;
+  *pCursor = (ma_int64)h->cursor;
+  return MA_SUCCESS;
+}
+
+static ma_result embedded_vfs_info(ma_vfs *pVFS,ma_vfs_file file,
+                                   ma_file_info *pInfo) {
+  (void)pVFS;
+  EmbeddedFile *h = (EmbeddedFile *)file;
+  pInfo->sizeInBytes = (ma_uint64)h->size;
+  return MA_SUCCESS;
+}
+#endif // XEVIL_EMBEDDED_AUDIO
+
+
 // All miniaudio state, hidden from the shared header so its 4MB include never
 // leaks into the rest of the build.
 struct SoundImpl {
@@ -122,6 +298,11 @@ struct SoundImpl {
   ma_sound music;
   Boolean musicActive;
   char soundDir[SOUND_PATH_MAX];
+#ifdef XEVIL_EMBEDDED_AUDIO
+  // VFS object handed to the engine's resource manager: a bare callbacks table
+  // (miniaudio casts the ma_vfs* straight to ma_vfs_callbacks*).
+  ma_vfs_callbacks embeddedVfs;
+#endif
 
   SoundImpl() {
     musicActive = False;
@@ -129,6 +310,17 @@ struct SoundImpl {
     for (int i = 0; i < SOUND_VOICES_MAX; i++) {
       voiceUsed[i] = False;
     }
+#ifdef XEVIL_EMBEDDED_AUDIO
+    memset(&embeddedVfs,0,sizeof(embeddedVfs));
+    embeddedVfs.onOpen  = embedded_vfs_open;
+    embeddedVfs.onOpenW = embedded_vfs_open_w;
+    embeddedVfs.onClose = embedded_vfs_close;
+    embeddedVfs.onRead  = embedded_vfs_read;
+    embeddedVfs.onWrite = embedded_vfs_write;
+    embeddedVfs.onSeek  = embedded_vfs_seek;
+    embeddedVfs.onTell  = embedded_vfs_tell;
+    embeddedVfs.onInfo  = embedded_vfs_info;
+#endif
   }
 };
 
@@ -243,7 +435,16 @@ void SoundManager::ensure_init() {
     return;
   }
 
-  if (ma_engine_init(NULL,&m_impl->engine) != MA_SUCCESS) {
+#ifdef XEVIL_EMBEDDED_AUDIO
+  // Assets are compiled into the binary; route the engine's resource manager
+  // through the in-RAM VFS so ma_sound_init_from_file() reads them by name.
+  ma_engine_config engineCfg = ma_engine_config_init();
+  engineCfg.pResourceManagerVFS = &m_impl->embeddedVfs;
+  ma_result initRes = ma_engine_init(&engineCfg,&m_impl->engine);
+#else
+  ma_result initRes = ma_engine_init(NULL,&m_impl->engine);
+#endif
+  if (initRes != MA_SUCCESS) {
     // Headless / no audio device.  Leave debug logging on, but produce no
     // audio.  This is the path that runs in CI.
     delete m_impl;
@@ -254,6 +455,32 @@ void SoundManager::ensure_init() {
   }
   m_engineOk = True;
 
+#ifdef XEVIL_EMBEDDED_AUDIO
+  // Nothing to locate: the assets live inside the binary.
+  m_impl->soundDir[0] = '\0';
+  m_haveAssets = True;
+
+  // One-time sweep: warn ONCE (not per file) if any expected asset is absent
+  // from the compiled-in manifest.
+  int missing = 0;
+  for (int name = 1; name < SOUND_FILES_NUM; name++) {
+    if (!SOUND_FILES[name]) {
+      continue;
+    }
+    const unsigned char *d;
+    unsigned int l;
+    if (!embedded_audio_lookup(SOUND_FILES[name],&d,&l)) {
+      missing++;
+    }
+  }
+  if (missing > 0) {
+    warn_once("some embedded sound assets are missing; those effects are disabled");
+  }
+  if (m_debug) {
+    fprintf(stderr,"XEVIL-SOUND: %d embedded audio assets available\n",
+            xevil_embedded_audio_count);
+  }
+#else
   // Locate the assets directory: first existing of the candidates.
   const char *envDir = getenv("XEVIL_SOUND_DIR");
   const char *candidates[4];
@@ -294,6 +521,7 @@ void SoundManager::ensure_init() {
   if (missing > 0) {
     warn_once("some sound files are missing; those effects are disabled");
   }
+#endif
 }
 
 
@@ -389,7 +617,12 @@ Boolean SoundManager::playSoundById(unsigned int p_soundid,int p_pan,
   }
 
   char path[SOUND_PATH_MAX];
+#ifdef XEVIL_EMBEDDED_AUDIO
+  // Bare asset name; the in-RAM VFS resolves it to the compiled-in bytes.
+  snprintf(path,sizeof(path),"%s",SOUND_FILES[p_soundid]);
+#else
   snprintf(path,sizeof(path),"%s/%s",m_impl->soundDir,SOUND_FILES[p_soundid]);
+#endif
 
   // Reclaim finished voices.
   for (int i = 0; i < SOUND_VOICES_MAX; i++) {
@@ -481,7 +714,12 @@ void SoundManager::playMidi(SoundName p_name,Boolean p_loop,int /*p_delay*/) {
   }
 
   char path[SOUND_PATH_MAX];
+#ifdef XEVIL_EMBEDDED_AUDIO
+  // Bare asset name; the in-RAM VFS resolves it to the compiled-in bytes.
+  snprintf(path,sizeof(path),"%s",file);
+#else
   snprintf(path,sizeof(path),"%s/%s",m_impl->soundDir,file);
+#endif
 
   ma_uint32 flags = MA_SOUND_FLAG_STREAM | MA_SOUND_FLAG_NO_SPATIALIZATION;
   if (ma_sound_init_from_file(&m_impl->engine,path,flags,NULL,NULL,

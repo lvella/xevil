@@ -87,6 +87,25 @@ ViewportCallback Ui::viewportCallbacks[VIEWPORT_CB_NUM] = {
 // SEPARATE from ~/.xevilrc so the shared cmn config writer (which rewrites the
 // whole rc on quit) never clobbers it, and the X11 build never sees SDL codes.
 static Boolean sdl_keys_path(char *out,int outLen) {
+#if defined(_WIN32)
+  // Windows has no $HOME; store alongside the cmn config in %APPDATA%\XEvil\
+  // (fallback %USERPROFILE%), creating the directory on first use.
+  const char *base = getenv("APPDATA");
+  if (!base || !*base) {
+    base = getenv("USERPROFILE");
+  }
+  if (!base || !*base) {
+    return False;
+  }
+  char dir[512];
+  const char *dsep = (base[strlen(base) - 1] == '\\') ? "" : "\\";
+  snprintf(dir,sizeof(dir),"%s%sXEvil",base,dsep);
+  if (!Utils::is_dir(dir)) {
+    Utils::mkdir(dir);
+  }
+  snprintf(out,outLen,"%s\\%s",dir,".xevil_sdl_keys");
+  return True;
+#else
   const char *home = getenv("HOME");
   if (!home || !*home) {
     return False;
@@ -94,6 +113,7 @@ static Boolean sdl_keys_path(char *out,int outLen) {
   const char *sep = (home[strlen(home) - 1] == '/') ? "" : "/";
   snprintf(out,outLen,"%s%s%s",home,sep,".xevil_sdl_keys");
   return True;
+#endif
 }
 
 
@@ -170,8 +190,12 @@ Ui::Ui(int *agc,char **agv,WorldP w,LocatorP l,char **d_names,
     largeViewport = (scale >= 2);
   }
   // -fullscreen with no explicit -scale: auto-pick the largest fitting scale.
+  // An EXPLICIT -scale (from -scale or the persisted config) is instead clamped
+  // down to fit the desktop, matching x11/ui.cpp and what -help promises.
   if (fullscreen && scaleWasUnset) {
     scale = pick_fullscreen_scale();
+  } else if (!scaleWasUnset) {
+    clamp_scale_to_desktop();
   }
   xvars.stretch = scale;
 
@@ -265,6 +289,40 @@ int Ui::pick_fullscreen_scale() {
     }
   }
   return 1;
+}
+
+
+
+// Estimated pixel size of the real SDL game window at integer scale `s`.
+// Mirrors Viewport::layout(): arena is (26+2*2)*16 x (16+0)*16 == 480x256 world
+// pixels times `s`; below/above it sit chrome rows of height rowH == the f6x13
+// cell (13px) scaled plus panel padding (== TextPanel::get_unit height).  The
+// real window uses menuRows(1..2)+5 rows; we assume the 2-row (wrapped) menu bar
+// as a safe upper bound so a clamped window always leaves the menu bar on-screen.
+static void sdl_scale_window_size(int s,int *w,int *h) {
+  int rowH = 13 * s + 2 * PANEL_BORDER + 2 * PANEL_MARGAIN * s;   // == get_unit
+  *w = 480 * s;
+  *h = 256 * s + (2 + 5) * rowH;
+}
+
+
+void Ui::clamp_scale_to_desktop() {
+  SDL_DisplayMode dm;
+  if (SDL_GetDesktopDisplayMode(0,&dm) != 0 || dm.w <= 0 || dm.h <= 0) {
+    return;   // desktop size unknown -- don't second-guess the requested scale
+  }
+  while (scale > 1) {
+    int winW, winH;
+    sdl_scale_window_size(scale,&winW,&winH);
+    if (winW <= dm.w && winH <= dm.h) {
+      break;
+    }
+    int prev = scale;
+    scale--;
+    cerr << "XEvil: -scale " << prev << " window (" << winW << "x" << winH
+         << ") exceeds the " << dm.w << "x" << dm.h
+         << " desktop; using -scale " << scale << "." << endl;
+  }
 }
 
 

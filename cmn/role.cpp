@@ -53,6 +53,24 @@
 
 using namespace std;
 
+
+// Genuine-OS: winsock refuses every socket call until WSAStartup() has run.
+// Call this once before any socket() on Windows; idempotent and a no-op on
+// every other platform.  (WSACleanup is intentionally omitted: the process
+// exits when the game quits, and Windows reclaims the winsock state then --
+// matching how single-file games ship.)
+static void xevil_net_init() {
+#if defined(_WIN32)
+  static Boolean started = False;
+  if (!started) {
+    WSADATA wsaData;
+    if (WSAStartup(MAKEWORD(2,2),&wsaData) == 0) {
+      started = True;
+    }
+  }
+#endif
+}
+
 /////////////////////////////////////////////////////////////////////////////
 //  Different Roles: StandAlone, Client, and Server
 /////////////////////////////////////////////////////////////////////////////
@@ -124,16 +142,21 @@ void Role::yield_time(CMN_TIME startTime,int quanta) {
   int msec = compute_remaining(waitTime,startTime,quanta);
   
   if (waitTime.tv_usec > 0) {
-#if WIN32
-	  SleepEx(msec,FALSE);
-#endif
-#if X11
+    // Genuine-OS: winsock's select() requires at least one socket in an fd_set,
+    // so it cannot be used as a bare sub-second sleep the way POSIX select()
+    // can (doing so returns WSAEINVAL and floods "Error with select.").  Use
+    // Sleep() on Windows; keep the select()-as-sleep on real POSIX.
+#if defined(_WIN32)
+    Sleep(msec);
+#elif X11
     if (CMN_SELECT(0,NULL,NULL,NULL,&waitTime) < 0) {
       error("Error with select.");
       // Could force some sort of exit() here.
     }
+#elif WIN32
+    SleepEx(msec,FALSE);
 #endif
-  } 
+  }
 }
 
 
@@ -585,6 +608,8 @@ Client::Client(char *sName,char *portName,CMN_PORT clientPrt,char *hName,
   else {
     clientPortBase = clientPrt;
   }
+
+  xevil_net_init();
 
   if (gethostname(hostName,R_NAME_MAX)) {
     error("Unable to get local machine's hostname.");
@@ -1819,7 +1844,11 @@ void Server::run() {
   //
   // Server object must still be usable even if we return from an error.
 
-#if X11
+  xevil_net_init();
+
+  // Genuine-OS: SIGPIPE does not exist on Windows (a dead peer surfaces as
+  // WSAECONNRESET from send()), so only ignore it on POSIX.
+#if X11 && !defined(_WIN32)
   signal(SIGPIPE,SIG_IGN);
 #endif
 

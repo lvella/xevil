@@ -122,6 +122,36 @@ tildaclean:
 sdl:
 	cd $(DEPTH)/sdl; $(MAKE)
 
+## Native Windows port.  Cross-compiles the SAME sources as `make sdl` with
+## mingw-w64 into a SINGLE self-contained sdl/BUILD-WIN/xevil.exe: statically
+## linked (no SDL2/libgcc/libstdc++/winpthread DLLs), all audio embedded, GUI
+## subsystem, with the XEvil icon.  Needs g++-mingw-w64-x86-64, ImageMagick
+## (`convert`) for the icon, and the committed static SDL2 in
+## sdl/vendor/SDL2-mingw.  x11-independent -- never touches the X11 build.
+.PHONY: windows
+windows:
+	cd $(DEPTH)/sdl; $(MAKE) -f makefile.win
+
+## Package the native Windows build for release.  Builds xevil.exe (via the
+## `windows` target), drops the bare single-file executable at dist/xevil.exe
+## (ready to double-click or send as-is), and wraps it together with
+## dist/README-WINDOWS.txt into dist/XEvil-2.5-win64.zip.  The exe ALONE is
+## sufficient -- the zip is a courtesy wrapper (quickstart + GPL/source notice).
+## The archive is built with `python3 -m zipfile` (python3 is already a build
+## dependency via gen_audio.py), so no `zip` binary is required.
+DIST_DIR = $(DEPTH)/dist
+WIN_EXE  = $(DEPTH)/sdl/BUILD-WIN/xevil.exe
+
+.PHONY: dist-windows
+dist-windows: windows
+	@mkdir -p $(DIST_DIR)
+	cp $(WIN_EXE) $(DIST_DIR)/xevil.exe
+	@rm -f $(DIST_DIR)/XEvil-2.5-win64.zip
+	cd $(DIST_DIR) && python3 -m zipfile -c XEvil-2.5-win64.zip \
+		xevil.exe README-WINDOWS.txt
+	@echo "dist-windows: wrote $(DIST_DIR)/XEvil-2.5-win64.zip"
+	@echo "              and the bare $(DIST_DIR)/xevil.exe"
+
 #.SUFFIXES: .C .o
 #.C.o: $*.C
 #	$(CC) $(DEBUG_OPT) $(CFLAGS) $(INCL_DIRS) -o $*.o -c $*.C 

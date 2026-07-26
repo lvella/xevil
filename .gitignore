@@ -3,3 +3,22 @@ x11/DEBUG/
 x11/release/
 *.o
 core
+
+# Generated embedded-audio table (~118MB of C byte arrays, produced from
+# sounds/*.wav + sounds/*.mp3 by sdl/gen_audio.py at build time).  NEVER commit;
+# it is regenerated into sdl/BUILD on every build.
+sdl/BUILD/embedded_audio_data.c
+sdl/BUILD/embedded_audio_data.c.tmp
+
+# The whole Windows (mingw) build tree: the ~48MB single-file xevil.exe, the
+# generated embedded_audio_data.c, the generated icon, and all objects.  All
+# reproducible via `make windows`; never commit.  (The STATIC SDL2 devel copy
+# under sdl/vendor/SDL2-mingw IS committed -- see that dir -- for reproducible
+# cross-compiles.)
+sdl/BUILD-WIN/
+
+# Packaged Windows release artifacts produced by `make dist-windows`: the
+# single-file exe (~48MB) and the zip.  Reproducible; never commit.  The
+# tracked dist/README-WINDOWS.txt (the zip's text companion) is kept.
+dist/xevil.exe
+dist/*.zip

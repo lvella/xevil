@@ -1922,7 +1922,27 @@ char *Game::choose_ranking(int rawKills) {
 
 
 // Build "$HOME/<basename>" into out.  Returns False if HOME is unavailable.
+// On Windows (mingw) there is no $HOME, so persist config/scores/keys under
+// %APPDATA%\XEvil\ (falling back to %USERPROFILE%), creating the directory on
+// first use.  Every other platform keeps the exact original $HOME behavior.
 static Boolean xevil_home_path(char* out,int outLen,const char* basename) {
+#if defined(_WIN32)
+  const char* base = getenv("APPDATA");
+  if (!base || !*base) {
+    base = getenv("USERPROFILE");
+  }
+  if (!base || !*base) {
+    return False;
+  }
+  char dir[512];
+  const char* dsep = (base[strlen(base) - 1] == '\\') ? "" : "\\";
+  snprintf(dir,sizeof(dir),"%s%sXEvil",base,dsep);
+  if (!Utils::is_dir(dir)) {
+    Utils::mkdir(dir);
+  }
+  snprintf(out,outLen,"%s\\%s",dir,basename);
+  return True;
+#else
   const char* home = getenv("HOME");
   if (!home || !*home) {
     return False;
@@ -1930,6 +1950,7 @@ static Boolean xevil_home_path(char* out,int outLen,const char* basename) {
   const char* sep = (home[strlen(home) - 1] == '/') ? "" : "/";
   snprintf(out,outLen,"%s%s%s",home,sep,basename);
   return True;
+#endif
 }
 
 

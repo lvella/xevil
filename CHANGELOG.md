@@ -84,6 +84,33 @@ release, **XEvil 2.02** (Steve Hardt & Michael Judge, 2000). Grouped by area.
   of the box).
 - Normal quit now `exit(0)`s cleanly.
 
+### Native Windows port (Wave 4)
+- A **single self-contained `xevil.exe`** for 64-bit Windows, cross-compiled
+  from the *same* sources as the Linux build with **mingw-w64**. No DLLs, no
+  asset folders: SDL2, libgcc, libstdc++ and **all 26 sound effects + 9 music
+  tracks are statically linked / embedded into the one file** (~48 MB). Copy it
+  anywhere and double-click.
+- New **SDL2 front end** (`sdl/`) — a portable, X11-independent frontend the
+  engine renders through, so the identical `cmn/` engine drives both the Linux
+  `xevil-sdl` and the Windows `xevil.exe`. The classic X11/Xlib build is
+  untouched and remains the default `make` target.
+- Genuine-OS code keyed on `_WIN32` for the port: **winsock2** sockets
+  (`WSAStartup`/`closesocket`, `-lws2_32`), `rand()` in place of `random()`,
+  `SIGPIPE` guarded out, and config/scores relocated to **`%APPDATA%\XEvil\`**
+  (`.xevilrc`, `.xevil_scores`) when there is no `$HOME`. The MFC `WIN32` flag
+  is neutralized with `-UWIN32` so the X11-flavor arms stay live, exactly as on
+  Linux.
+- Audio auto-selects **WASAPI** via miniaudio on Windows, with the same
+  graceful silent fallback when no audio device is present.
+- Build targets: **`make windows`** (cross-compile the exe) and
+  **`make dist-windows`** (package `dist/xevil.exe` + `dist/XEvil-2.5-win64.zip`
+  with a `README-WINDOWS.txt`). The static SDL2 devel copy is vendored under
+  `sdl/vendor/SDL2-mingw` for reproducible builds.
+- Verified end-to-end under Wine: license → New Game → difficulty → play (move,
+  climb, grab, fire weapons), F1 pause, Help, chat, death → game over → high
+  score written, restart, clean quit; plus `-survival`, `-human_class dragon`,
+  `-fullscreen`/F11 and `-scale` clamping.
+
 ### Bug fixes (carried over from the 2.5 modernization)
 - `Item::dieMessage` changed from `Boolean` to the `MESSAGE` enum, so destroyed
   items say *"is destroyed."* again.
