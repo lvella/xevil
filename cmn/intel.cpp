@@ -1194,7 +1194,11 @@ Boolean Machine::nearest_human_pos(PhysicalP p,Pos &result) {
     HumanP human = locator->get_human(h);
     if (human && human->alive()) {
       PhysicalP body = locator->lookup(human->get_id());
-      if (body && body->is_creature()) {
+      // Cloaked humans vanish from the AI, exactly as choose_target already
+      // filters them (Can cast to MovingP because is_creature()).  Never hunt
+      // a target we cannot see -- restores the classic "you vanish" feel.
+      if (body && body->is_creature() &&
+          !((MovingP)body)->is_invisible()) {
         Pos hisMiddle = body->get_area().get_middle();
         int dist2 = myMiddle.distance_2(hisMiddle);
         if (!found || dist2 < bestDist2) {

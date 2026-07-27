@@ -22,3 +22,5 @@ sdl/BUILD-WIN/
 # tracked dist/README-WINDOWS.txt (the zip's text companion) is kept.
 dist/xevil.exe
 dist/*.zip
+sdl/BUILD/
+sdl/BUILD-WIN/

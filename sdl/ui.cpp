@@ -1165,18 +1165,29 @@ Viewport *Ui::viewport_on_display(int d) {
 void Ui::pre_clock() {
   otherInput = False;
 
-  // Route arena messages (level titles, kill notices) to ALL viewports so both
-  // local players see them.
+  // Route arena messages to viewports.  Non-exclusive messages (level titles,
+  // kill notices) go to ALL viewports so both local players see them.  An
+  // exclusive message is addressed to one intel (via msgTarget) and goes ONLY
+  // to the viewport whose registered intel matches -- otherwise machine/enemy-
+  // directed messages (e.g. "Non-Biological Creatures Cannot Use Drugs") would
+  // leak onto the player's screen.  Matches x11/ui.cpp.
   if (!pause) {
     char *arenaMsg;
+    Boolean exclusive;
     do {
       IntelId msgTarget;
       Quanta time;
       Boolean propagate;
-      locator->arena_message_deq(&arenaMsg,msgTarget,time,propagate);
+      exclusive = locator->arena_message_deq(&arenaMsg,msgTarget,time,propagate);
       if (arenaMsg) {
         for (int i = 0; i < viewportsNum; i++) {
-          if (viewports[i]) viewports[i]->set_arena_message(arenaMsg,time);
+          if (!viewports[i]) continue;
+          IntelP intel = viewports[i]->get_intel();
+          if (!exclusive || (intel && intel->get_intel_id() == msgTarget)) {
+            viewports[i]->set_arena_message(arenaMsg,time);
+            // Found the sole target of an exclusive message; stop scanning.
+            if (exclusive) break;
+          }
         }
         delete arenaMsg;
       }
