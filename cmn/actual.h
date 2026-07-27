@@ -754,6 +754,10 @@ class Bomb: public Animated {
 
   virtual Boolean is_bomb();
 
+  Boolean is_active() {return active;}
+  /* EFFECTS: True once armed (counting down).  Lets an AI holder tell an
+     armed bomb (which it should drop right now) from a fresh one. */
+
   virtual void set_quiet_death();
 
   virtual void die();
@@ -781,8 +785,11 @@ class Bomb: public Animated {
 
 
 
-// A Proximity Mine.  An Animated item that is placed with use(), arms after a
-// short delay, and detonates when any OTHER living Creature comes near.
+// A Proximity Mine.  A free mine is INERT and safe: it never arms on its own
+// and is picked up like any other item.  use() plants a fresh mine at the
+// user's feet, which stays dormant (harmless) through a short ARM grace period
+// so the placer can walk clear, then arms and detonates when ANY living
+// Creature -- the placer included, once armed -- comes near.
 class Mine: public Animated {
  public:
   Mine(WorldP w,LocatorP l,const Pos &pos);
@@ -793,14 +800,15 @@ class Mine: public Animated {
   static PhysicalP create(void *,WorldP,LocatorP,const Pos &);
 
   virtual void use(PhysicalP p);
-  /* NOTE: p can be NULL.  Places and starts arming the mine. */
+  /* NOTE: p can be NULL.  Plants a fresh, dormant mine at p's feet (the ARM
+     grace period keeps it harmless at first) and consumes this held one. */
 
   virtual void act();
 
   virtual void collide(PhysicalP other);
-  /* EFFECTS: An armed mine detonates the instant a living Creature (other than
-     the placer) touches it -- catches fast movers that skip between the
-     per-turn proximity samples. */
+  /* EFFECTS: An armed mine detonates the instant a living Creature touches it
+     -- catches fast movers that skip between the per-turn proximity samples.
+     A dormant (grace-period) mine is harmless. */
 
   virtual void set_quiet_death();
 
@@ -818,11 +826,15 @@ class Mine: public Animated {
  private:
   static void init_x(Xvars&,IXCommand command,void* arg);
 
+  void plant(PhysicalP placerP);
+  /* EFFECTS: Turn this free mine into a deployed one: start the ARM grace
+     period (dormant, harmless), record the placer, and make it un-takeable. */
+
   static AnimatedXdata xdata;
   Timer armTimer;
-  Boolean active;
-  Boolean armed;
-  Id placer; // Only valid if placed via use().
+  Boolean active;  // True once planted via use(); a free mine is never active.
+  Boolean armed;   // True once the ARM grace period has elapsed.
+  Id placer;       // Only valid if planted (active).
   Boolean defused;
   static Stats stats;
 };

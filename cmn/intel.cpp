@@ -71,6 +71,13 @@ using namespace std;
 #define DEFAULT_REFLEXES_TIME 4 // for seals, enemies, doppelgangers
 #define PET_REFLEXES_MULTIPLIER 0.5 // better than average.
 #define DROP_ITEM_CHANCE 50
+// Smart enemies (smartness >= 1, i.e. hard+) fumble items far less often, so
+// they actually keep and deploy their mines/bombs/doppelgangers.  Classic
+// clumsiness (1/DROP_ITEM_CHANCE) is untouched at trivial/normal.
+#define SMART_DROP_ITEM_CHANCE 200
+// How close a valid enemy must be before a Machine will plant a mine or a bomb.
+#define MINE_PLANT_RANGE 150
+#define BOMB_PLANT_RANGE 150
 #define DOPPEL_SUICIDE_TIME (60 * 25) // 60 sec
 #define REFLEXES_TWEAK_CHANCE 20
 // If in the same place for this many cycles, (cycles == turns * reflexes),
@@ -1959,23 +1966,68 @@ void Machine::use_items(Boolean &commandSet,PhysicalP p) {
     // else, don't wipe out the current protection.
   }
 
-#if 0  //haven't tested it with the Holder logic
-  // Careful with Aliens.
+  // Use Doppelganger.  Restored and repaired from the 2000-era code that was
+  // #if 0'd out ("haven't tested it with the Holder logic"): fixed to compile
+  // against get_item_current()/holder, guarded on doppelUser (so classes that
+  // cannot spawn a slave don't spin uselessly), and verified against DoppelIntel
+  // -- a machine that uses a Doppel gets a working slave copy of itself, and
+  // nothing breaks when the master dies with its slave still alive or when the
+  // slave's limitedLifespan runs out.
+  if (!commandSet && p->get_ability(AB_User) &&
+      p->get_context()->doppelUser &&
+      has_item(holder,A_Doppel)) {
+    PhysicalP item = holder->get_item_current();
+    if (item && item->get_class_id() == A_Doppel) {
+      p->set_command(IT_ITEM_USE);
+    }
+    else {
+      p->set_command(IT_ITEM_CHANGE);
+    }
+    commandSet = True;
+  }
 
-  // Use Doppel.
-  if (!commandSet && p->get_holder()) && p->is_moving() && 
-      has_item(p,A_Doppel))
-	{
-      PhysicalP item = p->get_item_current();
-      if (item && item->get_class_id() == A_Doppel) {
+  // Plant a mine.  If we hold one and a valid enemy is close, drop it right at
+  // our feet (Mine::use plants a fresh, dormant mine); our normal movement then
+  // carries us out of range before the arm grace period ends.
+  if (!commandSet && p->get_ability(AB_User) && has_item(holder,A_Mine)) {
+    Boolean mineEnemy = False;
+    choose_target(mineEnemy,p,MINE_PLANT_RANGE);
+    if (mineEnemy) {
+      PhysicalP item = holder->get_item_current();
+      if (item && item->get_class_id() == A_Mine) {
         p->set_command(IT_ITEM_USE);
       }
       else {
         p->set_command(IT_ITEM_CHANGE);
       }
-      commandSet = TRUE;
-	}
-#endif		
+      commandSet = True;
+    }
+  }
+
+  // Plant a bomb.  Arm it (classic Bomb::use) when a valid enemy is close, then
+  // drop the now-live bomb on the following tick so it counts down where it
+  // lands rather than in our hands.  Machines finally use the bomb.
+  if (!commandSet && p->get_ability(AB_User) && has_item(holder,A_Bomb)) {
+    PhysicalP item = holder->get_item_current();
+    if (item && item->get_class_id() == A_Bomb && ((Bomb*)item)->is_active()) {
+      // Already armed -- get rid of it now.
+      p->set_command(IT_ITEM_DROP);
+      commandSet = True;
+    }
+    else {
+      Boolean bombEnemy = False;
+      choose_target(bombEnemy,p,BOMB_PLANT_RANGE);
+      if (bombEnemy) {
+        if (item && item->get_class_id() == A_Bomb) {
+          p->set_command(IT_ITEM_USE);
+        }
+        else {
+          p->set_command(IT_ITEM_CHANGE);
+        }
+        commandSet = True;
+      }
+    }
+  }
 
   // Use Cloak.
   if (!commandSet && p->get_ability(AB_User) &&   // Carrier can't use cloak.
@@ -2004,13 +2056,18 @@ void Machine::use_items(Boolean &commandSet,PhysicalP p) {
     commandSet = True;
   }
 
-  // Randomly drop items after holding them for a while.
-  if (!commandSet && 
+  // Randomly drop items after holding them for a while.  Smart enemies (hard+)
+  // fumble far less often (1/SMART_DROP_ITEM_CHANCE) so they hang onto their
+  // mines/bombs/doppelgangers long enough to actually use them; classic
+  // clumsiness (1/DROP_ITEM_CHANCE) is unchanged at trivial/normal.
+  int dropChance =
+    (Enemy::get_smartness() >= 1) ? SMART_DROP_ITEM_CHANCE : DROP_ITEM_CHANCE;
+  if (!commandSet &&
       holder->get_items_num() > 0 &&
-      // If User/Carrier has > 0 items, one should always be current, but 
+      // If User/Carrier has > 0 items, one should always be current, but
       // this is not ALWAYS true.  See comments in class Holder.
-      holder->get_item_current() && 
-      (Utils::choose(DROP_ITEM_CHANCE) == 0)) {
+      holder->get_item_current() &&
+      (Utils::choose(dropChance) == 0)) {
     p->set_command(IT_ITEM_DROP);
     commandSet = True;
   }      

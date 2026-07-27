@@ -20,25 +20,30 @@
  */
 
 
-// "mine.bitmaps"  A Proximity Mine.  An Animated item (like the Bomb) that a
-// player drops with use().  It arms after a short delay, then detonates in an
-// Explosion the moment any OTHER living Creature strays too close.  The art is
-// a blinking red recolor of the Bomb (mine_25 lit, mine_25b dark).  See Mine
-// in actual.cpp.
+// "mine.bitmaps"  A Proximity Mine.  A free mine is inert and safe to pick up
+// like any item.  When a Creature use()s it, the mine is planted at the placer's
+// feet: it stays dormant (a dull gray-red saucer) through a short ARM grace
+// period so the placer can walk clear, then arms -- a bright red light blinks
+// and it detonates in an Explosion the moment ANY living Creature (the placer
+// included, once armed) strays too close.  The art is a distinct low saucer
+// disc with feet and a warning light -- NOT a recolor of the Bomb, and with no
+// digits.  Frame 0 = dormant (static, mine_dormant).  Frame 1 = armed (blinks
+// mine_lit / mine_dormant).  See Mine in actual.cpp.
 
 
 #if X11
-#include "gen_xpm/mine/mine_25.xpm"
-#include "gen_xpm/mine/mine_25b.xpm"
+#include "gen_xpm/mine/mine_dormant.xpm"
+#include "gen_xpm/mine/mine_lit.xpm"
 #endif
 
 
 
-#define MINE_ARM_TIME 30
+#define MINE_ARM_TIME 50   /* ~2s @ 25 turns/s: dormant, harmless grace period */
 #define MINE_TRIGGER_RADIUS 40
 #define MINE_EXPLOSION_RADIUS 70
 #define MINE_EXPLOSION_DAMAGE_MAX 300
-#define MINE_FRAME 0
+#define MINE_FRAME_DORMANT 0
+#define MINE_FRAME_ARMED 1
 
 
 
@@ -105,7 +110,8 @@ const AnimatedContext Mine::context =
          0,0,
          0,0,
          0,0,
-         2,},   /* CO_R (frame 0): blinks between the two frames */
+         1,   /* CO_R    (frame 0 = dormant): single static image */
+         2,}, /* CO_DN_R_R (frame 1 = armed): blinks lit / off */
 
         /* sizes */
         {{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},
@@ -121,7 +127,8 @@ const AnimatedContext Mine::context =
          {0,0},{0,0},
          {0,0},{0,0},
          {0,0},{0,0},
-         {14,13},},   /* CO_R (index 25) */
+         {14,8},   /* CO_R    (index 25, dormant) */
+         {14,8},}, /* CO_DN_R_R (index 26, armed)  */
 
         /* offsets */
         {{0}},
@@ -140,8 +147,9 @@ const AnimatedContext Mine::context =
          {0},{0},
          {0},{0},
          {0},{0},
-         {CMN_ID(mine_25,IDB_HIMINE0),
-          CMN_ID(mine_25b,IDB_HIMINEBLK)},   /* CO_R (index 25) */
+         {CMN_ID(mine_dormant,IDB_HIMINE0)},   /* index 25 (dormant) */
+         {CMN_ID(mine_lit,IDB_HIMINE1),
+          CMN_ID(mine_dormant,IDB_HIMINE0)},   /* index 26 (armed: blink) */
         },
 
         /* maskBits */
@@ -162,7 +170,7 @@ const AnimatedContext Mine::context =
           True, /* potentialOtherItem */
           .0003f, /* objectWorldPercent */
           0, /* levelMaxTimes */
-          {14,13}, /* sizeMax */
+          {14,8}, /* sizeMax */
           Mine::create, /* create */
           False, /* statsCreations */
           True, /* statsUses */

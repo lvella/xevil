@@ -25,7 +25,9 @@ last official release (2.02, Steve Hardt & Michael Judge, 2000).
   restored to the rotation at last.
 - **Five new weapons:** the **Shotgun** (3-shell spread), the **Railgun**
   (piercing rail shot), the **Cryo Ray** (freezes what it hits), the
-  **Proximity Mine** (arms, blinks, and detonates when something gets close),
+  **Proximity Mine** (safe on the ground — *place it* with your item key to
+  arm; it lies dormant while you back clear, then detonates when anything
+  strays near),
   and the **Singularity** — a lobbed **WOOB** that anchors, drags everything
   nearby into its collapse, and explodes. Its collapse is voiced by WOOB.WAV,
   an audio file that was orphaned in the original Windows resources and never
@@ -42,8 +44,12 @@ last official release (2.02, Steve Hardt & Michael Judge, 2000).
   every fifth) and **Boss Rush** (a Fire Demon / Dragon / Yeti gauntlet).
 - **Smarter enemies on the hard settings:** on *hard* and *bend-over* the AI
   weighs distance when picking targets, checks line of sight before firing,
-  leads moving targets, and actively hunts the humans. *Trivial* and *normal*
-  play exactly as they always did.
+  leads moving targets, and actively hunts the humans. Holding onto their loot
+  instead of fumbling it, they now **deploy the items they carry** — planting
+  mines and bombs when you close in, and casting a **doppelganger** slave of
+  themselves (a machine ability restored from code left dormant since 2000).
+  *Trivial* and *normal* enemies still fumble their items quickly and otherwise
+  play as they always did.
 - **Six handcrafted worlds** in `worlds/` and an integer **display scale**
   (`-scale`) for modern/HiDPI screens.
 - **Quality of life:** a visible **PAUSED** overlay on **F1**, a persistent

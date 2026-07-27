@@ -1530,13 +1530,22 @@ TickType Locator::compute_tick_type(PhysicalP p,IntelP relativeTo) {
     else {
       tt = TICK_NEUTRAL;
 
-      // Slaves of other humans should have the tick mark of a human.
+      // A slave (e.g. a doppelganger) takes a tick mark based on its master.
+      // Slaves of other humans read as human; slaves of an enemy Machine read
+      // as an enemy (they are hostile to the player).  Historically this
+      // assert()ed the master was human because only players used Doppels; now
+      // that Machines use them too, handle a non-human master gracefully.
       IntelP pMaster = lookup(((MachineP)intel)->get_master_intel_id());
       if (pMaster) {
-        assert(pMaster->is_human());
-        if (pMaster != relativeTo) {
-          tt = TICK_HUMAN;
+        if (pMaster->is_human()) {
+          if (pMaster != relativeTo) {
+            tt = TICK_HUMAN;
+          }
         }
+        else if (pMaster->is_enemy()) {
+          tt = TICK_ENEMY;
+        }
+        // else: slave of a neutral Machine stays TICK_NEUTRAL.
       }
     }
   }

@@ -1363,7 +1363,12 @@ void Doppel::use(PhysicalP p) {
 	WorldP world = get_world();
 	LocatorP locator = get_locator();
 	IntelP masterIntel = p->get_intel();
-	
+
+	if (getenv("XEVIL_ITEM_DEBUG")) {
+	  cerr << "XEVIL-ITEM: " << (masterIntel ? masterIntel->get_name() : "?")
+	       << " uses a doppelganger" << endl;
+	}
+
 	PhysicalP obj = create_physical(p->get_area(),p);
 
 	NeutralP neutral = 
@@ -1959,6 +1964,12 @@ Boolean Bomb::is_bomb() {
 
 
 void Bomb::use(PhysicalP bomberP) {
+  if (!active && getenv("XEVIL_ITEM_DEBUG")) {
+    cerr << "XEVIL-ITEM: "
+         << ((bomberP && bomberP->get_intel()) ?
+             bomberP->get_intel()->get_name() : "?")
+         << " arms a bomb" << endl;
+  }
   if (!active) {
     frame = BOMB_FRAME_ACTIVE;
     timer.set();
@@ -2051,9 +2062,8 @@ Stats Bomb::stats;
 
 
 Mine::Mine(WorldP w,LocatorP l,const Pos &p) :
-Animated(context,xdata,w,l,p,MINE_FRAME)
+Animated(context,xdata,w,l,p,MINE_FRAME_DORMANT)
 {
-  armTimer.set(MINE_ARM_TIME);
   active = False;
   armed = False;
   defused = False;
@@ -2073,33 +2083,68 @@ DEFINE_CREATE_FROM_STREAM(Mine)
 
 
 
-void Mine::use(PhysicalP placerP) {
-  if (!active) {
-    active = True;
-    armTimer.set(MINE_ARM_TIME);
-  }
+void Mine::plant(PhysicalP placerP) {
+  // Turn a free mine into a deployed one.  It stays dormant and harmless while
+  // the ARM grace timer runs (see act()), giving the placer time to leave.
+  active = True;
+  armed = False;
+  armTimer.set(MINE_ARM_TIME);
   if (placerP) {
     placer = placerP->get_id();
-    // Don't let the placer immediately re-collide with / re-take the mine.
+    // The mine spawns overlapping the placer; without this the collision
+    // solver would shove the light mine far away.  Proximity detonation in
+    // act() is a spatial query, so the placer is still "included once armed".
     set_dont_collide(placer);
   }
+  // A deployed mine is no longer a takeable item.
   set_cant_take();
-  Animated::use(placerP);
+  set_frame(MINE_FRAME_DORMANT);
+  set_frame_next(MINE_FRAME_DORMANT);
+}
+
+
+
+void Mine::use(PhysicalP placerP) {
+  // Plant a fresh mine at the user's feet and consume this held one.  A free
+  // (unheld, un-used) mine is inert, so all arming happens through here.
+  WorldP world = get_world();
+  LocatorP locator = get_locator();
+
+  Pos middle;
+  if (placerP) {
+    middle = placerP->get_area().get_middle();
+  }
+  else {
+    middle = get_area().get_middle();
+  }
+
+  // Spawn centered on the placer; gravity settles it to their feet.
+  Mine *placed = new Mine(world,locator,middle - 0.5f * get_size_max());
+  assert(placed);
+  placed->plant(placerP);
+  locator->add(placed);
+
+  // Announce the plant on the placer's own screen only.
+  if (placerP && placerP->get_intel()) {
+    ostrstream msg;
+    msg << placerP->get_intel()->get_name() << " plants a mine." << ends;
+    locator->arena_message_enq(msg.str(),placerP);
+    if (getenv("XEVIL_ITEM_DEBUG")) {
+      cerr << "XEVIL-ITEM: " << placerP->get_intel()->get_name()
+           << " plants a mine" << endl;
+    }
+  }
+
+  // Remove this held mine quietly (no explosion, no "has been used" message).
+  set_quiet_death();
+  kill_self();
 }
 
 
 
 void Mine::act() {
-  // A mine left lying in the world (dropped, or spawned as loot) arms itself.
-  // A placer just runs the same timer, having recorded who they are in use().
-  // Once a free mine starts arming it can no longer be picked up -- it is a
-  // deployed proximity mine now.
-  if (!active && !is_held()) {
-    active = True;
-    armTimer.set(MINE_ARM_TIME);
-    set_cant_take();
-  }
-
+  // A free mine (never use()d) is completely inert -- safe to touch and pick
+  // up.  Only a planted mine (active) arms and detonates.
   if (active && !armed) {
     armTimer.clock();
     if (armTimer.ready()) {
@@ -2107,8 +2152,9 @@ void Mine::act() {
     }
   }
 
-  // Once armed (and not being carried), detonate if any OTHER living
-  // Creature strays within trigger range.
+  // Once armed, detonate if any living Creature -- the placer included, now
+  // that the grace period has passed -- strays within trigger range.  During
+  // the grace period (!armed) the mine is harmless.
   if (armed && !is_held()) {
     LocatorP locator = get_locator();
     PhysicalP nearby[OL_NEARBY_MAX];
@@ -2118,15 +2164,14 @@ void Mine::act() {
       PhysicalP other = nearby[n];
       if (other != (PhysicalP)this &&
           other->is_creature() &&
-          other->alive() &&
-          !(placer == other->get_id())) {
+          other->alive()) {
         kill_self();
         break;
       }
     }
   }
 
-  set_frame_next(MINE_FRAME);
+  set_frame_next(armed ? MINE_FRAME_ARMED : MINE_FRAME_DORMANT);
   Animated::act();
 }
 
@@ -2135,8 +2180,7 @@ void Mine::act() {
 void Mine::collide(PhysicalP other) {
   if (armed && !is_held() &&
       other->is_creature() &&
-      other->alive() &&
-      !(placer == other->get_id())) {
+      other->alive()) {
     kill_self();
     return;
   }
