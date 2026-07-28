@@ -686,7 +686,11 @@ void Client::connect_server() {
     Boolean wantSounds = True;
 #endif
 #if X11
-    Boolean wantSounds = False;
+    // X11 now has a real sound engine, so request the server's sound relay --
+    // but only when this client actually has sound enabled.  A client started
+    // with -no_sound (or XEVIL_NO_SOUND, or with sound turned off) should not
+    // ask the server to relay sound it will only throw away.
+    Boolean wantSounds = errorLocator ? errorLocator->sound_enabled() : True;
 #endif
 
     // Note: This is the only time we use vInfo.

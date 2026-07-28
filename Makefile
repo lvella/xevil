@@ -39,7 +39,13 @@ ALL_OBJS = $(OBJ_DIR)/role.o $(OBJ_DIR)/game.o $(OBJ_DIR)/world.o \
 	$(OBJ_DIR)/streams.o \
 	$(OBJ_DIR)/xetp.o $(OBJ_DIR)/xetp_basic.o $(OBJ_DIR)/id.o \
 	$(OBJ_DIR)/sound_cmn.o $(OBJ_DIR)/panel.o $(OBJ_DIR)/l_agreement.o \
-	$(OBJ_DIR)/ui_cmn.o $(OBJ_DIR)/l_agreement_dlg.o $(OBJ_DIR)/viewport.o
+	$(OBJ_DIR)/ui_cmn.o $(OBJ_DIR)/l_agreement_dlg.o $(OBJ_DIR)/viewport.o \
+	$(OBJ_DIR)/sound.o $(OBJ_DIR)/miniaudio.o
+
+# Extra libraries needed by the X11/UNIX sound engine (the miniaudio backend
+# uses pthreads and dlopen).  Appended to the link so every architecture target
+# picks them up without editing each one in config.mk.
+SOUND_LIBS = -lpthread -ldl
 
 
 xevil: $(OBJ_DIR)/xevil
@@ -57,7 +63,7 @@ $(OBJ_DIR)/xevil::
 	fi; 
 	cd $(DEPTH)/cmn; $(MAKE)
 	cd $(DEPTH)/x11; $(MAKE)
-	$(CC) $(LINK_FLAGS) $(LINK_OPT) $(LIBS_DIRS) -o $(OBJ_DIR)/xevil $(ALL_OBJS) $(LIBS)
+	$(CC) $(LINK_FLAGS) $(LINK_OPT) $(LIBS_DIRS) -o $(OBJ_DIR)/xevil $(ALL_OBJS) $(LIBS) $(SOUND_LIBS)
 #	$(STRIP) $(OBJ_DIR)/xevil
 
 # Could also include serverping in the distribution

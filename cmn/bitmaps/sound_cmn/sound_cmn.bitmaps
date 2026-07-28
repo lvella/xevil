@@ -64,10 +64,9 @@ unsigned int SoundNames::names[SoundNames::SOUND_MAX] = {
     IDM_ZEEPEEGSOUNDTRACK,
     IDM_NIGHTSKYSOUNDTRACK,
     IDM_SWEETDARKSOUNDTRACK,
-#if 0
-    // Nice piece but sounds really painful on cheap sound cards.
-    IDM_TERRAEXMSOUNDTRACK,   
-#endif
-    IDM_NEWSONGSOUNDTRACK,    
+    // Was commented out in 2.02 ("sounds really painful on cheap sound cards");
+    // re-enabled now that terraexm.mid/.mp3 ship as assets.
+    IDM_TERRAEXMSOUNDTRACK,
+    IDM_NEWSONGSOUNDTRACK,
 };
 #endif

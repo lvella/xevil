@@ -584,8 +584,14 @@ class Locator: public ITickRenderer {
   /* MODIFIES: request */
 
   void reset_sounds() {assert(rememberSounds); soundsNum = 0;}
-  /* We could do this in Locator::clock() as it is not that big a deal if we 
+  /* We could do this in Locator::clock() as it is not that big a deal if we
      lose a sound or two. */
+
+  Boolean sound_enabled();
+  /* EFFECTS: Whether sound is currently enabled (SoundManager present and
+     turned on, and not hard-disabled via -no_sound / XEVIL_NO_SOUND).  Used,
+     e.g., by a network Client to decide whether to request the server's sound
+     relay. */
   //------------------------ Recent Sounds Service -------------------------//
 
 

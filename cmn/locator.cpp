@@ -2182,3 +2182,9 @@ Locator::submitSoundRequest(SoundRequest req) {
 
   return soundManager->submitRequest(req);
 }
+
+
+
+Boolean Locator::sound_enabled() {
+  return soundManager && soundManager->isSoundOn();
+}
