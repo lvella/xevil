@@ -335,6 +335,10 @@ typedef TeamOptions *TeamOptionsP;
 // Do not overlap drawing for different displays, different renderers.
 class ITickRenderer {
 public:
+  virtual ~ITickRenderer() {}
+  /* EFFECTS: Virtual so subclasses (e.g. BorderTickRenderer) are destroyed
+     correctly when deleted through an ITickRenderer* pointer. */
+
   virtual void begin_draw(int dpyNum) = 0;
   /* EFFECTS: Get ready to draw the tick marks for given display. */
 

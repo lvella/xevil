@@ -2842,9 +2842,11 @@ char **Game::display_names(int *argc,char **argv) {
   for (n = 0; n < *argc - 1 ; n++) {
     // Set display name for all viewports.
     if (!strcmp(argv[n],"-display") || !strcmp(argv[n],"-d")) {
-      assert(strlen(argv[n+1]) < Xvars::DISPLAY_NAME_LENGTH);
+      // Bounded copy: truncate safely rather than overflow the fixed buffer
+      // (the previous assert vanishes under -DNDEBUG, leaving a raw strcpy).
       for (int vNum = 0; vNum < UI_VIEWPORTS_MAX; vNum++) {
-        strcpy(displayNames[vNum],argv[n+1]);
+        strncpy(displayNames[vNum],argv[n+1],Xvars::DISPLAY_NAME_LENGTH - 1);
+        displayNames[vNum][Xvars::DISPLAY_NAME_LENGTH - 1] = '\0';
       }
     }
       
@@ -2852,8 +2854,9 @@ char **Game::display_names(int *argc,char **argv) {
     for (int m = 0; m < UI_VIEWPORTS_MAX; m++) {
       for (int which = 0; which < 2; which++) {
         if (!strcmp(argv[n],dashDisplay[m][which].str())) {
-          assert(strlen(argv[n+1]) < Xvars::DISPLAY_NAME_LENGTH);
-          strcpy(displayNames[m],argv[n+1]);
+          // Bounded copy: truncate safely rather than overflow the buffer.
+          strncpy(displayNames[m],argv[n+1],Xvars::DISPLAY_NAME_LENGTH - 1);
+          displayNames[m][Xvars::DISPLAY_NAME_LENGTH - 1] = '\0';
         }
       }
     }

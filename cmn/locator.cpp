@@ -1441,9 +1441,15 @@ Boolean Locator::same_team(TeamOptions &ops,PhysicalP p1,PhysicalP p2) {
 
 
 void Locator::delete_team_data(OLTeam &team) {
-  if (team.options.deleteClosure) {
-    delete team.closure;
-  }
+  // A team's closure is an opaque, non-owned value: every add_team() and
+  // add_persistent_team() call site passes either NULL or a small ClassId
+  // cast to void* (see game_style.cpp).  The old "delete team.closure"
+  // deleted a bare void*, which is undefined behavior -- no destructor can
+  // be selected and no correct amount of storage can be freed for an
+  // untyped pointer.  Nothing here owns heap memory, so there is nothing to
+  // free.  A future team that needs cleanup should carry a typed deleter
+  // rather than deleting a void*.
+  (void)team;
 }
 
 

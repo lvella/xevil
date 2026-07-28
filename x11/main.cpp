@@ -115,7 +115,7 @@ int main(int argc, char **argv) {
     //  and game.cpp calls if "xevil -info".)
     if (game->quit_game()) {
       delete game;
-      exit(1);
+      exit(0);
     }
     
     // Let game decide how to throw time away.
